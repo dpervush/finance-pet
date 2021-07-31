@@ -1,0 +1,20 @@
+@import "styles/vars.scss";
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border: 2px solid #22305f;
+  background-color: transparent;
+  border-radius: 25px;
+}
+.text {
+  margin-left: 8px;
+
+  font-family: $secondFont;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: #ffffff;
+}

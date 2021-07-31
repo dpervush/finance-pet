@@ -1,0 +1,32 @@
+.panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  min-width: 130px;
+  margin-left: 10px;
+}
+.notification {
+  position: relative;
+  span {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    top: -3px;
+    right: -1px;
+
+    background: #24dffe;
+    border-radius: 50%;
+  }
+}
+.user {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  background: #373e3f;
+  border-radius: 50%;
+}
