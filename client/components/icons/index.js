@@ -8,3 +8,6 @@ export { default as EditIcon } from "./EditIcon";
 export { default as PlusIcon } from "./PlusIcon";
 export { default as TriangleDownIcon } from "./TriangleDownIcon";
 export { default as ExpandIcon } from "./ExpandIcon";
+export { default as SettingsIcon } from "./SettingsIcon";
+export { default as CoinsIcon } from "./CoinsIcon";
+export { default as PlayIcon } from "./PlayIcon";

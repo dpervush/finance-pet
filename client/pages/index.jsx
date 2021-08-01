@@ -2,11 +2,12 @@ import dynamic from "next/dynamic";
 
 import Layout from "../containers/layout/Layout";
 import ShortStat from "../components/ShortStat/ShortStat";
-
-import styles from "../styles/Home.module.scss";
 import TransactionsShort from "../components/TransactionsShort/TransactionsShort";
 
+import styles from "../styles/Home.module.scss";
+
 const BubbleStat = dynamic(() => import("../components/BubbleStat/BubbleStat"));
+const RoundStat = dynamic(() => import("../components/RoundStat/RoundStat"));
 
 export default function Home() {
   return (
@@ -15,7 +16,9 @@ export default function Home() {
         <div className={styles.block}>
           <BubbleStat />
         </div>
-        <div className={styles.block}></div>
+        <div className={styles.block}>
+          <RoundStat />
+        </div>
         <div className={styles.block}>
           <ShortStat />
         </div>
