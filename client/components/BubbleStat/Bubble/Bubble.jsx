@@ -8,7 +8,7 @@ const Bubble = ({
   radius,
   category = "Groceries",
   balance = "8 600 RUB",
-  icon = "../../../public/assets/icons/shopping.svg",
+  icon = "/assets/icons/shopping.svg",
 }) => {
   const [image] = useImage(icon);
 
@@ -53,7 +53,14 @@ const Bubble = ({
         opacity={0.5}
         fontSize={10}
       />
-      <Image x={x} y={y} image={image} alt="" width={50} height={50} />
+      <Image
+        x={x - radius / 4}
+        y={y - radius / 2}
+        width={radius / 2}
+        height={radius / 2}
+        image={image}
+        alt=""
+      />
     </>
   );
 };
