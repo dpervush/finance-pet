@@ -6,6 +6,7 @@ import styles from "../styles/Transactions.module.scss";
 import Dropdown from "../components/UI/Dropdown/Dropdown";
 import Button from "../components/UI/Button/Button";
 import { PlusIcon } from "../components/icons";
+import AddTransactionModal from "../components/AddTransactionModal/AddTransactionModal";
 
 const transactions = [
   {
@@ -286,6 +287,8 @@ const state = {
 const Transactions = () => {
   const [dropdownState, setDropdownState] = React.useState(state);
 
+  const [showModal, setShowModal] = React.useState(false);
+
   const filteredTransactions = transactions.reduce((obj, current) => {
     const year = new Date(current.date).getFullYear();
     const month = new Date(current.date).getMonth();
@@ -313,6 +316,9 @@ const Transactions = () => {
 
   return (
     <Layout>
+      <AddTransactionModal onClose={() => setShowModal(false)} show={showModal}>
+        Hello from the modal!
+      </AddTransactionModal>
       <div className={styles.content}>
         <div className={styles.filters}>
           <div className={styles.filter}>
@@ -337,7 +343,7 @@ const Transactions = () => {
             />
           </div>
           <div className={styles.filter}>
-            <Button padding="8px">
+            <Button padding="8px" onClick={() => setShowModal(true)}>
               <PlusIcon />
             </Button>
           </div>
