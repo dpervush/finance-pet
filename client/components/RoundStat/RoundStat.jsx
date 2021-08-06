@@ -60,7 +60,7 @@ const RoundStat = ({ radius = 100, amount = "$9,512.00" }) => {
               width={radius * 2}
               align="center"
               text={"Overall"}
-              fontSize="14"
+              fontSize={14}
               fontFamily="Montserrat"
               fill="#ffffff"
             />
@@ -70,7 +70,7 @@ const RoundStat = ({ radius = 100, amount = "$9,512.00" }) => {
               width={radius * 2}
               align="center"
               text={amount}
-              fontSize="42"
+              fontSize={42}
               fontFamily="BebasNeue"
               fill="#ffffff"
             />
