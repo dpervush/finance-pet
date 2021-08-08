@@ -8,13 +8,19 @@
   border: 2px solid #22305f;
   background-color: transparent;
   border-radius: 25px;
+  color: inherit;
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: auto;
+  }
 }
 .text {
-  margin-left: 8px;
-
   font-family: $secondFont;
   font-weight: 500;
   font-size: 12px;
   text-transform: uppercase;
-  color: #ffffff;
+}
+.icon + .text {
+  margin-left: 8px;
 }

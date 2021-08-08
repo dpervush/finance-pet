@@ -5,6 +5,7 @@ import { PlusIcon, ExpandIcon } from "../icons";
 import Card from "./Card/Card";
 
 import styles from "./CardsList.module.scss";
+import AddCardModal from "../AddCardModal/AddCardModal";
 
 const cards = [
   {
@@ -32,6 +33,7 @@ const cards = [
 
 const CardsList = () => {
   const [activeCard, setActiveCard] = React.useState(0);
+  const [showModal, setShowModal] = React.useState(false);
 
   const onCardClickHandle = (index) => {
     setActiveCard(index);
@@ -51,13 +53,18 @@ const CardsList = () => {
       })}
 
       <div className={styles.btn_wrapper}>
-        <Button innerText="New card" padding="18px 17px">
+        <Button
+          innerText="New card"
+          padding="18px 17px"
+          onClick={() => setShowModal(true)}
+        >
           <PlusIcon />
         </Button>
         <Button padding="15px 16px">
           <ExpandIcon />
         </Button>
       </div>
+      <AddCardModal onClose={() => setShowModal(false)} show={showModal} />
     </>
   );
 };
