@@ -15,10 +15,22 @@
   background: rgba(20, 34, 79, 0.8);
 }
 .content {
+  position: relative;
+  min-width: 500px;
+  padding: 30px;
+
   background: #f1f2fa;
   border-radius: 45px;
-  padding: 30px;
 }
-.body {
-  min-width: 500px;
+.close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
+  background-color: transparent;
+
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 }

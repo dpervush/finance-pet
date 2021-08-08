@@ -316,9 +316,10 @@ const Transactions = () => {
 
   return (
     <Layout>
-      <AddTransactionModal onClose={() => setShowModal(false)} show={showModal}>
-        Hello from the modal!
-      </AddTransactionModal>
+      <AddTransactionModal
+        onClose={() => setShowModal(false)}
+        show={showModal}
+      />
       <div className={styles.content}>
         <div className={styles.filters}>
           <div className={styles.filter}>

@@ -11,3 +11,4 @@ export { default as ExpandIcon } from "./ExpandIcon";
 export { default as SettingsIcon } from "./SettingsIcon";
 export { default as CoinsIcon } from "./CoinsIcon";
 export { default as PlayIcon } from "./PlayIcon";
+export { default as CloseIcon } from "./CloseIcon";
