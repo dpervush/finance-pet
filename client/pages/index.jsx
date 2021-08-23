@@ -6,8 +6,13 @@ import TransactionsShort from "../components/TransactionsShort/TransactionsShort
 
 import styles from "../styles/Home.module.scss";
 
-const BubbleStat = dynamic(() => import("../components/BubbleStat/BubbleStat"));
-const RoundStat = dynamic(() => import("../components/RoundStat/RoundStat"));
+const BubbleStat = dynamic(
+  () => import("../components/BubbleStat/BubbleStat"),
+  { ssr: false }
+);
+const RoundStat = dynamic(() => import("../components/RoundStat/RoundStat"), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
