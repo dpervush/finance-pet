@@ -79,6 +79,8 @@
   right: 23px;
   z-index: 2;
 
+  display: flex;
+
   width: 24px;
   height: 11px;
   padding: 4px 3px;
@@ -87,16 +89,33 @@
   transition: all 0.5s;
 
   span {
-    display: inline-block;
     left: 392px;
     top: 256px;
 
-    width: 3px;
-    height: 3px;
+    width: 4px;
+    height: 4px;
     margin-left: 3px;
 
     background-color: #ffffff;
     border-radius: 50%;
+  }
+}
+
+.actions {
+  position: absolute;
+  top: 55px;
+  right: 23px;
+
+  text-align: right;
+
+  & .btn {
+    display: block;
+    margin: 0 0 7px auto;
+
+    font-family: $secondFont;
+    font-weight: bold;
+    color: #ffffff;
+    background-color: transparent;
   }
 }
 

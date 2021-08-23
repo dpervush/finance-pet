@@ -3,44 +3,34 @@ import Button from "../UI/Button/Button";
 import { PlusIcon, ExpandIcon } from "../icons";
 
 import Card from "./Card/Card";
+import AddCardModal from "../AddCardModal/AddCardModal";
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 
 import styles from "./CardsList.module.scss";
-import AddCardModal from "../AddCardModal/AddCardModal";
-
-const cards = [
-  {
-    _id: "60e444a527214088a50c8bb7",
-    name: "aliqua",
-    color: "#8a16ff",
-    number: 1922169227271577,
-    balance: "$2,443.59",
-  },
-  {
-    _id: "60e444a558001d7791dd5452",
-    name: "reprehenderit",
-    color: "#ff25c2",
-    number: 2973867723924793,
-    balance: "$1,534.84",
-  },
-  {
-    _id: "60e444a5356231266ce604be",
-    name: "id",
-    color: "#24dffe",
-    number: 2849360505082596,
-    balance: "$1,893.50",
-  },
-];
+import { useDispatch, useSelector } from "react-redux";
+import { getCards } from "../../store/slices/cards";
 
 const CardsList = () => {
-  const [activeCard, setActiveCard] = React.useState(0);
+  const ref = React.useRef();
+
+  const dispatch = useDispatch();
+  const { cards } = useSelector(({ cards }) => cards);
+
+  const [activeCard, setActiveCard] = React.useState(null);
   const [showModal, setShowModal] = React.useState(false);
+
+  useOnClickOutside(ref, () => setActiveCard(null));
 
   const onCardClickHandle = (index) => {
     setActiveCard(index);
   };
 
+  React.useEffect(() => {
+    dispatch(getCards());
+  }, []);
+
   return (
-    <>
+    <div className={styles.card_list} ref={ref}>
       {cards.map((item, index) => {
         return (
           <Card
@@ -64,8 +54,10 @@ const CardsList = () => {
           <ExpandIcon />
         </Button>
       </div>
-      <AddCardModal onClose={() => setShowModal(false)} show={showModal} />
-    </>
+      {showModal && (
+        <AddCardModal onClose={() => setShowModal(false)} show={showModal} />
+      )}
+    </div>
   );
 };
 

@@ -1,22 +1,32 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 
 import ModalWindow from "../../containers/ModalWindow/ModalWindow";
+import { createCard, updateCard } from "../../store/slices/cards";
 import Button from "../UI/Button/Button";
 
 import styles from "./AddCardModal.module.scss";
 
-const AddCardModal = ({ show, onClose }) => {
-  const { register, handleSubmit, reset } = useForm();
+const AddCardModal = ({ onClose, method, initValues }) => {
+  const dispatch = useDispatch();
+
+  const { register, handleSubmit, reset } = useForm({
+    defaultValues: initValues || { total: true, color: "#8A16FF" },
+  });
+
+  console.log(initValues);
 
   const onSubmit = (data) => {
-    console.log(data);
+    method === "UPDATE"
+      ? dispatch(updateCard({ ...data, _id: initValues.id }))
+      : dispatch(createCard({ ...data }));
     reset();
     onClose();
   };
 
   return (
-    <ModalWindow show={show} onClose={onClose}>
+    <ModalWindow onClose={onClose}>
       <div className={styles.body}>
         <div className={styles.title}>Add new card</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
@@ -35,7 +45,7 @@ const AddCardModal = ({ show, onClose }) => {
               className={styles.input}
               type="number"
               placeholder="Баланс"
-              {...register("budget")}
+              {...register("balance")}
             />
           </div>
           <div className={`${styles.form_item} ${styles.form_item__color}`}>
@@ -47,7 +57,6 @@ const AddCardModal = ({ show, onClose }) => {
                   {...register("color")}
                   type="radio"
                   value="#8A16FF"
-                  checked
                 />
                 <span
                   className={styles.color}
@@ -124,13 +133,16 @@ const AddCardModal = ({ show, onClose }) => {
                 type="checkbox"
                 placeholder="total"
                 {...register("total", {})}
-                checked
               />
               <span className={styles.switch}></span>
             </label>
           </div>
 
-          <Button innerText="Create" type="submit" padding="13px 35px"></Button>
+          <Button
+            innerText={method === "UPDATE" ? "Update" : "Create"}
+            type="submit"
+            padding="13px 35px"
+          ></Button>
         </form>
       </div>
     </ModalWindow>

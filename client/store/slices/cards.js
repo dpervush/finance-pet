@@ -10,7 +10,7 @@ export const getCards = createAsyncThunk(
 
 export const createCard = createAsyncThunk(
   "cards/createCard",
-  async (body, dispatch) => {
+  async (body, { dispatch }) => {
     await axios.post(`/cards/`, body).then((res) => res.data);
     dispatch(getCards());
   }
@@ -18,7 +18,7 @@ export const createCard = createAsyncThunk(
 
 export const updateCard = createAsyncThunk(
   "cards/updateCard",
-  async (body, dispatch) => {
+  async (body, { dispatch }) => {
     await axios.put(`/cards/`, body).then((res) => res.data);
     dispatch(getCards());
   }
@@ -26,7 +26,7 @@ export const updateCard = createAsyncThunk(
 
 export const deleteCard = createAsyncThunk(
   "cards/deleteCard",
-  async (cardId, dispatch) => {
+  async (cardId, { dispatch }) => {
     await axios.delete(`/cards/${cardId}`).then((res) => res.data);
     dispatch(getCards());
   }
@@ -36,11 +36,15 @@ const cardsSlice = createSlice({
   name: "cards",
   initialState: {
     cards: [],
+    error: null,
   },
   reducers: {},
   extraReducers: {
     [getCards.fulfilled]: (state, action) => {
       state.cards = action.payload;
+    },
+    [createCard.rejected]: (state, action) => {
+      state.error = action.error;
     },
   },
 });

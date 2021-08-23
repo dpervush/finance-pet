@@ -316,10 +316,7 @@ const Transactions = () => {
 
   return (
     <Layout>
-      <AddTransactionModal
-        onClose={() => setShowModal(false)}
-        show={showModal}
-      />
+      {showModal && <AddTransactionModal onClose={() => setShowModal(false)} />}
       <div className={styles.content}>
         <div className={styles.filters}>
           <div className={styles.filter}>
@@ -349,7 +346,9 @@ const Transactions = () => {
             </Button>
           </div>
         </div>
-        <TransactionBlock items={filteredTransactions} />
+        <div className={styles.transactions_list}>
+          <TransactionBlock items={filteredTransactions} />
+        </div>
       </div>
     </Layout>
   );

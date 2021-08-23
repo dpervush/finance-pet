@@ -4,7 +4,7 @@ import { CloseIcon } from "../../components/icons";
 
 import styles from "./ModalWindow.module.scss";
 
-function ModalWindow({ show, onClose, children }) {
+function ModalWindow({ onClose, children }) {
   const [isBrowser, setIsBrowser] = React.useState(false);
 
   React.useEffect(() => {
@@ -16,7 +16,7 @@ function ModalWindow({ show, onClose, children }) {
     onClose();
   };
 
-  const modalContent = show ? (
+  const modalContent = (
     <div className={styles.wrapper}>
       <div className={styles.content}>
         <button className={styles.close} onClick={handleCloseClick}>
@@ -25,8 +25,7 @@ function ModalWindow({ show, onClose, children }) {
         {children}
       </div>
     </div>
-  ) : null;
-
+  );
   if (isBrowser) {
     return ReactDOM.createPortal(
       modalContent,
