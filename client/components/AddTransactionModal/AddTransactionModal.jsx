@@ -54,6 +54,11 @@ const AddTransactionModal = ({ show, onClose }) => {
               <div className={styles.subtitle}>From</div>
               <div className={styles.from_block}>
                 <div className={styles.from_item}>
+                  <button className={styles.add_btn}>
+                    <span>account</span>
+                  </button>
+                </div>
+                <div className={styles.from_item}>
                   <label className={styles.label}>
                     <input
                       className={`${styles.radio} ${styles.visually_hidden}`}
@@ -116,6 +121,11 @@ const AddTransactionModal = ({ show, onClose }) => {
               </div>
               <div className={styles.subtitle}>To</div>
               <div className={styles.to_block}>
+                <div className={styles.from_item}>
+                  <button className={styles.add_btn}>
+                    <span>category</span>
+                  </button>
+                </div>
                 <div className={styles.from_item}>
                   <label className={styles.label}>
                     <input
