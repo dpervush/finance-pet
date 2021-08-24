@@ -1,11 +1,19 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const Transaction = new mongoose.Schema({
-    title: {type: String, required: true},
-    amount: {type: Number, required: true},
-    date: {type: Date, default: Date.now},
-    category_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Category', required: true},
-    card_id: {type: mongoose.Schema.Types.ObjectId, ref: 'Card', required: true},
-})
+  title: { type: String, required: true },
+  amount: { type: Number, required: true },
+  date: { type: Date, default: Date.now },
+  category: {
+    title: { type: String, required: true },
+    budget: { type: Number },
+  },
+  card: {
+    name: { type: String, required: true },
+    color: { type: String, required: true },
+    currency: { type: String, default: "RUB" },
+    balance: { type: Number, default: 0 },
+  },
+});
 
-export default mongoose.model('Transaction', Transaction)
+export default mongoose.model("Transaction", Transaction);
