@@ -10,7 +10,7 @@ export const getTransactions = createAsyncThunk(
 
 export const createTransaction = createAsyncThunk(
   "transactions/createTransaction",
-  async (body, dispatch) => {
+  async (body, { dispatch }) => {
     await axios.post(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
   }
@@ -18,7 +18,7 @@ export const createTransaction = createAsyncThunk(
 
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
-  async (body, dispatch) => {
+  async (body, { dispatch }) => {
     await axios.put(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
   }
@@ -26,7 +26,7 @@ export const updateTransaction = createAsyncThunk(
 
 export const deleteTransaction = createAsyncThunk(
   "transactions/deleteTransaction",
-  async (transactionId, dispatch) => {
+  async (transactionId, { dispatch }) => {
     await axios
       .delete(`/transactions/${transactionId}`)
       .then((res) => res.data);

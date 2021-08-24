@@ -39,7 +39,6 @@
     width: 46px;
     height: 18px;
 
-    background: #ff25c2;
     border-radius: 6px;
   }
 }
@@ -79,6 +78,7 @@
     transform: translateX(200%);
     transition: all 0.5s;
     cursor: pointer;
+    background-color: transparent;
     svg {
       width: 18px;
       height: 18px;

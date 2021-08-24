@@ -14,6 +14,14 @@ import {
 } from "../../store/slices/newTransactionSlice";
 
 import styles from "./AddTransactionModal.module.scss";
+import AddCategoryModal from "../AddCategoryModal/AddCategoryModal";
+import { getCategories } from "../../store/slices/categories";
+import { getCards } from "../../store/slices/cards";
+import { formatCurrency } from "../../utils/formatCurrency";
+import {
+  createTransaction,
+  getTransactions,
+} from "../../store/slices/transactions";
 
 const AddTransactionModal = ({ show, onClose }) => {
   const { from, to, amount, comment } = useSelector(
@@ -21,16 +29,38 @@ const AddTransactionModal = ({ show, onClose }) => {
   );
 
   const dispatch = useDispatch();
+  const {
+    categories: { categories },
+    cards: { cards },
+    transactions: { transactions },
+  } = useSelector((store) => store);
 
   const [activePage, setActivePage] = React.useState(0);
+  const [openModal, setOpenModal] = React.useState(false);
+
+  React.useEffect(() => {
+    dispatch(getCategories());
+    dispatch(getCards());
+    dispatch(getTransactions());
+  }, []);
 
   const { register, handleSubmit, watch, reset, getValues } = useForm();
 
   const watchFirstBlockValues = watch(["from", "to"]);
   const watchSecondBlockValues = watch(["amount"]);
 
-  const onSubmit = (data) => {
-    dispatch(setTransaction(data));
+  const onSubmit = ({ from, to, comment, amount }) => {
+    const selectedCard = cards.find((card) => card._id === from);
+    const selectedCategory = categories.find((category) => category._id === to);
+
+    dispatch(
+      createTransaction({
+        title: comment || selectedCategory.title,
+        amount,
+        card: selectedCard,
+        category: selectedCategory,
+      })
+    );
     reset();
     setActivePage(0);
     onClose();
@@ -43,6 +73,9 @@ const AddTransactionModal = ({ show, onClose }) => {
     setActivePage(activePage + 1);
   };
   const navPrevPage = () => setActivePage(activePage - 1);
+
+  const onAddCategoryHandle = () => setOpenModal(true);
+  const onCloseAddCategoryHandle = () => setOpenModal(false);
 
   return (
     <ModalWindow show={show} onClose={onClose}>
@@ -58,138 +91,54 @@ const AddTransactionModal = ({ show, onClose }) => {
                     <span>account</span>
                   </button>
                 </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("from", { required: true })}
-                      type="radio"
-                      value="Card"
-                    />
-                    Card
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>8 600 RUB</span>
-                  </label>
-                </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("from", { required: true })}
-                      type="radio"
-                      value="Travel"
-                    />
-                    Travel
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>8 600 RUB</span>
-                  </label>
-                </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("from", { required: true })}
-                      type="radio"
-                      value="Shopping"
-                    />
-                    Shopping
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>8 600 RUB</span>
-                  </label>
-                </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("from", { required: true })}
-                      type="radio"
-                      value="Savings"
-                    />
-                    Savings
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>8 600 RUB</span>
-                  </label>
-                </div>
+                {cards?.map((card) => (
+                  <div key={card._id} className={styles.from_item}>
+                    <label className={styles.label}>
+                      <input
+                        className={`${styles.radio} ${styles.visually_hidden}`}
+                        {...register("from", { required: true })}
+                        type="radio"
+                        value={card._id}
+                      />
+                      {card.name}
+                      <span className={styles.icon}>
+                        <Image src={icon} alt="icon" />
+                      </span>
+                      <span className={styles.balance}>
+                        {formatCurrency(card.balance, card.currency)}
+                      </span>
+                    </label>
+                  </div>
+                ))}
               </div>
               <div className={styles.subtitle}>To</div>
               <div className={styles.to_block}>
                 <div className={styles.from_item}>
-                  <button className={styles.add_btn}>
+                  <button
+                    className={styles.add_btn}
+                    onClick={onAddCategoryHandle}
+                  >
                     <span>category</span>
                   </button>
                 </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("to", { required: true })}
-                      type="radio"
-                      value="Groceries"
-                    />
-                    Groceries
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>600</span>
-                    <span className={styles.budget}>8 600</span>
-                  </label>
-                </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("to", { required: true })}
-                      type="radio"
-                      value="Transportation"
-                    />
-                    Transportation
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>600</span>
-                    <span className={styles.budget}>8 600</span>
-                  </label>
-                </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("to", { required: true })}
-                      type="radio"
-                      value="Beauty"
-                    />
-                    Beauty
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>600</span>
-                    <span className={styles.budget}>8 600</span>
-                  </label>
-                </div>
-                <div className={styles.from_item}>
-                  <label className={styles.label}>
-                    <input
-                      className={`${styles.radio} ${styles.visually_hidden}`}
-                      {...register("to", { required: true })}
-                      type="radio"
-                      value="Eating out"
-                    />
-                    Eating out
-                    <span className={styles.icon}>
-                      <Image src={icon} alt="icon" />
-                    </span>
-                    <span className={styles.balance}>600</span>
-                    <span className={styles.budget}>8 600</span>
-                  </label>
-                </div>
+                {categories?.map((category) => (
+                  <div key={category._id} className={styles.from_item}>
+                    <label className={styles.label}>
+                      <input
+                        className={`${styles.radio} ${styles.visually_hidden}`}
+                        {...register("to", { required: true })}
+                        type="radio"
+                        value={category._id}
+                      />
+                      {category.title}
+                      <span className={styles.icon}>
+                        <Image src={icon} alt="icon" />
+                      </span>
+                      <span className={styles.balance}>600</span>
+                      <span className={styles.budget}>{category.budget}</span>
+                    </label>
+                  </div>
+                ))}
               </div>
               <div className={styles.actions}>
                 <Button
@@ -251,6 +200,7 @@ const AddTransactionModal = ({ show, onClose }) => {
           ) : null}
         </form>
       </div>
+      {openModal && <AddCategoryModal onClose={onCloseAddCategoryHandle} />}
     </ModalWindow>
   );
 };

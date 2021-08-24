@@ -210,6 +210,17 @@
 .form_item {
   margin-bottom: 27px;
 }
+.form_item__input {
+  display: flex;
+  justify-content: space-between;
+
+  & .icon {
+    flex: 0 0 50px;
+    // display: inline-block;
+    margin-left: 15px;
+    padding: 0;
+  }
+}
 .input {
   display: block;
   width: 100%;

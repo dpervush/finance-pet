@@ -1,15 +1,17 @@
 import React from "react";
+import { useDispatch } from "react-redux";
 import classNames from "classNames/bind";
 import styled from "styled-components";
 
-import styles from "./Card.module.scss";
-import { useDispatch } from "react-redux";
-import { deleteCard } from "../../../store/slices/cards";
 import AddCardModal from "../../AddCardModal/AddCardModal";
+import { deleteCard } from "../../../store/slices/cards";
+import { formatCurrency } from "../../../utils/formatCurrency";
+
+import styles from "./Card.module.scss";
 
 const cx = classNames.bind(styles);
 
-const Wrapper = styled.div`
+const Wrapper = styled.li`
   background-color: ${(props) => props.color};
 `;
 
@@ -66,19 +68,7 @@ const Card = ({
         </div>
       )}
       <div className={styles.system}></div>
-      <div className={styles.balance}>
-        {currency === "USD" &&
-          balance.toLocaleString("en-IN", {
-            style: "currency",
-            currency: "USD",
-          })}
-        {currency === "RUB" &&
-          balance.toLocaleString("ru-RU", {
-            style: "currency",
-            currency: "RUB",
-            currencyDisplay: "code",
-          })}
-      </div>
+      <div className={styles.balance}>{formatCurrency(balance, currency)}</div>
       <div className={styles.title}>{name || formatNumber(number)}</div>
       {showModal && (
         <AddCardModal

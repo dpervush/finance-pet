@@ -10,7 +10,7 @@ export const getCategories = createAsyncThunk(
 
 export const createCategory = createAsyncThunk(
   "categories/createCategory",
-  async (body, dispatch) => {
+  async (body, { dispatch }) => {
     await axios.post(`/categories/`, body).then((res) => res.data);
     dispatch(getCategories());
   }
@@ -18,7 +18,7 @@ export const createCategory = createAsyncThunk(
 
 export const updateCategory = createAsyncThunk(
   "categories/updateCategory",
-  async (body, dispatch) => {
+  async (body, { dispatch }) => {
     await axios.put(`/categories/`, body).then((res) => res.data);
     dispatch(getCategories());
   }
@@ -26,7 +26,7 @@ export const updateCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   "categories/deleteCategory",
-  async (categoryId, dispatch) => {
+  async (categoryId, { dispatch }) => {
     await axios.delete(`/categories/${categoryId}`).then((res) => res.data);
     dispatch(getCategories());
   }
