@@ -6,10 +6,13 @@ import UserPanel from "../UserPanel/UserPanel";
 import { ChartIcon, DotsIcon } from "../icons";
 
 import styles from "./Header.module.scss";
+import { useRouter } from "next/dist/client/router";
 
 const cx = classNames.bind(styles);
 
 const Header = () => {
+  const { route } = useRouter();
+
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -22,7 +25,7 @@ const Header = () => {
             <ul className={styles.nav_list}>
               <li className={styles.nav_item}>
                 <Link href="/">
-                  <a className={cx({ nav_link: true, active: true })}>
+                  <a className={cx({ nav_link: true, active: route === "/" })}>
                     <ChartIcon />
                     <span>Overview</span>
                   </a>
@@ -30,15 +33,25 @@ const Header = () => {
               </li>
               <li className={styles.nav_item}>
                 <Link href="/transactions">
-                  <a className={cx({ nav_link: true, active: false })}>
+                  <a
+                    className={cx({
+                      nav_link: true,
+                      active: route === "/transactions",
+                    })}
+                  >
                     Transactions
                   </a>
                 </Link>
               </li>
               <li className={styles.nav_item}>
                 <Link href="/">
-                  <a className={cx({ nav_link: true, active: false })}>
-                    Statictics
+                  <a
+                    className={cx({
+                      nav_link: true,
+                      active: route === "/statistics",
+                    })}
+                  >
+                    Statistics
                   </a>
                 </Link>
               </li>

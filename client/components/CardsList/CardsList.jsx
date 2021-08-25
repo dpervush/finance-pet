@@ -29,8 +29,8 @@ const CardsList = () => {
             <Card
               key={item._id}
               {...item}
-              onClick={() => onCardClickHandle(index)}
-              isActive={activeCard === index}
+              // onClick={() => onCardClickHandle(index)}
+              // isActive={activeCard === index}
             />
           );
         })}
