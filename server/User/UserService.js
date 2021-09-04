@@ -59,6 +59,11 @@ class UserService {
     return { ...tokens, user: userDto };
   }
 
+  async logout(refreshToken) {
+    const token = await TokenService.removeToken(refreshToken);
+    return token;
+  }
+
     awaitTokenService.saveToken(userDto.id, tokens.refreshToken);
     return { ...tokens, user: userDto };
   }
