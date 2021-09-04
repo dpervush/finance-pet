@@ -40,6 +40,7 @@ class UserService {
       user: userDto,
     };
   }
+
   async login(email, password) {
     const user = await User.findOne({ email });
     if (!user) {
@@ -63,6 +64,23 @@ class UserService {
     const token = await TokenService.removeToken(refreshToken);
     return token;
   }
+
+  async refresh(refreshToken) {
+    if (!refreshToken) {
+      throw ApiError.AnauthorizedError();
+    }
+
+    const userData = TokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = await TokenService.findToken(refreshToken);
+
+    if (!userData || !tokenFromDb) {
+      throw ApiError.AnauthorizedError();
+    }
+
+    const user = await User.findById(userData.id);
+    const userDto = new UserDto(user);
+
+    const tokens = TokenService.generateToken({ ...userDto });
 
     awaitTokenService.saveToken(userDto.id, tokens.refreshToken);
     return { ...tokens, user: userDto };
