@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import UserRouter from "./User/UserRouter.js";
 import CardRouter from "./Card/CardRouter.js";
 import CategoryRouter from "./Category/CategoryRouter.js";
 import TransactionRouter from "./Transaction/TransactionRouter.js";
@@ -29,6 +30,8 @@ app.use(cookieParser());
 app.use("/api", CardRouter);
 app.use("/api", CategoryRouter);
 app.use("/api", TransactionRouter);
+app.use("/api", UserRouter);
+
 app.use(errorMiddleware);
 
 async function startApp() {
