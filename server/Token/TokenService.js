@@ -2,7 +2,7 @@ import jsonwebtoken from "jsonwebtoken";
 import Token from "./Token.js";
 
 class TokenService {
-  async generateToken(payload) {
+  generateToken(payload) {
     const accessToken = jsonwebtoken.sign(
       payload,
       process.env.JWT_ACCESS_SECRET,
