@@ -1,12 +1,15 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 import CardRouter from "./Card/CardRouter.js";
 import CategoryRouter from "./Category/CategoryRouter.js";
 import TransactionRouter from "./Transaction/TransactionRouter.js";
+dotenv.config();
 
-const PORT = 8080;
-const DB_URL = `mongodb+srv://user:user@cluster0.abzpn.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`;
+const PORT = process.env.PORT || 8080;
+const DB_URL = process.env.DB_URL;
 
 const app = express();
 
@@ -18,6 +21,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
+app.use(cookieParser());
 // app.use(express.static('static'))
 app.use("/api", CardRouter);
 app.use("/api", CategoryRouter);
