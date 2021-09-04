@@ -6,6 +6,8 @@ import mongoose from "mongoose";
 import CardRouter from "./Card/CardRouter.js";
 import CategoryRouter from "./Category/CategoryRouter.js";
 import TransactionRouter from "./Transaction/TransactionRouter.js";
+import errorMiddleware from "./middlewares/errorMiddleware.js";
+
 dotenv.config();
 
 const PORT = process.env.PORT || 8080;
@@ -23,9 +25,11 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 // app.use(express.static('static'))
+
 app.use("/api", CardRouter);
 app.use("/api", CategoryRouter);
 app.use("/api", TransactionRouter);
+app.use(errorMiddleware);
 
 async function startApp() {
   try {
