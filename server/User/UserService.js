@@ -56,13 +56,33 @@ class UserService {
 
     const tokens = TokenService.generateToken({ ...userDto });
 
-    awaitTokenService.saveToken(userDto.id, tokens.refreshToken);
+    await TokenService.saveToken(userDto.id, tokens.refreshToken);
     return { ...tokens, user: userDto };
   }
 
   async logout(refreshToken) {
     const token = await TokenService.removeToken(refreshToken);
     return token;
+  }
+
+  async getMe(refreshToken) {
+    if (!refreshToken) {
+      throw ApiError.AnauthorizedError();
+    }
+
+    const userData = TokenService.validateRefreshToken(refreshToken);
+    const tokenFromDb = await TokenService.findToken(refreshToken);
+
+    console.log(userData, tokenFromDb);
+
+    if (!userData || !tokenFromDb) {
+      throw ApiError.AnauthorizedError();
+    }
+
+    const user = await User.findById(userData.id);
+    const userDto = new UserDto(user);
+
+    return { currentUser: userDto };
   }
 
   async refresh(refreshToken) {
@@ -82,7 +102,7 @@ class UserService {
 
     const tokens = TokenService.generateToken({ ...userDto });
 
-    awaitTokenService.saveToken(userDto.id, tokens.refreshToken);
+    await TokenService.saveToken(userDto.id, tokens.refreshToken);
     return { ...tokens, user: userDto };
   }
 }

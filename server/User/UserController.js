@@ -55,12 +55,25 @@ class UserController {
       next(e);
     }
   }
+
+  async getMe(req, res, next) {
+    try {
+      const { refreshToken } = req.cookies;
+      const userData = await UserService.getMe(refreshToken);
+
+      return res.json(userData);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async activate(req, res, next) {
     try {
     } catch (e) {
       next(e);
     }
   }
+
   async refresh(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
