@@ -1,15 +1,14 @@
-import bcrypt from "bcrypt";
-import { v4 as uuidv4 } from "uuid";
+const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
 
-import User from "./User.js";
-import TokenService from "../Token/TokenService.js";
-import UserDto from "./UserDto.js";
-import MailService from "../Mail/MailService.js";
-import ApiError from "../exceptions/apiError.js";
+const { User, Account } = require("../models/index");
+const TokenService = require("./tokenService");
+const UserDto = require("../dtos/userDto");
+const ApiError = require("../exceptions/apiError");
 
 class UserService {
-  async register(email, password) {
-    const candidate = await User.findOne({ email });
+  async register(firstName, secondName, email, password) {
+    const candidate = await User.findOne({ where: { email } });
 
     if (candidate) {
       throw ApiError.BadRequest(
@@ -23,12 +22,10 @@ class UserService {
       email,
       password: hashedPassword,
       activationLink,
+      firstName,
+      secondName,
     });
-
-    // await MailService.sendActivationMail(
-    //   email,
-    //   `${process.env.API_URL}/api/activate/${activationLink}`
-    // );
+    const account = await Account.create({ userId: user.id });
 
     const userDto = new UserDto(user);
     const tokens = TokenService.generateToken({ ...userDto });
@@ -37,12 +34,15 @@ class UserService {
 
     return {
       ...tokens,
-      user: userDto,
+      user: { ...userDto, accountId: account.id },
     };
   }
 
   async login(email, password) {
-    const user = await User.findOne({ email });
+    const { dataValues: user } = await User.findOne({
+      where: { email },
+    });
+
     if (!user) {
       throw ApiError.BadRequest("Пользователь с таким email не найден");
     }
@@ -52,12 +52,15 @@ class UserService {
       throw ApiError.BadRequest("Неверный пароль");
     }
 
+    const account = await Account.findOne({ where: { userId: user.id } });
+    if (!account) throw ApiError.BadRequest("Аккаунт не найден");
+
     const userDto = new UserDto(user);
 
     const tokens = TokenService.generateToken({ ...userDto });
 
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
-    return { ...tokens, user: userDto };
+    await TokenService.saveToken(user.id, tokens.refreshToken);
+    return { ...tokens, user: { ...userDto, accountId: account.id } };
   }
 
   async logout(refreshToken) {
@@ -71,18 +74,30 @@ class UserService {
     }
 
     const userData = TokenService.validateRefreshToken(refreshToken);
-    const tokenFromDb = await TokenService.findToken(refreshToken);
 
-    console.log(userData, tokenFromDb);
+    const token = await TokenService.findToken(refreshToken);
 
-    if (!userData || !tokenFromDb) {
+    if (!userData || !token) {
       throw ApiError.AnauthorizedError();
     }
 
-    const user = await User.findById(userData.id);
-    const userDto = new UserDto(user);
+    const { dataValues: user } = await User.findByPk(userData.id, {
+      attributes: [
+        "id",
+        "email",
+        "firstName",
+        "secondName",
+        "isActivated",
+        "activationLink",
+      ],
+    });
 
-    return { currentUser: userDto };
+    const account = await Account.findOne({
+      where: { userId: user.id },
+    });
+    if (!account) throw ApiError.BadRequest("Аккаунт не найден");
+
+    return { currentUser: { ...user, accountId: account.id } };
   }
 
   async refresh(refreshToken) {
@@ -91,13 +106,14 @@ class UserService {
     }
 
     const userData = TokenService.validateRefreshToken(refreshToken);
-    const tokenFromDb = await TokenService.findToken(refreshToken);
+    const token = await TokenService.findToken(refreshToken);
 
-    if (!userData || !tokenFromDb) {
+    if (!userData || !token) {
       throw ApiError.AnauthorizedError();
     }
 
-    const user = await User.findById(userData.id);
+    const user = await User.findByPk(userData.id);
+
     const userDto = new UserDto(user);
 
     const tokens = TokenService.generateToken({ ...userDto });
@@ -107,4 +123,4 @@ class UserService {
   }
 }
 
-export default new UserService();
+module.exports = new UserService();

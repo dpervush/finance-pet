@@ -1,21 +1,25 @@
-import ApiError from "../exceptions/apiError.js";
-import TokenService from "../Token/TokenService.js";
+const ApiError = require("../exceptions/apiError.js");
+const TokenService = require("../services/tokenService");
 
-export default function (req, res, next) {
+module.exports = function (req, res, next) {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
       return next(ApiError.AnauthorizedError());
     }
 
-    const accessToken = authHeader.split(" ")[1];
-    if (!accessToken) {
+    const token = authHeader.split(" ")[1];
+    if (!token) {
       return next(ApiError.AnauthorizedError());
     }
 
-    const userData = TokenService.validateAccessToken(accessToken);
+    let userData = TokenService.validateAccessToken(token);
     if (!userData) {
-      return next(ApiError.AnauthorizedError());
+      userData = TokenService.validateRefreshToken(token);
+
+      if (!userData) {
+        return next(ApiError.AnauthorizedError());
+      }
     }
 
     req.user = userData;
@@ -23,4 +27,4 @@ export default function (req, res, next) {
   } catch (e) {
     return next(ApiError.AnauthorizedError());
   }
-}
+};

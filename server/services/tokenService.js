@@ -1,5 +1,5 @@
-import jsonwebtoken from "jsonwebtoken";
-import Token from "./Token.js";
+const jsonwebtoken = require("jsonwebtoken");
+const { Token } = require("../models");
 
 class TokenService {
   generateToken(payload) {
@@ -7,7 +7,7 @@ class TokenService {
       payload,
       process.env.JWT_ACCESS_SECRET,
       {
-        expiresIn: "30m",
+        expiresIn: "24h",
       }
     );
     const refreshToken = jsonwebtoken.sign(
@@ -30,6 +30,7 @@ class TokenService {
         token,
         process.env.JWT_ACCESS_SECRET
       );
+
       return userData;
     } catch (e) {
       return null;
@@ -49,26 +50,35 @@ class TokenService {
   }
 
   async saveToken(userId, refreshToken) {
-    const tokenData = await Token.findOne({ user: userId });
+    console.log(userId);
+
+    const tokenData = await Token.findOne({ userId });
 
     if (tokenData) {
       tokenData.refreshToken = refreshToken;
       return tokenData.save();
     }
 
-    const token = await Token.create({ user: userId, refreshToken });
+    const token = await Token.create({ userId, refreshToken });
     return token;
   }
 
   async removeToken(token) {
-    const tokenData = await Token.deleteOne({ token });
-    return tokenData;
+    const userToken = await Token.findOne({
+      where: { refreshToken: token },
+    });
+
+    return await userToken
+      .destroy()
+      .then(() => "ok")
+      .catch(() => "error");
   }
 
   async findToken(token) {
-    const tokenData = await Token.findOne({ refreshToken: token });
-    return tokenData;
+    const tokenData = await Token.findOne({ token });
+
+    return tokenData.dataValues;
   }
 }
 
-export default new TokenService();
+module.exports = new TokenService();

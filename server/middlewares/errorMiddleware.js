@@ -1,4 +1,4 @@
-import ApiError from "../exceptions/apiError.js";
+const ApiError = require("../exceptions/apiError.js");
 
 export default function (error, req, res, next) {
   console.log(error);
