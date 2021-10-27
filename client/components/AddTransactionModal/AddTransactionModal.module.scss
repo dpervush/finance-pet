@@ -1,9 +1,102 @@
 @import "styles/vars.scss";
 
 .body {
+  min-width: 440px;
+}
+.subtitle {
+  margin-bottom: 12px;
+}
+.subtitle,
+.label {
+  font-weight: 500;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+.label {
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  text-align: center;
+
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+
+  .text {
+    text-align: center;
+  }
+}
+.radio.visually_hidden {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+.icon {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  padding: 12px;
+  margin: 3px auto;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(4, 24, 75, 0.4);
+  border-radius: 50%;
+}
+
+.body {
   max-width: 800px;
   font-family: $secondFont;
   color: #081945;
+}
+.types {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+.types_item {
+  flex: 0 1 50%;
+  & .label {
+    display: inline-block;
+    width: 100%;
+
+    font-size: 14px;
+  }
+  span {
+    display: inline-block;
+    width: 100%;
+    padding: 8px 12px;
+
+    background-color: rgba(20, 34, 79, 0.1);
+
+    transition: all 0.1s;
+  }
+
+  & .radio:checked + span {
+    background-color: rgb(55, 46, 121);
+    color: #fff;
+  }
+}
+.types_item:first-child {
+  span {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+  }
+}
+.types_item:last-child {
+  span {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+  }
 }
 
 .title {
@@ -78,14 +171,6 @@
     background-image: url(../../public/assets/icons/plus.svg);
   }
 }
-.subtitle,
-.label {
-  margin-bottom: 12px;
-
-  font-weight: 500;
-  font-size: 16px;
-  text-transform: uppercase;
-}
 .from_item {
   flex: 0 0 20%;
 
@@ -96,47 +181,7 @@
 
   margin: 0 5px;
 }
-.label {
-  font-weight: 500;
-  font-size: 12px;
-  text-transform: uppercase;
-  text-align: center;
 
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-
-  .text {
-    // display: inline-block;
-    // width: 100%;
-
-    text-align: center;
-  }
-}
-.radio.visually_hidden {
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  height: 1px;
-  overflow: hidden;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-}
-.icon {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-  padding: 12px;
-  margin: 3px auto;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  background: rgba(4, 24, 75, 0.4);
-  border-radius: 50%;
-}
 .from_block .radio:checked + .icon {
   background-color: rgba(4, 24, 75, 0.7);
 }

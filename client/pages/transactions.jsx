@@ -9,46 +9,11 @@ import { PlusIcon } from "../components/icons";
 import AddTransactionModal from "../components/AddTransactionModal/AddTransactionModal";
 import { useDispatch, useSelector } from "react-redux";
 import { getTransactions } from "../store/slices/transactions";
+import $api from "../http";
+import { getValueFromCookie } from "../utils/getValueFromCookie";
+import { getCategories } from "../store/slices/categories";
 
 const state = {
-  categories: [
-    {
-      id: 0,
-      title: "Groceries",
-      selected: false,
-      key: "categories",
-    },
-    {
-      id: 1,
-      title: "Transportation",
-      selected: false,
-      key: "categories",
-    },
-    {
-      id: 2,
-      title: "Shopping",
-      selected: false,
-      key: "categories",
-    },
-    {
-      id: 3,
-      title: "Investing",
-      selected: false,
-      key: "categories",
-    },
-    {
-      id: 4,
-      title: "Health",
-      selected: false,
-      key: "categories",
-    },
-    {
-      id: 5,
-      title: "Eating out",
-      selected: false,
-      key: "categories",
-    },
-  ],
   flow: [
     {
       id: 0,
@@ -69,31 +34,15 @@ const state = {
       key: "flow",
     },
   ],
-  cards: [
-    {
-      id: 0,
-      title: "All",
-      selected: false,
-      key: "cards",
-    },
-    {
-      id: 1,
-      title: "first",
-      selected: false,
-      key: "cards",
-    },
-    {
-      id: 2,
-      title: "second",
-      selected: false,
-      key: "cards",
-    },
-  ],
 };
 
-const Transactions = () => {
+const Transactions = ({ user }) => {
   const dispatch = useDispatch();
-  const { transactions } = useSelector(({ transactions }) => transactions);
+  const {
+    transactions: { transactions },
+    categories: { categories },
+    cards: { cards },
+  } = useSelector((state) => state);
 
   const [dropdownState, setDropdownState] = React.useState(state);
 
@@ -101,6 +50,7 @@ const Transactions = () => {
 
   React.useEffect(() => {
     dispatch(getTransactions());
+    dispatch(getCategories());
   }, []);
 
   const filteredTransactions = transactions.reduce((obj, current) => {
@@ -119,14 +69,28 @@ const Transactions = () => {
     return obj;
   }, {});
 
-  const resetThenSet = (id, key) => {
-    const temp = [...dropdownState[key]];
+  const resetThenSet = (id, items) => {
+    const temp = [...items];
 
     temp.forEach((item) => (item.selected = false));
     temp[id].selected = true;
 
-    setDropdownState({ ...dropdownState, [key]: temp });
+    setDropdownState({ ...items, ...temp });
   };
+
+  const dropdownCards = cards.map((card) => ({
+    id: card.id,
+    title: card.name || card.number,
+    selected: false,
+    key: "cards",
+  }));
+
+  const dropdownCategories = categories.map((category) => ({
+    id: category.id,
+    title: category.title,
+    selected: false,
+    key: "categories",
+  }));
 
   return (
     <Layout>
@@ -134,11 +98,13 @@ const Transactions = () => {
       <div className={styles.content}>
         <div className={styles.filters}>
           <div className={styles.filter}>
-            <Dropdown
-              title="Category"
-              list={dropdownState.categories}
-              resetThenSet={resetThenSet}
-            />
+            {categories && (
+              <Dropdown
+                title="Category"
+                list={dropdownCategories}
+                resetThenSet={resetThenSet}
+              />
+            )}
           </div>
           <div className={styles.filter}>
             <Dropdown
@@ -150,7 +116,7 @@ const Transactions = () => {
           <div className={styles.filter}>
             <Dropdown
               title="Card"
-              list={dropdownState.cards}
+              list={dropdownCards}
               resetThenSet={resetThenSet}
             />
           </div>
@@ -169,3 +135,31 @@ const Transactions = () => {
 };
 
 export default Transactions;
+
+export const getServerSideProps = async (context) => {
+  let isAuth = false;
+  let user = {};
+
+  const cookie = getValueFromCookie("refreshToken", context.req.headers.cookie);
+
+  await $api
+    .get("/auth/me", { headers: { Authorization: "Bearer " + cookie } })
+    .then((response) => {
+      isAuth = true;
+      user = response.data.currentUser;
+    })
+    .catch((err) => {
+      console.log(err);
+      isAuth = false;
+    });
+
+  if (!isAuth) {
+    return {
+      redirect: {
+        destination: "/login",
+      },
+    };
+  }
+
+  return { props: { user } };
+};

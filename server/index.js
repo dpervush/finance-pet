@@ -3,7 +3,6 @@ const express = require("express");
 const sequelize = require("./db");
 const models = require("./models");
 const cors = require("cors");
-// const fileUpload = require("express-fileupload");
 const router = require("./routes");
 // const errorHandler = require("./middleware/ErrorHandlingMiddleware");
 const path = require("path");
@@ -20,6 +19,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "client/build")));
+}
+
 app.use("/api", router);
 
 // Обработка ошибок

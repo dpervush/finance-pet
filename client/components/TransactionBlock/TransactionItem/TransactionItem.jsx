@@ -21,7 +21,7 @@ const monthNamesShort = [
   "Dec",
 ];
 
-const TransactionItem = ({ _id, title, date, category, card, amount }) => {
+const TransactionItem = ({ id, title, date, category, card, amount }) => {
   const dispatch = useDispatch();
 
   const formateDate = (date) =>
@@ -29,7 +29,7 @@ const TransactionItem = ({ _id, title, date, category, card, amount }) => {
       monthNamesShort[new Date(date).getMonth()]
     } ${new Date(date).getFullYear()}`;
 
-  const onDeleteHandle = () => dispatch(deleteTransaction(_id));
+  const onDeleteHandle = () => dispatch(deleteTransaction(id));
 
   return (
     <div className={styles.row}>

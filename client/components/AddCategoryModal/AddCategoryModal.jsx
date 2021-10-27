@@ -17,7 +17,7 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
 
   const onSubmit = (data) => {
     method === "UPDATE"
-      ? dispatch(updateCategory({ ...data, _id: initValues.id }))
+      ? dispatch(updateCategory({ ...data, id: initValues.id }))
       : dispatch(createCategory({ ...data }));
     reset();
     onClose();

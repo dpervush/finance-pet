@@ -50,7 +50,7 @@ const TransactionBlock = ({ items }) => {
             <div className={styles.amount}>Amount</div>
           </div>
           {blockData.transactions.map((item) => (
-            <TransactionItem key={item._id} {...item} />
+            <TransactionItem key={item.id} {...item} />
           ))}
         </div>
       </div>

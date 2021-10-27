@@ -7,19 +7,32 @@ import { createCard, updateCard } from "../../store/slices/cards";
 import Button from "../UI/Button/Button";
 
 import styles from "./AddCardModal.module.scss";
+import { CurrencyBlock } from "./CurrencyBlock/CurrencyBlock";
 
 const AddCardModal = ({ onClose, method, initValues }) => {
   const dispatch = useDispatch();
 
-  const { register, handleSubmit, reset } = useForm({
-    defaultValues: initValues || { total: true, color: "#8A16FF" },
+  const [activeCurrency, setActiveCurrency] = React.useState(
+    initValues?.currency || "RUB"
+  );
+  const [showCurrencyBlock, setShowCurrencyBlock] = React.useState(false);
+
+  const { register, handleSubmit, reset, getValues } = useForm({
+    defaultValues: initValues || {
+      total: true,
+      color: "#8A16FF",
+      currency: activeCurrency,
+    },
   });
 
-  console.log(initValues);
+  const handleCurrency = () => {
+    setActiveCurrency(getValues("currency"));
+    setShowCurrencyBlock(false);
+  };
 
   const onSubmit = (data) => {
     method === "UPDATE"
-      ? dispatch(updateCard({ ...data, _id: initValues.id }))
+      ? dispatch(updateCard({ ...data, id: initValues.id }))
       : dispatch(createCard({ ...data }));
     reset();
     onClose();
@@ -37,10 +50,16 @@ const AddCardModal = ({ onClose, method, initValues }) => {
               placeholder="Название или номер карты"
               {...register("name", { maxLength: 80 })}
             />
-            <div className={styles.icon}></div>
+            {/* <div className={styles.icon}></div> */}
           </div>
           <div className={`${styles.form_item} ${styles.form_item__input}`}>
-            <div className={styles.icon}></div>
+            <div
+              className={styles.icon}
+              style={{
+                backgroundImage: `url(/assets/icons/${activeCurrency.toLowerCase()}-icon.svg)`,
+              }}
+              onClick={() => setShowCurrencyBlock(true)}
+            ></div>
             <input
               className={styles.input}
               type="number"
@@ -125,6 +144,14 @@ const AddCardModal = ({ onClose, method, initValues }) => {
               </label>
             </div>
           </div>
+          {showCurrencyBlock && (
+            <CurrencyBlock
+              onSubmit={handleCurrency}
+              register={register}
+              onClose={() => setShowCurrencyBlock(false)}
+            />
+          )}
+
           <div className={`${styles.form_item} ${styles.form_item__total}`}>
             <div className={styles.subtitle}>Consider in total balance</div>
             <label>
@@ -138,11 +165,13 @@ const AddCardModal = ({ onClose, method, initValues }) => {
             </label>
           </div>
 
-          <Button
-            innerText={method === "UPDATE" ? "Update" : "Create"}
-            type="submit"
-            padding="13px 35px"
-          ></Button>
+          <div className={styles.btn_wrapper}>
+            <Button
+              innerText={method === "UPDATE" ? "Update" : "Create"}
+              type="submit"
+              padding="13px 35px"
+            ></Button>
+          </div>
         </form>
       </div>
     </ModalWindow>

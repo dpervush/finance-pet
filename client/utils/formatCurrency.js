@@ -10,5 +10,10 @@ export function formatCurrency(number, currency) {
       currency: "RUB",
       currencyDisplay: "code",
     });
+  } else if (currency === "EUR") {
+    return number.toLocaleString("de-DE", {
+      style: "currency",
+      currency: "EUR",
+    });
   }
 }

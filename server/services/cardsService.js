@@ -30,6 +30,7 @@ class CardService {
         {
           model: CardInfo,
           required: true,
+          attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] },
         },
       ],
     });
@@ -45,6 +46,7 @@ class CardService {
         {
           model: CardInfo,
           required: true,
+          attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] },
         },
       ],
     });
@@ -59,6 +61,7 @@ class CardService {
     const updatedCard = await CardInfo.update(card, {
       where: { accountCardId: card.id },
       returning: true,
+      attributes: { exclude: ["createdAt", "updatedAt", "accountCardId"] },
       // plain: true,
     }).then((result) => result[1][0]);
 

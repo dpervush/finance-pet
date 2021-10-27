@@ -6,9 +6,10 @@ class TransactionsController {
     const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
     try {
-      const { title, amount, cardId, categoryId } = req.body;
+      const { title, type, amount, cardId, categoryId } = req.body;
       const transaction = await transactionsService.create({
         title,
+        type,
         amount,
         cardId,
         categoryId,

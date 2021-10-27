@@ -21,7 +21,7 @@ const Dropdown = ({ title, list, resetThenSet }) => {
     setIsListOpen(false);
     setHeaderTitle(title);
 
-    resetThenSet(id, key);
+    resetThenSet(id, list);
   };
 
   return (

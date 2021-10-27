@@ -47,6 +47,7 @@ const CategoryInfo = sequelize.define("category_info", {
 const TransactionInfo = sequelize.define("transaction_info", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, allowNull: false },
+  type: { type: DataTypes.STRING, allowNull: false },
   amount: { type: DataTypes.INTEGER, allowNull: false },
   date: { type: DataTypes.DATE, defaultValue: Date.now },
 });

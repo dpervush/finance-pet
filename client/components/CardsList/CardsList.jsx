@@ -27,7 +27,7 @@ const CardsList = () => {
         {cards.map((item, index) => {
           return (
             <Card
-              key={item._id}
+              key={item.id}
               {...item}
               // onClick={() => onCardClickHandle(index)}
               // isActive={activeCard === index}

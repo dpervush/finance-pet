@@ -8,7 +8,7 @@ const {
 } = require("../models");
 
 class TransactionService {
-  async create({ title, amount, cardId, categoryId, accountId }) {
+  async create({ title, type, amount, cardId, categoryId, accountId }) {
     const createdTransaction = await AccountTransactions.create({
       accountId,
       accountCardId: cardId,
@@ -18,6 +18,7 @@ class TransactionService {
     const transactionInfo = await TransactionInfo.create({
       title,
       amount,
+      type,
       accountTransactionId: createdTransaction.id,
     });
 
@@ -31,23 +32,43 @@ class TransactionService {
     });
 
     const transactions = await AccountTransactions.findAll({
-      attributes: ["id", "accountId"],
+      attributes: ["id"],
       where: { accountId },
       include: [
         {
           model: AccountCards,
+          required: true,
           include: {
             model: CardInfo,
+            required: true,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountId"],
           },
         },
         {
           model: AccountCategories,
+          required: true,
           include: {
             model: CategoryInfo,
+            required: true,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountId"],
           },
         },
         {
           model: TransactionInfo,
+          required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
+          },
         },
       ],
     });
@@ -62,21 +83,49 @@ class TransactionService {
       include: [
         {
           model: AccountCards,
+          required: true,
           include: {
             model: CardInfo,
+            required: true,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountId"],
           },
         },
         {
           model: AccountCategories,
+          required: true,
           include: {
             model: CategoryInfo,
+            required: true,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountId"],
           },
         },
         {
           model: TransactionInfo,
           required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
+          },
         },
       ],
+      attributes: {
+        exclude: [
+          "createdAt",
+          "updatedAt",
+          "accountId",
+          "accountCardId",
+          "accountCategoryId",
+        ],
+      },
     });
     return transaction;
   }

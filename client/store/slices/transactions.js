@@ -1,17 +1,31 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axios from "axios";
+import $api from "../../http";
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async (dispatch, getState) => {
-    return await axios.get("/transactions/").then((res) => res.data);
+    return await $api.get("/transactions/").then((res) =>
+      res.data.map((item) => ({
+        id: item.id,
+        ...item.transaction_info,
+        card: {
+          id: item.account_card.id,
+          ...item.account_card.card_info,
+        },
+        category: {
+          id: item.account_category.id,
+          ...item.account_category.category_info,
+        },
+      }))
+    );
   }
 );
 
 export const createTransaction = createAsyncThunk(
   "transactions/createTransaction",
   async (body, { dispatch }) => {
-    await axios.post(`/transactions/`, body).then((res) => res.data);
+    console.log(body);
+    await $api.post(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
   }
 );
@@ -19,7 +33,7 @@ export const createTransaction = createAsyncThunk(
 export const updateTransaction = createAsyncThunk(
   "transactions/updateTransaction",
   async (body, { dispatch }) => {
-    await axios.put(`/transactions/`, body).then((res) => res.data);
+    await $api.put(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
   }
 );
@@ -27,9 +41,7 @@ export const updateTransaction = createAsyncThunk(
 export const deleteTransaction = createAsyncThunk(
   "transactions/deleteTransaction",
   async (transactionId, { dispatch }) => {
-    await axios
-      .delete(`/transactions/${transactionId}`)
-      .then((res) => res.data);
+    await $api.delete(`/transactions/${transactionId}`).then((res) => res.data);
     dispatch(getTransactions());
   }
 );

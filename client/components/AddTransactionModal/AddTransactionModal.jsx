@@ -1,11 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import Image from "next/image";
 
 import ModalWindow from "../../containers/ModalWindow/ModalWindow";
 import Button from "../UI/Button/Button";
 import icon from "../../public/assets/icons/shopping.svg";
+
+import styles from "./AddTransactionModal.module.scss";
 
 import {
   selectSourse,
@@ -13,15 +14,14 @@ import {
   setTransaction,
 } from "../../store/slices/newTransactionSlice";
 
-import styles from "./AddTransactionModal.module.scss";
 import AddCategoryModal from "../AddCategoryModal/AddCategoryModal";
+import AddCardModal from "../AddCardModal/AddCardModal";
 import { getCategories } from "../../store/slices/categories";
 import { getCards } from "../../store/slices/cards";
-import { formatCurrency } from "../../utils/formatCurrency";
-import {
-  createTransaction,
-  getTransactions,
-} from "../../store/slices/transactions";
+import { createTransaction } from "../../store/slices/transactions";
+import { TypesBlock } from "./TypesBlock/TypesBlock";
+import { FromBlock } from "./FromBlock/FromBlock";
+import { ToBlock } from "./ToBlock/ToBlock";
 
 const AddTransactionModal = ({ show, onClose }) => {
   const { from, to, amount, comment } = useSelector(
@@ -32,33 +32,37 @@ const AddTransactionModal = ({ show, onClose }) => {
   const {
     categories: { categories },
     cards: { cards },
-    transactions: { transactions },
   } = useSelector((store) => store);
 
   const [activePage, setActivePage] = React.useState(0);
-  const [openModal, setOpenModal] = React.useState(false);
+  const [openNewCategoryModal, setOpenNewCategoryModal] = React.useState(false);
+  const [openNewCardModal, setOpenNewCardModal] = React.useState(false);
+
+  const [selectedCard, setSelectedCard] = React.useState(null);
+  const [selectedCategory, setSelectedCategory] = React.useState(null);
 
   React.useEffect(() => {
     dispatch(getCategories());
     dispatch(getCards());
-    dispatch(getTransactions());
   }, []);
 
-  const { register, handleSubmit, watch, reset, getValues } = useForm();
+  const { register, handleSubmit, watch, reset, getValues } = useForm({
+    defaultValues: {
+      type: "Expense",
+    },
+  });
 
-  const watchFirstBlockValues = watch(["from", "to"]);
+  const [source, target, type] = watch(["from", "to", "type"]);
   const watchSecondBlockValues = watch(["amount"]);
 
-  const onSubmit = ({ from, to, comment, amount }) => {
-    const selectedCard = cards.find((card) => card._id === from);
-    const selectedCategory = categories.find((category) => category._id === to);
-
+  const onSubmit = ({ type, from, to, comment, amount }) => {
     dispatch(
       createTransaction({
         title: comment || selectedCategory.title,
+        type,
         amount,
-        card: selectedCard,
-        category: selectedCategory,
+        cardId: selectedCard.id,
+        categoryId: selectedCategory.id,
       })
     );
     reset();
@@ -66,16 +70,29 @@ const AddTransactionModal = ({ show, onClose }) => {
     onClose();
   };
 
+  React.useEffect(() => {
+    console.log(type);
+  }, [type]);
+
   const navNextPage = () => {
-    dispatch(selectSourse(getValues("from")));
-    dispatch(selectTarget(getValues("to")));
+    const fromId = getValues("from");
+    const toId = getValues("to");
+
+    const selectedFrom = cards.find((card) => card.id === +fromId);
+    const selectedTo = categories.find((category) => category.id === +toId);
+
+    setSelectedCard(selectedFrom);
+    setSelectedCategory(selectedTo);
 
     setActivePage(activePage + 1);
   };
   const navPrevPage = () => setActivePage(activePage - 1);
 
-  const onAddCategoryHandle = () => setOpenModal(true);
-  const onCloseAddCategoryHandle = () => setOpenModal(false);
+  const onAddCardHandle = () => setOpenNewCardModal(true);
+  const onCloseAddCardHandle = () => setOpenNewCardModal(false);
+
+  const onAddCategoryHandle = () => setOpenNewCategoryModal(true);
+  const onCloseAddCategoryHandle = () => setOpenNewCategoryModal(false);
 
   return (
     <ModalWindow show={show} onClose={onClose}>
@@ -84,71 +101,24 @@ const AddTransactionModal = ({ show, onClose }) => {
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           {activePage === 0 ? (
             <div className={styles.first_page}>
-              <div className={styles.subtitle}>From</div>
-              <div className={styles.from_block}>
-                <div className={styles.from_item}>
-                  <button className={styles.add_btn}>
-                    <span>account</span>
-                  </button>
-                </div>
-                {cards?.map((card) => (
-                  <div key={card._id} className={styles.from_item}>
-                    <label className={styles.label}>
-                      <input
-                        className={`${styles.radio} ${styles.visually_hidden}`}
-                        {...register("from", { required: true })}
-                        type="radio"
-                        value={card._id}
-                      />
-                      {card.name}
-                      <span className={styles.icon}>
-                        <Image src={icon} alt="icon" />
-                      </span>
-                      <span className={styles.balance}>
-                        {formatCurrency(card.balance, card.currency)}
-                      </span>
-                    </label>
-                  </div>
-                ))}
-              </div>
-              <div className={styles.subtitle}>To</div>
-              <div className={styles.to_block}>
-                <div className={styles.from_item}>
-                  <button
-                    className={styles.add_btn}
-                    onClick={onAddCategoryHandle}
-                  >
-                    <span>category</span>
-                  </button>
-                </div>
-                {categories?.map((category) => (
-                  <div key={category._id} className={styles.from_item}>
-                    <label className={styles.label}>
-                      <input
-                        className={`${styles.radio} ${styles.visually_hidden}`}
-                        {...register("to", { required: true })}
-                        type="radio"
-                        value={category._id}
-                      />
-                      {category.title}
-                      <span className={styles.icon}>
-                        <Image src={icon} alt="icon" />
-                      </span>
-                      <span className={styles.balance}>600</span>
-                      <span className={styles.budget}>{category.budget}</span>
-                    </label>
-                  </div>
-                ))}
-              </div>
+              <TypesBlock register={register} />
+              <FromBlock
+                items={cards}
+                register={register}
+                onAddCardHandle={onAddCardHandle}
+              />
+              <ToBlock
+                items={categories}
+                register={register}
+                onAddCategoryHandle={onAddCategoryHandle}
+              />
               <div className={styles.actions}>
                 <Button
                   innerText="Next"
                   type="button"
                   padding="13px 35px"
                   onClick={navNextPage}
-                  isDisabled={
-                    !watchFirstBlockValues[0] || !watchFirstBlockValues[1]
-                  }
+                  isDisabled={!source || !target}
                 ></Button>
               </div>
             </div>
@@ -156,7 +126,7 @@ const AddTransactionModal = ({ show, onClose }) => {
           {activePage === 1 ? (
             <div className={styles.second_page}>
               <div className={styles.header}>
-                {from} {">"} {to}
+                {selectedCard.name} {">"} {selectedCategory.title}
               </div>
               <div className={styles.form_item}>
                 <label className={styles.label}>
@@ -200,7 +170,10 @@ const AddTransactionModal = ({ show, onClose }) => {
           ) : null}
         </form>
       </div>
-      {openModal && <AddCategoryModal onClose={onCloseAddCategoryHandle} />}
+      {openNewCardModal && <AddCardModal onClose={onCloseAddCardHandle} />}
+      {openNewCategoryModal && (
+        <AddCategoryModal onClose={onCloseAddCategoryHandle} />
+      )}
     </ModalWindow>
   );
 };

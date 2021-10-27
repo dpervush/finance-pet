@@ -1,4 +1,4 @@
-const getValueFromCookie = (key, cookie) => {
+export const getValueFromCookie = (key, cookie) => {
   if (cookie) {
     const parsedCookie = cookie.split(";").reduce((res, cookie) => {
       const keyValue = cookie.split("=");
@@ -6,9 +6,7 @@ const getValueFromCookie = (key, cookie) => {
     }, {});
 
     return parsedCookie[key];
-  } else {
-    return "";
   }
-};
 
-module.exports = getValueFromCookie;
+  return "";
+};

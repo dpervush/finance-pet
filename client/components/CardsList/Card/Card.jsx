@@ -1,6 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
-import classNames from "classNames/bind";
+import classNames from "classnames/bind";
 import styled from "styled-components";
 
 import AddCardModal from "../../AddCardModal/AddCardModal";
@@ -24,7 +24,7 @@ const Card = ({
   total,
   onClick,
   isActive,
-  _id: id,
+  id,
 }) => {
   const dispatch = useDispatch();
 
@@ -69,7 +69,7 @@ const Card = ({
       )}
       <div className={styles.system}></div>
       <div className={styles.balance}>{formatCurrency(balance, currency)}</div>
-      <div className={styles.title}>{name || formatNumber(number)}</div>
+      <div className={styles.title}>{name ?? formatNumber(number)}</div>
       {showModal && (
         <AddCardModal
           onClose={() => setShowModal(false)}

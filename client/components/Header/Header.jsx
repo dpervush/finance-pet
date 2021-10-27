@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import classNames from "classNames/bind";
+import classNames from "classnames/bind";
 
 import UserPanel from "../UserPanel/UserPanel";
 import { ChartIcon, DotsIcon } from "../icons";

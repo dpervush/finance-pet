@@ -4,6 +4,7 @@ import styles from "./Button.module.scss";
 
 const Button = ({
   innerText,
+  type,
   onClick,
   padding,
   children,
@@ -11,6 +12,7 @@ const Button = ({
 }) => {
   return (
     <button
+      type={type}
       onClick={onClick}
       className={styles.btn}
       style={{ padding: padding }}

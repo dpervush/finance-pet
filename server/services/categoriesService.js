@@ -29,6 +29,9 @@ class CategoriesService {
         {
           model: CategoryInfo,
           required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountCategoryId"],
+          },
         },
       ],
     });
@@ -44,6 +47,9 @@ class CategoriesService {
         {
           model: CategoryInfo,
           required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountCategoryId"],
+          },
         },
       ],
     });
@@ -58,6 +64,7 @@ class CategoriesService {
     const updatedCategory = await CategoryInfo.update(category, {
       where: { accountCategoryId: category.id },
       returning: true,
+      attributes: { exclude: ["createdAt", "updatedAt", "accountCategoryId"] },
     }).then((result) => result[1][0]);
 
     return updatedCategory;
