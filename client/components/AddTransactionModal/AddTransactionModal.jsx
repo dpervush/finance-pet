@@ -3,6 +3,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
 import ModalWindow from "../../containers/ModalWindow/ModalWindow";
+import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.scss";
+
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
+
 import Button from "../UI/Button/Button";
 import icon from "../../public/assets/icons/shopping.svg";
 
@@ -70,9 +74,7 @@ const AddTransactionModal = ({ show, onClose }) => {
     onClose();
   };
 
-  React.useEffect(() => {
-    console.log(type);
-  }, [type]);
+  React.useEffect(() => {}, [type]);
 
   const navNextPage = () => {
     const fromId = getValues("from");
@@ -94,9 +96,28 @@ const AddTransactionModal = ({ show, onClose }) => {
   const onAddCategoryHandle = () => setOpenNewCategoryModal(true);
   const onCloseAddCategoryHandle = () => setOpenNewCategoryModal(false);
 
+  const ref = React.useRef();
+
+  const handleClickOnDocument = (e) => {
+    if (
+      ref.current &&
+      !ref.current.contains(e.target) &&
+      ref.current?.closest("." + ModalWindowStyles.wrapper) ===
+        e.target.closest("." + ModalWindowStyles.wrapper)
+    ) {
+      onClose();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("click", handleClickOnDocument);
+
+    return () => document.removeEventListener("click", handleClickOnDocument);
+  }, []);
+
   return (
     <ModalWindow show={show} onClose={onClose}>
-      <div className={styles.body}>
+      <div className={styles.body} ref={ref}>
         <div className={styles.title}>Add transaction</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           {activePage === 0 ? (

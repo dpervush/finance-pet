@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
 import ModalWindow from "../../containers/ModalWindow/ModalWindow";
+import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.scss";
+
 import { createCard, updateCard } from "../../store/slices/cards";
 import Button from "../UI/Button/Button";
 
@@ -38,9 +40,28 @@ const AddCardModal = ({ onClose, method, initValues }) => {
     onClose();
   };
 
+  const contentRef = React.useRef();
+
+  const handleClickOnDocument = (e) => {
+    if (
+      contentRef.current &&
+      !contentRef.current.contains(e.target) &&
+      contentRef.current?.closest("." + ModalWindowStyles.wrapper) ===
+        e.target.closest("." + ModalWindowStyles.wrapper)
+    ) {
+      onClose();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("click", handleClickOnDocument);
+
+    return () => document.removeEventListener("click", handleClickOnDocument);
+  }, []);
+
   return (
     <ModalWindow onClose={onClose}>
-      <div className={styles.body}>
+      <div className={styles.body} ref={contentRef}>
         <div className={styles.title}>Add new card</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <div className={`${styles.form_item} ${styles.form_item__input}`}>

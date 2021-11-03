@@ -12,7 +12,11 @@ export const FromBlock = ({ items, register, onAddCardHandle }) => {
       <div className={styles.subtitle}>From</div>
       <div className={styles.from_block}>
         <div className={styles.from_item}>
-          <button className={styles.add_btn} onClick={onAddCardHandle}>
+          <button
+            className={styles.add_btn}
+            onClick={onAddCardHandle}
+            type="button"
+          >
             <span>account</span>
           </button>
         </div>

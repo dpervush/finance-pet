@@ -10,7 +10,11 @@ export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
       <div className={styles.subtitle}>To</div>
       <div className={styles.to_block}>
         <div className={styles.from_item}>
-          <button className={styles.add_btn} onClick={onAddCategoryHandle}>
+          <button
+            className={styles.add_btn}
+            onClick={onAddCategoryHandle}
+            type="button"
+          >
             <span>category</span>
           </button>
         </div>

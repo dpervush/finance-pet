@@ -24,16 +24,14 @@ const CardsList = () => {
   return (
     <div className={styles.card_list} ref={ref}>
       <ul>
-        {cards.map((item, index) => {
-          return (
-            <Card
-              key={item.id}
-              {...item}
-              // onClick={() => onCardClickHandle(index)}
-              // isActive={activeCard === index}
-            />
-          );
-        })}
+        {cards.map((item, index) => (
+          <Card
+            key={item.id}
+            {...item}
+            // onClick={() => onCardClickHandle(index)}
+            // isActive={activeCard === index}
+          />
+        ))}
       </ul>
 
       <div className={styles.btn_wrapper}>

@@ -23,9 +23,23 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
     onClose();
   };
 
+  const contentRef = React.useRef();
+
+  const handleClickOnDocument = (e) => {
+    if (contentRef.current && !contentRef.current.contains(e.target)) {
+      onClose();
+    }
+  };
+
+  React.useEffect(() => {
+    document.addEventListener("click", handleClickOnDocument);
+
+    return () => document.removeEventListener("click", handleClickOnDocument);
+  }, []);
+
   return (
     <ModalWindow onClose={onClose}>
-      <div className={styles.body}>
+      <div className={styles.body} ref={contentRef}>
         <div className={styles.title}>Add category</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           <div className={`${styles.form_item} ${styles.form_item__input}`}>

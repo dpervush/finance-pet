@@ -6,6 +6,7 @@ import styled from "styled-components";
 import AddCardModal from "../../AddCardModal/AddCardModal";
 import { deleteCard } from "../../../store/slices/cards";
 import { formatCurrency } from "../../../utils/formatCurrency";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
 import styles from "./Card.module.scss";
 
@@ -46,27 +47,36 @@ const Card = ({
     !isActive && setShowActions(false);
   }, [isActive]);
 
+  const ref = React.useRef();
+
+  useOnClickOutside(ref, () => setShowActions(false));
+
   return (
     <Wrapper
       color={color}
       onClick={onClick}
       className={cx({ card: true, active: true })}
     >
-      <div className={styles.more} onClick={() => setShowActions(!showActions)}>
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      {showActions && (
-        <div className={styles.actions}>
-          <button className={styles.btn} onClick={onUpdateClickHandler}>
-            Update
-          </button>
-          <button className={styles.btn} onClick={onDeleteClickHandler}>
-            Delete
-          </button>
+      <div className={styles.actions_wrapper} ref={ref}>
+        <div
+          className={styles.more}
+          onClick={() => setShowActions(!showActions)}
+        >
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-      )}
+        {showActions && (
+          <div className={styles.actions}>
+            <button className={styles.btn} onClick={onUpdateClickHandler}>
+              Update
+            </button>
+            <button className={styles.btn} onClick={onDeleteClickHandler}>
+              Delete
+            </button>
+          </div>
+        )}
+      </div>
       <div className={styles.system}></div>
       <div className={styles.balance}>{formatCurrency(balance, currency)}</div>
       <div className={styles.title}>{name ?? formatNumber(number)}</div>
