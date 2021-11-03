@@ -1,3 +1,4 @@
+const { Op } = require("sequelize");
 const {
   AccountTransactions,
   TransactionInfo,
@@ -25,15 +26,19 @@ class TransactionService {
     return { ...createdTransaction.dataValues, ...transactionInfo.dataValues };
   }
 
-  async getAll(accountId) {
+  async getAll(accountId, cardId, categoryId, type, page, size) {
     // todo: check if might be deleted
     const transactionIds = await AccountTransactions.findAll({
       where: { accountId },
     });
 
-    const transactions = await AccountTransactions.findAll({
+    console.log(page, size);
+
+    const transactions = await AccountTransactions.findAndCountAll({
       attributes: ["id"],
       where: { accountId },
+      limit: size * page,
+      // offset: size * (page - 1),
       include: [
         {
           model: AccountCards,
@@ -44,6 +49,7 @@ class TransactionService {
             attributes: {
               exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
             },
+            where: cardId ? { id: cardId } : {},
           },
           attributes: {
             exclude: ["createdAt", "updatedAt", "accountId"],
@@ -58,6 +64,7 @@ class TransactionService {
             attributes: {
               exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
             },
+            where: categoryId ? { id: categoryId } : {},
           },
           attributes: {
             exclude: ["createdAt", "updatedAt", "accountId"],
@@ -69,6 +76,7 @@ class TransactionService {
           attributes: {
             exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
           },
+          where: type ? { type: type } : {},
         },
       ],
     });

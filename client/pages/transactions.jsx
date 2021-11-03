@@ -13,29 +13,28 @@ import $api from "../http";
 import { getValueFromCookie } from "../utils/getValueFromCookie";
 import { getCategories } from "../store/slices/categories";
 
-const state = {
-  flow: [
-    {
-      id: 0,
-      title: "All",
-      selected: false,
-      key: "flow",
-    },
-    {
-      id: 1,
-      title: "Income",
-      selected: false,
-      key: "flow",
-    },
-    {
-      id: 2,
-      title: "Expence",
-      selected: false,
-      key: "flow",
-    },
-  ],
-};
+const TRANSACTIONS_PER_PAGE = 1;
 
+const dropdownFlow = [
+  {
+    id: 0,
+    title: "All",
+    selected: false,
+    key: "flow",
+  },
+  {
+    id: 1,
+    title: "Income",
+    selected: false,
+    key: "flow",
+  },
+  {
+    id: 2,
+    title: "Expence",
+    selected: false,
+    key: "flow",
+  },
+];
 const Transactions = ({ user }) => {
   const dispatch = useDispatch();
   const {
@@ -44,14 +43,66 @@ const Transactions = ({ user }) => {
     cards: { cards },
   } = useSelector((state) => state);
 
-  const [dropdownState, setDropdownState] = React.useState(state);
+  const [activePage, setActivePage] = React.useState(1);
+  const [dropdownState, setDropdownState] = React.useState({
+    flow: dropdownFlow,
+  });
+  const [filters, setFilteres] = React.useState({
+    card: null,
+    category: null,
+    flow: null,
+  });
 
   const [showModal, setShowModal] = React.useState(false);
 
+  const fetchItemsAndPages = () => {
+    setActivePage(activePage + 1);
+  };
+
   React.useEffect(() => {
-    dispatch(getTransactions());
+    dispatch(
+      getTransactions({ page: activePage, size: TRANSACTIONS_PER_PAGE })
+    );
     dispatch(getCategories());
   }, []);
+
+  React.useEffect(() => {
+    const dropdownCards = cards.map((card) => ({
+      id: card.id,
+      title: card.name || card.number,
+      selected: false,
+      key: "cards",
+    }));
+
+    const dropdownCategories = categories.map((category) => ({
+      id: category.id,
+      title: category.title,
+      selected: false,
+      key: "categories",
+    }));
+
+    setDropdownState({
+      ...dropdownState,
+      cards: [
+        {
+          id: 0,
+          title: "All",
+          selected: false,
+          key: "card",
+        },
+        ...dropdownCards,
+      ],
+      categories: [
+        {
+          id: 0,
+          title: "All",
+          selected: false,
+          key: "category",
+        },
+        ...dropdownCategories,
+      ],
+    });
+  }, [cards, categories]);
 
   const filteredTransactions = transactions.reduce((obj, current) => {
     const year = new Date(current.date).getFullYear();
@@ -72,25 +123,55 @@ const Transactions = ({ user }) => {
   const resetThenSet = (id, items) => {
     const temp = [...items];
 
-    temp.forEach((item) => (item.selected = false));
-    temp[id].selected = true;
+    let currentFilter;
+    temp.forEach((item) => {
+      if (item.id === id) {
+        currentFilter = id;
+        return (item.selected = true);
+      } else {
+        return (item.selected = false);
+      }
+    });
 
-    setDropdownState({ ...items, ...temp });
+    setDropdownState({ ...dropdownState, [temp[0].key]: [...temp] });
+    setFilteres({ ...filters, [temp[0].key]: currentFilter });
   };
 
-  const dropdownCards = cards.map((card) => ({
-    id: card.id,
-    title: card.name || card.number,
-    selected: false,
-    key: "cards",
-  }));
+  const getFlowFilter = () => {
+    let flowFilter;
 
-  const dropdownCategories = categories.map((category) => ({
-    id: category.id,
-    title: category.title,
-    selected: false,
-    key: "categories",
-  }));
+    if (filters.flow === 0 || !filters.flow) {
+      flowFilter = null;
+    } else {
+      flowFilter = filters.flow === 1 ? "Income" : "Expence";
+    }
+
+    return flowFilter;
+  };
+
+  React.useEffect(() => {
+    dispatch(
+      getTransactions({
+        card: filters.card === 0 ? null : filters.card,
+        category: filters.category === 0 ? null : filters.category,
+        flow: getFlowFilter(),
+        page: activePage,
+        size: TRANSACTIONS_PER_PAGE,
+      })
+    );
+  }, [filters]);
+
+  React.useEffect(() => {
+    dispatch(
+      getTransactions({
+        card: filters.card === 0 ? null : filters.card,
+        category: filters.category === 0 ? null : filters.category,
+        flow: getFlowFilter(),
+        page: activePage,
+        size: TRANSACTIONS_PER_PAGE,
+      })
+    );
+  }, [activePage]);
 
   return (
     <Layout>
@@ -101,7 +182,7 @@ const Transactions = ({ user }) => {
             {categories && (
               <Dropdown
                 title="Category"
-                list={dropdownCategories}
+                list={dropdownState.categories}
                 resetThenSet={resetThenSet}
               />
             )}
@@ -116,7 +197,7 @@ const Transactions = ({ user }) => {
           <div className={styles.filter}>
             <Dropdown
               title="Card"
-              list={dropdownCards}
+              list={dropdownState.cards}
               resetThenSet={resetThenSet}
             />
           </div>
@@ -129,6 +210,9 @@ const Transactions = ({ user }) => {
         <div className={styles.transactions_list}>
           <TransactionBlock items={filteredTransactions} />
         </div>
+        <button onClick={fetchItemsAndPages} className="btn more">
+          👀
+        </button>
       </div>
     </Layout>
   );

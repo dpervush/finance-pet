@@ -3,28 +3,29 @@ import $api from "../../http";
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
-  async (dispatch, getState) => {
-    return await $api.get("/transactions/").then((res) =>
-      res.data.map((item) => ({
-        id: item.id,
-        ...item.transaction_info,
-        card: {
-          id: item.account_card.id,
-          ...item.account_card.card_info,
-        },
-        category: {
-          id: item.account_category.id,
-          ...item.account_category.category_info,
-        },
-      }))
-    );
+  async (body, { dispatch, getState }) => {
+    return await $api
+      .get("/transactions/", { params: { ...body } })
+      .then((res) =>
+        res.data.rows.map((item) => ({
+          id: item.id,
+          ...item.transaction_info,
+          card: {
+            id: item.account_card.id,
+            ...item.account_card.card_info,
+          },
+          category: {
+            id: item.account_category.id,
+            ...item.account_category.category_info,
+          },
+        }))
+      );
   }
 );
 
 export const createTransaction = createAsyncThunk(
   "transactions/createTransaction",
   async (body, { dispatch }) => {
-    console.log(body);
     await $api.post(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
   }

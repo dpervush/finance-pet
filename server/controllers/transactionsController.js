@@ -25,7 +25,21 @@ class TransactionsController {
     const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
     try {
-      const transactions = await transactionsService.getAll(accountId);
+      const {
+        card: cardId,
+        category: categoryId,
+        flow: type,
+        page,
+        size,
+      } = req.query;
+      const transactions = await transactionsService.getAll(
+        accountId,
+        cardId,
+        categoryId,
+        type,
+        page,
+        size
+      );
       return res.json(transactions);
     } catch (e) {
       res.status(500).json(e);
