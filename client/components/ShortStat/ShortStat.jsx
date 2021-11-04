@@ -19,7 +19,7 @@ const state = {
       key: "periods",
     },
     {
-      id: 1,
+      id: 2,
       title: "Year",
       selected: false,
       key: "periods",
@@ -29,13 +29,13 @@ const state = {
 
 const ShortStat = () => {
   const [dropdownState, setDropdownState] = React.useState(state);
-  const resetThenSet = (id, key) => {
-    const temp = [...dropdownState[key]];
+  const resetThenSet = (id, items) => {
+    const temp = [...items];
 
     temp.forEach((item) => (item.selected = false));
     temp[id].selected = true;
 
-    setDropdownState({ ...dropdownState, [key]: temp });
+    setDropdownState({ ...dropdownState, [items[0].key]: temp });
   };
 
   return (

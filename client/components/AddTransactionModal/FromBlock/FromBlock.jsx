@@ -2,7 +2,7 @@ import React from "react";
 import Image from "next/image";
 import icon from "../../../public/assets/icons/shopping.svg";
 
-import { formatCurrency } from "../../../utils/formatCurrency";
+import { formatCurrency } from "../../../utils";
 
 import styles from "../AddTransactionModal.module.scss";
 

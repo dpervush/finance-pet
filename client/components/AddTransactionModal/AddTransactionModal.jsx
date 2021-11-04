@@ -2,37 +2,25 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
-import ModalWindow from "../../containers/ModalWindow/ModalWindow";
-import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.scss";
-
-import { useOnClickOutside } from "../../hooks/useOnClickOutside";
-
-import Button from "../UI/Button/Button";
-import icon from "../../public/assets/icons/shopping.svg";
-
-import styles from "./AddTransactionModal.module.scss";
-
-import {
-  selectSourse,
-  selectTarget,
-  setTransaction,
-} from "../../store/slices/newTransactionSlice";
-
-import AddCategoryModal from "../AddCategoryModal/AddCategoryModal";
-import AddCardModal from "../AddCardModal/AddCardModal";
-import { getCategories } from "../../store/slices/categories";
-import { getCards } from "../../store/slices/cards";
-import { createTransaction } from "../../store/slices/transactions";
 import { TypesBlock } from "./TypesBlock/TypesBlock";
 import { FromBlock } from "./FromBlock/FromBlock";
 import { ToBlock } from "./ToBlock/ToBlock";
+import Button from "../UI/Button/Button";
+import AddCardModal from "../AddCardModal/AddCardModal";
+import AddCategoryModal from "../AddCategoryModal/AddCategoryModal";
+import ModalWindow from "../../containers/ModalWindow/ModalWindow";
+import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.scss";
 
-const AddTransactionModal = ({ show, onClose }) => {
-  const { from, to, amount, comment } = useSelector(
-    (state) => state.newTransactionForm
-  );
+import {
+  createTransaction,
+  updateTransaction,
+} from "../../store/slices/transactions";
 
+import styles from "./AddTransactionModal.module.scss";
+
+const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
   const dispatch = useDispatch();
+
   const {
     categories: { categories },
     cards: { cards },
@@ -45,14 +33,13 @@ const AddTransactionModal = ({ show, onClose }) => {
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
 
-  React.useEffect(() => {
-    dispatch(getCategories());
-    dispatch(getCards());
-  }, []);
-
   const { register, handleSubmit, watch, reset, getValues } = useForm({
     defaultValues: {
-      type: "Expense",
+      type: initValues.type || "Expense",
+      from: initValues.card?.id.toString() || null,
+      to: initValues.category?.id.toString() || null,
+      amount: initValues.amount || null,
+      comment: initValues.comment || "",
     },
   });
 
@@ -60,15 +47,30 @@ const AddTransactionModal = ({ show, onClose }) => {
   const watchSecondBlockValues = watch(["amount"]);
 
   const onSubmit = ({ type, from, to, comment, amount }) => {
-    dispatch(
-      createTransaction({
-        title: comment || selectedCategory.title,
-        type,
-        amount,
-        cardId: selectedCard.id,
-        categoryId: selectedCategory.id,
-      })
-    );
+    if (method === "UPDATE") {
+      dispatch(
+        updateTransaction({
+          id: initValues.id,
+          title: comment || selectedCategory.title,
+          type,
+          amount,
+          cardId: selectedCard.id,
+          categoryId: selectedCategory.id,
+          date: new Date(),
+        })
+      );
+    } else {
+      dispatch(
+        createTransaction({
+          title: comment || selectedCategory.title,
+          type,
+          amount,
+          cardId: selectedCard.id,
+          categoryId: selectedCategory.id,
+        })
+      );
+    }
+
     reset();
     setActivePage(0);
     onClose();

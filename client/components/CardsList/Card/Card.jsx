@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 import AddCardModal from "../../AddCardModal/AddCardModal";
 import { deleteCard } from "../../../store/slices/cards";
-import { formatCurrency } from "../../../utils/formatCurrency";
+import { formatCurrency } from "../../../utils";
 import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
 import styles from "./Card.module.scss";

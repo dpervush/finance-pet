@@ -1,0 +1,26 @@
+@import "styles/vars.scss";
+
+.body {
+  min-width: 500px;
+  padding: 30px;
+
+  font-family: $secondFont;
+  color: #081945;
+}
+.title {
+  margin-bottom: 30px;
+
+  font-weight: 500;
+  font-size: 34px;
+  text-align: center;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding-top: 20px;
+}
+.btn {
+  margin: 0 10px;
+}
