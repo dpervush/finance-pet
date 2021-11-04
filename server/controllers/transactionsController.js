@@ -53,6 +53,16 @@ class TransactionsController {
       res.status(500).json(e);
     }
   }
+  async getLast(req, res) {
+    const accountId = getValueFromCookie("accountId", req.headers.cookie);
+
+    try {
+      const transactions = await transactionsService.getLast(accountId);
+      return res.json(transactions);
+    } catch (e) {
+      res.status(500).json(e);
+    }
+  }
   async update(req, res) {
     try {
       const { id, title, amount, date, cardId, categoryId } = req.body;

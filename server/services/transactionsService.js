@@ -32,13 +32,11 @@ class TransactionService {
       where: { accountId },
     });
 
-    console.log(page, size);
-
     const transactions = await AccountTransactions.findAndCountAll({
       attributes: ["id"],
       where: { accountId },
       limit: size * page,
-      // offset: size * (page - 1),
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: AccountCards,
@@ -77,6 +75,53 @@ class TransactionService {
             exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
           },
           where: type ? { type: type } : {},
+        },
+      ],
+    });
+
+    return transactions;
+  }
+  async getLast(accountId) {
+    const transactions = await AccountTransactions.findAll({
+      attributes: ["id"],
+      where: { accountId },
+      limit: 3,
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: AccountCards,
+          required: true,
+          include: {
+            model: CardInfo,
+            required: true,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountId"],
+          },
+        },
+        {
+          model: AccountCategories,
+          required: true,
+          include: {
+            model: CategoryInfo,
+            required: true,
+            attributes: {
+              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
+            },
+          },
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountId"],
+          },
+        },
+        {
+          model: TransactionInfo,
+          required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
+          },
         },
       ],
     });
@@ -137,7 +182,6 @@ class TransactionService {
     });
     return transaction;
   }
-
   async update({ id, title, amount, date, cardId, categoryId }) {
     if (!id) {
       throw new Error("не указан ID");
@@ -168,7 +212,6 @@ class TransactionService {
 
     return updatedCard;
   }
-
   async delete(id) {
     if (!id) {
       throw new Error("не указан ID");
