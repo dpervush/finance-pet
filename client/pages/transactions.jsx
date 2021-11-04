@@ -1,19 +1,20 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import $api from "../http";
+
 import Layout from "../containers/layout/Layout";
 import TransactionBlock from "../components/TransactionBlock/TransactionBlock";
-
-import styles from "../styles/Transactions.module.scss";
-import Dropdown from "../components/UI/Dropdown/Dropdown";
-import Button from "../components/UI/Button/Button";
 import { PlusIcon } from "../components/icons";
 import AddTransactionModal from "../components/AddTransactionModal/AddTransactionModal";
-import { useDispatch, useSelector } from "react-redux";
-import { getTransactions } from "../store/slices/transactions";
-import $api from "../http";
-import { getValueFromCookie } from "../utils/getValueFromCookie";
-import { getCategories } from "../store/slices/categories";
+import Button from "../components/UI/Button/Button";
+import Dropdown from "../components/UI/Dropdown/Dropdown";
 
-const TRANSACTIONS_PER_PAGE = 1;
+import { getCategories } from "../store/slices/categories";
+import { getTransactions } from "../store/slices/transactions";
+import { getValueFromCookie } from "../utils/getValueFromCookie";
+import { TRANSACTIONS_PER_PAGE } from "../utils/constants";
+
+import styles from "../styles/Transactions.module.scss";
 
 const dropdownFlow = [
   {
