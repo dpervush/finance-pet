@@ -6,9 +6,11 @@ const Bubble = ({
   x,
   y,
   radius,
-  category = "Groceries",
-  balance = "8 600 RUB",
+  category,
+  balance,
+  budget,
   icon = "/assets/icons/shopping.svg",
+  color,
 }) => {
   const [image] = useImage(icon);
 
@@ -17,13 +19,13 @@ const Bubble = ({
       <Arc
         x={x}
         y={y}
-        angle={280}
+        angle={(balance / (budget || balance)) * 360}
         innerRadius={radius - 1}
         outerRadius={radius + 1}
-        fill="#8A16FF"
+        fill={color}
         rotation={-90}
       />
-      <Circle x={x} y={y} radius={radius - 1} fill="#8A16FF" opacity={0.2} />
+      <Circle x={x} y={y} radius={radius - 1} fill={color} opacity={0.2} />
       <Circle
         x={x}
         y={y}

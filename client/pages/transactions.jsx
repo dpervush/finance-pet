@@ -31,7 +31,7 @@ const dropdownFlow = [
   },
   {
     id: 2,
-    title: "Expence",
+    title: "Expense",
     selected: false,
     key: "flow",
   },
@@ -144,7 +144,7 @@ const Transactions = ({ user }) => {
     if (filters.flow === 0 || !filters.flow) {
       flowFilter = null;
     } else {
-      flowFilter = filters.flow === 1 ? "Income" : "Expence";
+      flowFilter = filters.flow === 1 ? "Income" : "Expense";
     }
 
     return flowFilter;

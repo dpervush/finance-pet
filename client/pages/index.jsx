@@ -21,18 +21,17 @@ const RoundStat = dynamic(() => import("../components/RoundStat/RoundStat"), {
 });
 
 export default function Home({ user }) {
-  const dispatch = useDispatch();
-  const { isAuth } = useSelector(({ auth }) => auth);
+  const { auth } = useSelector(({ auth }) => ({
+    auth,
+  }));
 
   const router = useRouter();
 
-  console.log(user);
-
   React.useEffect(() => {
-    if (!isAuth) {
+    if (!auth.isAuth) {
       router.push("/login");
     }
-  }, [isAuth]);
+  }, [auth.isAuth]);
 
   return (
     <Layout>

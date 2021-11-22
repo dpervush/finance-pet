@@ -1,21 +1,67 @@
 import React from "react";
-import dynamic from "next/dynamic";
-import { Stage, Layer, Text, Arc } from "react-konva";
+import { useDispatch, useSelector } from "react-redux";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Virtual } from "swiper";
 
-import styles from "./BubbleStat.module.scss";
-
-const Bubble = dynamic(() => import("./Bubble/Bubble"));
+import { getStatsByCategory } from "../../store/slices/stats";
+import { BubbleBlock } from "./BubbleBlock/BubbleBlock";
 
 const BubbleStat = () => {
+  const dispatch = useDispatch();
+  const { statsByCategory } = useSelector(({ stats }) => stats);
+
+  React.useEffect(() => {
+    dispatch(getStatsByCategory());
+  }, []);
+
+  const groupStats = () => {
+    return statsByCategory.reduce((result, current) => {
+      if (
+        !Object.prototype.hasOwnProperty.call(
+          result,
+          `${current.month}${current.year}`
+        )
+      ) {
+        result[`${current.month}${current.year}`] = [];
+      }
+
+      result[`${current.month}${current.year}`].push(current);
+
+      return result;
+    }, {});
+  };
+
+  const [stats, setStats] = React.useState(null);
+  const [statsLength, setStatsLength] = React.useState(0);
+
+  React.useEffect(() => {
+    const stats = groupStats();
+
+    const sortedStats = Object.entries(stats)
+      .sort((obj1, obj2) => obj1[0] - obj2[0])
+      .map((item) => item[1]);
+
+    setStats(sortedStats);
+    setStatsLength(sortedStats.length - 1 || 0);
+  }, [statsByCategory]);
+
   return (
-    <div className={styles.canvas}>
-      <Stage width={475} height={390}>
-        <Layer>
-          <Bubble x={100} y={100} radius={50} />
-          <Bubble x={300} y={300} radius={65} />
-        </Layer>
-      </Stage>
-    </div>
+    stats &&
+    stats.length > 0 && (
+      <Swiper
+        modules={[Pagination]}
+        initialSlide={statsLength}
+        spaceBetween={50}
+        slidesPerView={1}
+        pagination={{ clickable: true }}
+      >
+        {stats.map((block, index) => (
+          <SwiperSlide key={index}>
+            <BubbleBlock data={block} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
+    )
   );
 };
 
