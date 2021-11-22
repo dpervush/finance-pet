@@ -8,12 +8,15 @@ import { PlusIcon, ExpandIcon } from "../icons";
 import { getCards } from "../../store/slices/cards";
 
 import styles from "./CardsList.module.scss";
+import { getStatsByCard } from "../../store/slices/stats";
 
 const CardsList = () => {
   const ref = React.useRef();
 
   const dispatch = useDispatch();
-  const { cards } = useSelector(({ cards }) => cards);
+  const { cards } = useSelector((state) => ({
+    cards: state.cards.cards,
+  }));
 
   const [showModal, setShowModal] = React.useState(false);
 

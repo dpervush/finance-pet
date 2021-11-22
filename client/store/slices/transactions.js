@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
 import { TRANSACTIONS_PER_PAGE } from "../../utils/constants";
+import { getCards } from "./cards";
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
@@ -52,6 +53,7 @@ export const createTransaction = createAsyncThunk(
   async (body, { dispatch }) => {
     await $api.post(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
+    dispatch(getCards());
   }
 );
 
@@ -60,6 +62,7 @@ export const updateTransaction = createAsyncThunk(
   async (body, { dispatch }) => {
     await $api.put(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
+    dispatch(getCards());
   }
 );
 
@@ -68,6 +71,7 @@ export const deleteTransaction = createAsyncThunk(
   async (transactionId, { dispatch }) => {
     await $api.delete(`/transactions/${transactionId}`).then((res) => res.data);
     dispatch(getTransactions());
+    dispatch(getCards());
   }
 );
 

@@ -65,12 +65,13 @@ class TransactionsController {
   }
   async update(req, res) {
     try {
-      const { id, title, amount, date, cardId, categoryId } = req.body;
+      const { id, title, amount, type, date, cardId, categoryId } = req.body;
 
       const updatedTransaction = await transactionsService.update({
         id,
         title,
         amount,
+        type,
         date,
         cardId,
         categoryId,

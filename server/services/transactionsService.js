@@ -7,6 +7,7 @@ const {
   AccountCards,
   AccountCategories,
 } = require("../models");
+const cardsService = require("./cardsService");
 
 class TransactionService {
   async create({ title, type, amount, cardId, categoryId, accountId }) {
@@ -21,6 +22,24 @@ class TransactionService {
       amount,
       type,
       accountTransactionId: createdTransaction.id,
+    });
+
+    const cardBalance = await AccountCards.findByPk(cardId, {
+      attributes: [],
+      include: [
+        {
+          model: CardInfo,
+          required: true,
+          attributes: ["createdAt", "updatedAt", "balance"],
+        },
+      ],
+    });
+
+    const transactionAmount = type === "Income" ? amount : -amount;
+
+    await cardsService.update({
+      id: cardId,
+      balance: cardBalance.card_info.balance + +transactionAmount,
     });
 
     return { ...createdTransaction.dataValues, ...transactionInfo.dataValues };
@@ -182,7 +201,7 @@ class TransactionService {
     });
     return transaction;
   }
-  async update({ id, title, amount, date, cardId, categoryId }) {
+  async update({ id, title, amount, date, type, cardId, categoryId }) {
     if (!id) {
       throw new Error("не указан ID");
     }
@@ -201,27 +220,86 @@ class TransactionService {
       );
     }
 
+    const [oldAmount, oldType] = await this.getOne(id).then((res) => [
+      res.transaction_info.amount,
+      res.transaction_info.type,
+    ]);
+
+    console.log(oldAmount);
+
     await TransactionInfo.update(
-      { title, amount, date },
+      { title, amount, date, type },
       {
         where: { accountTransactionId: id },
       }
     );
 
-    const updatedCard = this.getOne(id);
+    const cardBalance = await AccountCards.findByPk(cardId, {
+      attributes: [],
+      include: [
+        {
+          model: CardInfo,
+          required: true,
+          attributes: ["createdAt", "updatedAt", "balance"],
+        },
+      ],
+    });
 
-    return updatedCard;
+    const transactionNewAmount = type === "Income" ? amount : -amount;
+    const transactionOldAmount = oldType === "Income" ? oldAmount : -oldAmount;
+
+    await cardsService.update({
+      id: cardId,
+      balance:
+        cardBalance.card_info.balance +
+        +transactionNewAmount -
+        transactionOldAmount,
+    });
+
+    const updatedTransaction = await this.getOne(id);
+
+    return updatedTransaction;
   }
   async delete(id) {
     if (!id) {
       throw new Error("не указан ID");
     }
 
-    const transaction = await AccountTransactions.findOne({
-      where: { id },
+    const transaction = await AccountTransactions.findByPk(id, {
+      attributes: ["accountCardId"],
+      include: {
+        model: TransactionInfo,
+        required: true,
+        attributes: ["amount", "type"],
+      },
     });
 
-    return await transaction
+    const transactionAmount =
+      transaction.transaction_info.type === "Income"
+        ? transaction.transaction_info.amount
+        : -transaction.transaction_info.amount;
+
+    const cardBalance = await AccountCards.findByPk(transaction.accountCardId, {
+      attributes: [],
+      include: [
+        {
+          model: CardInfo,
+          required: true,
+          attributes: ["createdAt", "updatedAt", "balance"],
+        },
+      ],
+    });
+
+    console.log(transactionAmount);
+
+    await cardsService.update({
+      id: transaction.accountCardId,
+      balance: cardBalance.card_info.balance - transactionAmount,
+    });
+
+    const transactionToDelete = await AccountTransactions.findByPk(id);
+
+    return await transactionToDelete
       .destroy()
       .then(() => "ok")
       .catch(() => "error");

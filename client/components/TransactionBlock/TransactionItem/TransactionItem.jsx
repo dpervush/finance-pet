@@ -45,7 +45,9 @@ const TransactionItem = ({
       </div>
       <div className={styles.amount}>
         <span className={styles.text}>
-          {formatCurrency(amount, card.currency)}
+          {type === "Income"
+            ? formatCurrency(amount, card.currency)
+            : "-" + formatCurrency(amount, card.currency)}
         </span>
         <button
           className={styles.edit}
