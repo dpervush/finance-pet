@@ -18,22 +18,22 @@ export const formatDate = (date) =>
     monthNamesShort[new Date(date).getMonth()]
   } ${new Date(date).getFullYear()}`;
 
-export function formatCurrency(number, currency) {
+export function formatCurrency(number, currency, currencyDisplay = "code") {
   if (currency === "USD") {
     return number.toLocaleString("en-IN", {
       style: "currency",
-      currency: "USD",
+      currency,
     });
   } else if (currency === "RUB") {
     return number.toLocaleString("ru-RU", {
       style: "currency",
       currency: "RUB",
-      currencyDisplay: "code",
+      currencyDisplay,
     });
   } else if (currency === "EUR") {
     return number.toLocaleString("de-DE", {
       style: "currency",
-      currency: "EUR",
+      currency,
     });
   }
 }
