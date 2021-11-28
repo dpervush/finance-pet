@@ -1,4 +1,5 @@
 import React from "react";
+import dynamic from "next/dynamic";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
@@ -18,6 +19,10 @@ import {
 
 import styles from "./AddTransactionModal.module.scss";
 
+const DateBlock = dynamic(() => import("./DateBlock/DateBlock"), {
+  ssr: false,
+});
+
 const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
   const dispatch = useDispatch();
 
@@ -32,6 +37,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
 
   const [selectedCard, setSelectedCard] = React.useState(null);
   const [selectedCategory, setSelectedCategory] = React.useState(null);
+  const [date, setDate] = React.useState(new Date());
 
   const { register, handleSubmit, watch, reset, getValues } = useForm({
     defaultValues: {
@@ -40,13 +46,14 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
       to: initValues.category?.id.toString() || null,
       amount: initValues.amount || null,
       comment: initValues.comment || "",
+      date: initValues.date || new Date(),
     },
   });
 
   const [source, target, type] = watch(["from", "to", "type"]);
   const watchSecondBlockValues = watch(["amount"]);
 
-  const onSubmit = ({ type, from, to, comment, amount }) => {
+  const onSubmit = ({ type, comment, amount }) => {
     if (method === "UPDATE") {
       dispatch(
         updateTransaction({
@@ -56,7 +63,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
           amount,
           cardId: selectedCard.id,
           categoryId: selectedCategory.id,
-          date: new Date(),
+          date: new Date(date),
         })
       );
     } else {
@@ -67,6 +74,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
           amount,
           cardId: selectedCard.id,
           categoryId: selectedCategory.id,
+          date: new Date(date),
         })
       );
     }
@@ -162,7 +170,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
                   />
                 </label>
               </div>
-              {/* TODO: сделать выбор даты */}
+              <DateBlock register={register} onSelectDate={setDate} />
               <div className={styles.form_item}>
                 <label className={styles.label}>
                   <span>Комментарий</span>

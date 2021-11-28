@@ -111,7 +111,8 @@
 //   margin-bottom: 30px;
 // }
 .from_block,
-.to_block {
+.to_block,
+.date_block {
   display: flex;
   align-items: flex-start;
 
@@ -120,7 +121,8 @@
 
   margin-bottom: 30px;
 }
-.to_block {
+.date_block {
+  flex-wrap: nowrap;
 }
 .add_btn {
   position: relative;
@@ -284,4 +286,49 @@
   &::placeholder {
     color: rgba(8, 25, 69, 0.4);
   }
+}
+.swiper {
+  max-width: 400px;
+}
+.date_item {
+  text-align: center;
+  font-weight: 500;
+  text-transform: uppercase;
+
+  .label {
+    .number {
+      display: block;
+    }
+    .day {
+      margin-bottom: 0;
+    }
+  }
+
+  &.date_item__calendar {
+    width: 75px;
+    padding: 10px;
+
+    border-color: transparent;
+  }
+  .date_day {
+    width: 75px;
+    padding: 10px;
+
+    border-radius: 10px;
+    border: 1px solid transparent;
+  }
+  .number {
+    text-align: center;
+    font-size: 20px;
+  }
+  .day {
+    font-size: 10px;
+    line-height: 12px;
+  }
+}
+.date_block .radio:checked + .date_day {
+  border-color: #081945;
+}
+.calendar_btn {
+  background-color: transparent;
 }

@@ -1,22 +1,9 @@
 import React from "react";
 
-import styles from "./TransactionBlock.module.scss";
 import TransactionItem from "./TransactionItem/TransactionItem";
+import { monthNamesLong } from "../../utils/constants";
 
-const monthNamesLong = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
+import styles from "./TransactionBlock.module.scss";
 
 const TransactionBlock = ({ items }) => {
   const parsedItems = Object.keys(items).reduce((obj, key) => {

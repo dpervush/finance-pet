@@ -8,6 +8,7 @@ import "swiper/css/pagination";
 import "../styles/globals.scss";
 import "../styles/fonts.scss";
 import "../styles/null.scss";
+import "../styles/Calendar.scss";
 
 function MyApp({ Component, pageProps }) {
   return (

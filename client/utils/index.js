@@ -1,17 +1,4 @@
-const monthNamesShort = [
-  "Jan",
-  "Feb",
-  "Mar",
-  "Apr",
-  "May",
-  "Jun",
-  "Jul",
-  "Aug",
-  "Sep",
-  "Oct",
-  "Nov",
-  "Dec",
-];
+import { monthNamesShort } from "./constants";
 
 export const formatDate = (date) =>
   `${new Date(date).getDate()} ${
