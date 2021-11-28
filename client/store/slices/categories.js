@@ -6,8 +6,8 @@ export const getCategories = createAsyncThunk(
   async (dispatch, getState) => {
     return await $api.get("/categories/").then((res) =>
       res.data.map((item) => ({
-        id: item.id,
         ...item.category_info,
+        id: item.id,
       }))
     );
   }
