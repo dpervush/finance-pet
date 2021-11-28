@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
+import { getStatsByCard } from "./stats";
 
 export const getCards = createAsyncThunk(
   "cards/getCards",
@@ -25,8 +26,11 @@ export const updateCard = createAsyncThunk(
   "cards/updateCard",
   async (body, { dispatch }) => {
     console.log(body);
-    await $api.put(`/cards/`, body).then((res) => res.data);
-    dispatch(getCards());
+    await $api
+      .put(`/cards/`, body)
+      .then((res) => res.data)
+      .then(() => dispatch(getCards()))
+      .then(() => dispatch(getStatsByCard()));
   }
 );
 

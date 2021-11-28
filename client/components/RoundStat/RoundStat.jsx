@@ -8,12 +8,20 @@ import Button from "../UI/Button/Button";
 
 import styles from "./RoundStat.module.scss";
 
-const calcOffset = (all, index, array) => {
-  if (index === 0) return 0;
+const calcRotationAndAngle = (cards, allMoney) => {
+  const array = [...cards];
 
-  return (
-    (array[index - 1].balance / all) * 360 + calcOffset(all, index - 1, array)
-  );
+  for (let i = 0; i < array.length; i++) {
+    if (i === 0) {
+      array[i].rotation = 0;
+      array[i].angle = (array[i].balance / allMoney) * 360;
+    } else {
+      array[i].rotation = array[i - 1].angle + array[i - 1].rotation;
+      array[i].angle = (array[i].balance / allMoney) * 360;
+    }
+  }
+
+  return array;
 };
 
 const RoundStat = ({ radius = 130 }) => {
@@ -36,18 +44,17 @@ const RoundStat = ({ radius = 130 }) => {
     setAllAmount(allMoney);
 
     const allMoneyConsidered = statsByCard.reduce((sum, current) => {
-      return current.total ? sum + current.balance : 0;
+      return current.total ? sum + current.balance : sum;
     }, 0);
 
+    let cardsConsidered = statsByCard
+      .filter((card) => card.total)
+      .map((item) => ({ ...item, rotation: 0, angle: 0 }));
+
+    cardsConsidered = calcRotationAndAngle(cardsConsidered, allMoneyConsidered);
+
     setAllAmountConsidered(allMoneyConsidered);
-
-    const cardsWithAngles = statsByCard.map((card, index, array) => {
-      const rotation = calcOffset(allMoney, index, array.slice(0, index));
-
-      return { ...card, rotation };
-    });
-
-    setCardsWithAngles(cardsWithAngles);
+    setCardsWithAngles(cardsConsidered);
   }, [statsByCard]);
 
   return (
