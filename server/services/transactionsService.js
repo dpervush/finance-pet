@@ -10,7 +10,7 @@ const {
 const cardsService = require("./cardsService");
 
 class TransactionService {
-  async create({ title, type, amount, cardId, categoryId, accountId }) {
+  async create({ title, type, amount, date, cardId, categoryId, accountId }) {
     const createdTransaction = await AccountTransactions.create({
       accountId,
       accountCardId: cardId,
@@ -21,6 +21,7 @@ class TransactionService {
       title,
       amount,
       type,
+      date,
       accountTransactionId: createdTransaction.id,
     });
 
@@ -55,7 +56,6 @@ class TransactionService {
       attributes: ["id"],
       where: { accountId },
       limit: size * page,
-      order: [["createdAt", "DESC"]],
       include: [
         {
           model: AccountCards,
@@ -93,7 +93,7 @@ class TransactionService {
           attributes: {
             exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
           },
-          where: type ? { type: type } : {},
+          where: type ? { type } : {},
         },
       ],
     });
