@@ -1,11 +1,10 @@
-const { Op } = require("sequelize");
 const {
   AccountTransactions,
   TransactionInfo,
   CardInfo,
   CategoryInfo,
   AccountCards,
-  AccountCategories,
+  AccountCategories
 } = require("../models");
 const cardsService = require("./cardsService");
 
@@ -14,7 +13,7 @@ class TransactionService {
     const createdTransaction = await AccountTransactions.create({
       accountId,
       accountCardId: cardId,
-      accountCategoryId: categoryId,
+      accountCategoryId: categoryId
     });
 
     const transactionInfo = await TransactionInfo.create({
@@ -22,7 +21,7 @@ class TransactionService {
       amount,
       type,
       date,
-      accountTransactionId: createdTransaction.id,
+      accountTransactionId: createdTransaction.id
     });
 
     const cardBalance = await AccountCards.findByPk(cardId, {
@@ -31,31 +30,27 @@ class TransactionService {
         {
           model: CardInfo,
           required: true,
-          attributes: ["createdAt", "updatedAt", "balance"],
-        },
-      ],
+          attributes: ["createdAt", "updatedAt", "balance"]
+        }
+      ]
     });
 
     const transactionAmount = type === "Income" ? amount : -amount;
 
     await cardsService.update({
       id: cardId,
-      balance: cardBalance.card_info.balance + +transactionAmount,
+      balance: cardBalance.card_info.balance + +transactionAmount
     });
 
     return { ...createdTransaction.dataValues, ...transactionInfo.dataValues };
   }
 
   async getAll(accountId, cardId, categoryId, type, page, size) {
-    // todo: check if might be deleted
-    const transactionIds = await AccountTransactions.findAll({
-      where: { accountId },
-    });
-
     const transactions = await AccountTransactions.findAndCountAll({
       attributes: ["id"],
       where: { accountId },
       limit: size * page,
+      order: [[{ model: TransactionInfo }, "date", "desc"]],
       include: [
         {
           model: AccountCards,
@@ -64,13 +59,13 @@ class TransactionService {
             model: CardInfo,
             required: true,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
+              exclude: ["createdAt", "updatedAt", "accountCardId", "id"]
             },
-            where: cardId ? { id: cardId } : {},
+            where: cardId ? { id: cardId } : {}
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountId"],
-          },
+            exclude: ["createdAt", "updatedAt", "accountId"]
+          }
         },
         {
           model: AccountCategories,
@@ -79,23 +74,23 @@ class TransactionService {
             model: CategoryInfo,
             required: true,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
+              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"]
             },
-            where: categoryId ? { id: categoryId } : {},
+            where: categoryId ? { id: categoryId } : {}
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountId"],
-          },
+            exclude: ["createdAt", "updatedAt", "accountId"]
+          }
         },
         {
           model: TransactionInfo,
           required: true,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
+            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"]
           },
-          where: type ? { type } : {},
-        },
-      ],
+          where: type ? { type } : {}
+        }
+      ]
     });
 
     return transactions;
@@ -105,7 +100,7 @@ class TransactionService {
       attributes: ["id"],
       where: { accountId },
       limit: 3,
-      order: [["createdAt", "DESC"]],
+      order: [[{ model: TransactionInfo }, "date", "desc"]],
       include: [
         {
           model: AccountCards,
@@ -114,12 +109,12 @@ class TransactionService {
             model: CardInfo,
             required: true,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
-            },
+              exclude: ["createdAt", "updatedAt", "accountCardId", "id"]
+            }
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountId"],
-          },
+            exclude: ["createdAt", "updatedAt", "accountId"]
+          }
         },
         {
           model: AccountCategories,
@@ -128,21 +123,21 @@ class TransactionService {
             model: CategoryInfo,
             required: true,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
-            },
+              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"]
+            }
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountId"],
-          },
+            exclude: ["createdAt", "updatedAt", "accountId"]
+          }
         },
         {
           model: TransactionInfo,
           required: true,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
-          },
-        },
-      ],
+            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"]
+          }
+        }
+      ]
     });
 
     return transactions;
@@ -160,12 +155,12 @@ class TransactionService {
             model: CardInfo,
             required: true,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "accountCardId", "id"],
-            },
+              exclude: ["createdAt", "updatedAt", "accountCardId", "id"]
+            }
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountId"],
-          },
+            exclude: ["createdAt", "updatedAt", "accountId"]
+          }
         },
         {
           model: AccountCategories,
@@ -174,20 +169,20 @@ class TransactionService {
             model: CategoryInfo,
             required: true,
             attributes: {
-              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"],
-            },
+              exclude: ["createdAt", "updatedAt", "accountCategoryId", "id"]
+            }
           },
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountId"],
-          },
+            exclude: ["createdAt", "updatedAt", "accountId"]
+          }
         },
         {
           model: TransactionInfo,
           required: true,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"],
-          },
-        },
+            exclude: ["createdAt", "updatedAt", "id", "accountTransactionId"]
+          }
+        }
       ],
       attributes: {
         exclude: [
@@ -195,9 +190,9 @@ class TransactionService {
           "updatedAt",
           "accountId",
           "accountCardId",
-          "accountCategoryId",
-        ],
-      },
+          "accountCategoryId"
+        ]
+      }
     });
     return transaction;
   }
@@ -222,7 +217,7 @@ class TransactionService {
 
     const [oldAmount, oldType] = await this.getOne(id).then((res) => [
       res.transaction_info.amount,
-      res.transaction_info.type,
+      res.transaction_info.type
     ]);
 
     console.log(oldAmount);
@@ -230,7 +225,7 @@ class TransactionService {
     await TransactionInfo.update(
       { title, amount, date, type },
       {
-        where: { accountTransactionId: id },
+        where: { accountTransactionId: id }
       }
     );
 
@@ -240,9 +235,9 @@ class TransactionService {
         {
           model: CardInfo,
           required: true,
-          attributes: ["createdAt", "updatedAt", "balance"],
-        },
-      ],
+          attributes: ["createdAt", "updatedAt", "balance"]
+        }
+      ]
     });
 
     const transactionNewAmount = type === "Income" ? amount : -amount;
@@ -253,7 +248,7 @@ class TransactionService {
       balance:
         cardBalance.card_info.balance +
         +transactionNewAmount -
-        transactionOldAmount,
+        transactionOldAmount
     });
 
     const updatedTransaction = await this.getOne(id);
@@ -270,8 +265,8 @@ class TransactionService {
       include: {
         model: TransactionInfo,
         required: true,
-        attributes: ["amount", "type"],
-      },
+        attributes: ["amount", "type"]
+      }
     });
 
     const transactionAmount =
@@ -285,16 +280,16 @@ class TransactionService {
         {
           model: CardInfo,
           required: true,
-          attributes: ["createdAt", "updatedAt", "balance"],
-        },
-      ],
+          attributes: ["createdAt", "updatedAt", "balance"]
+        }
+      ]
     });
 
     console.log(transactionAmount);
 
     await cardsService.update({
       id: transaction.accountCardId,
-      balance: cardBalance.card_info.balance - transactionAmount,
+      balance: cardBalance.card_info.balance - transactionAmount
     });
 
     const transactionToDelete = await AccountTransactions.findByPk(id);

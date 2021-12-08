@@ -39,7 +39,7 @@ class UserService {
   }
 
   async login(email, password) {
-    const { dataValues: user } = await User.findOne({
+    const user = await User.findOne({
       where: { email },
     });
 
