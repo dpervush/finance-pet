@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { getValueFromCookie } from "../utils/getValueFromCookie";
 
 import { useDispatch, useSelector } from "react-redux";
-import { login } from "../store/slices/auth";
+import { clearError, login } from "../store/slices/auth";
 import $api from "../http";
 
 import styles from "../styles/Login.module.scss";
@@ -20,7 +20,7 @@ const schema = yup.object().shape({
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { isAuth } = useSelector(({ auth }) => auth);
+  const { isAuth, error } = useSelector(({ auth }) => auth);
 
   const router = useRouter();
 
@@ -29,6 +29,12 @@ const Login = () => {
       router.push("/");
     }
   }, [isAuth]);
+
+  const onChangedForm = () => {
+    if (error) {
+      dispatch(clearError());
+    }
+  };
 
   const {
     register,
@@ -44,7 +50,11 @@ const Login = () => {
     <div className={styles.login}>
       <div className={styles.container}>
         <h1 className={styles.title}>Log in to your account</h1>
-        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+        <form
+          className={styles.form}
+          onSubmit={handleSubmit(onSubmit)}
+          autoComplete="off"
+        >
           <div className={`${styles.form_item} ${styles.form_item_input}`}>
             <input
               className={styles.input}
@@ -52,8 +62,10 @@ const Login = () => {
                 required: true,
                 pattern: /^[A-Za-z]+$/i,
               })}
+              onChange={onChangedForm}
               type="email"
               placeholder="email"
+              autoComplete="off"
             />
             {errors.email && (
               <span className={styles.error}>{errors.email.message}</span>
@@ -64,6 +76,7 @@ const Login = () => {
               className={styles.input}
               type="password"
               {...register("password", { required: true, maxLength: 32 })}
+              onChange={onChangedForm}
               placeholder="password"
             />
             {errors.password && (
@@ -87,6 +100,7 @@ const Login = () => {
             Login
           </button>
         </form>
+        {error ? <div className={styles.login_error}>{error}</div> : null}
       </div>
     </div>
   );

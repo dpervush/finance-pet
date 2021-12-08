@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
-import { registration } from "../store/slices/auth";
+import { clearError, registration } from "../store/slices/auth";
 
 import styles from "../styles/Registration.module.scss";
 import { useSelector } from "react-redux";
@@ -22,7 +22,7 @@ const schema = yup.object().shape({
 
 const Registration = () => {
   const dispatch = useDispatch();
-  const { isAuth } = useSelector(({ auth }) => auth);
+  const { isAuth, error } = useSelector(({ auth }) => auth);
 
   const router = useRouter();
 
@@ -32,6 +32,12 @@ const Registration = () => {
     }
   }, [isAuth]);
 
+  const onChangedForm = () => {
+    if (error) {
+      dispatch(clearError());
+    }
+  };
+
   const {
     register,
     handleSubmit,
@@ -39,7 +45,6 @@ const Registration = () => {
   } = useForm({ resolver: yupResolver(schema) });
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(registration(data));
   };
 
@@ -55,16 +60,20 @@ const Registration = () => {
                 required: true,
               })}
               placeholder="First name"
+              onChange={onChangedForm}
             />
             {errors.firstName && (
               <span className={styles.error}>{errors.firstName.message}</span>
             )}
+          </div>
+          <div className={`${styles.form_item} ${styles.form_item_input}`}>
             <input
               className={styles.input}
               {...register("secondName", {
                 required: true,
               })}
               placeholder="Second name"
+              onChange={onChangedForm}
             />
             {errors.secondName && (
               <span className={styles.error}>{errors.secondName.message}</span>
@@ -77,6 +86,7 @@ const Registration = () => {
                 required: true,
               })}
               placeholder="email"
+              onChange={onChangedForm}
             />
             {errors.email && (
               <span className={styles.error}>{errors.email.message}</span>
@@ -88,6 +98,7 @@ const Registration = () => {
               type="password"
               {...register("password", { required: true })}
               placeholder="enter password"
+              onChange={onChangedForm}
             />
             {errors.password && (
               <span className={styles.error}>{errors.password.message}</span>
@@ -102,6 +113,7 @@ const Registration = () => {
                 maxLength: 32,
               })}
               placeholder="repeat password"
+              onChange={onChangedForm}
             />
             {errors.passwordConfirmation && (
               <span className={styles.error}>
@@ -121,6 +133,9 @@ const Registration = () => {
             Sign up
           </button>
         </form>
+        {error ? (
+          <div className={styles.registration_error}>{error}</div>
+        ) : null}
       </div>
     </div>
   );

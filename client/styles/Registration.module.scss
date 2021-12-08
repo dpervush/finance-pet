@@ -10,6 +10,7 @@
 }
 .container {
   flex: 0 1 470px;
+  position: relative;
 }
 .title {
   margin-bottom: 65px;
@@ -22,6 +23,7 @@
   text-align: center;
 }
 .form_item {
+  position: relative;
   &_input {
     display: flex;
     align-items: center;
@@ -33,6 +35,16 @@
   .input + .input {
     flex: 0 0 55%;
   }
+}
+.error {
+  position: absolute;
+  top: 50%;
+  right: -20px;
+
+  font-family: $secondFont;
+  font-size: 14px;
+
+  transform: translate(100%, -50%);
 }
 .input {
   display: block;
@@ -84,4 +96,14 @@
 
   background: #8a16ff;
   border-radius: 25px;
+}
+.registration_error {
+  position: absolute;
+  left: 50%;
+  margin-top: 20px;
+
+  font-family: $secondFont;
+  text-align: center;
+
+  transform: translateX(-50%);
 }

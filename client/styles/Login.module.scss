@@ -9,6 +9,7 @@
   height: 100%;
 }
 .container {
+  position: relative;
   flex: 0 1 470px;
 }
 .title {
@@ -22,6 +23,7 @@
   text-align: center;
 }
 .form_item {
+  position: relative;
   &_input {
     display: flex;
     align-items: center;
@@ -49,6 +51,27 @@
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.8);
   }
+}
+.error {
+  position: absolute;
+  top: 50%;
+  right: -15px;
+  max-width: 120px;
+
+  font-size: 14px;
+  font-family: $secondFont;
+
+  transform: translate(100%, -50%);
+}
+.login_error {
+  position: absolute;
+  left: 50%;
+  margin-top: 20px;
+
+  font-family: $secondFont;
+  text-align: center;
+
+  transform: translateX(-50%);
 }
 .info {
   display: flex;
