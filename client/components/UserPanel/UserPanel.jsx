@@ -2,14 +2,16 @@ import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import classNames from "classnames/bind";
 
-import { AvatarIcon, FlagIcon, NotificationIcon } from "../icons";
+import { AvatarIcon, FlagIcon, LogoutIcon, NotificationIcon } from "../icons";
 import { logout } from "../../store/slices/auth";
 import styles from "./UserPanel.module.scss";
 import { useRouter } from "next/router";
+import { useOnClickOutside } from "../../hooks/useOnClickOutside";
 
 const cx = classNames.bind(styles);
 
 const UserPanel = () => {
+  const ref = React.useRef();
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -18,9 +20,11 @@ const UserPanel = () => {
   const onUserClick = () => setShowActions(!showActions);
 
   const onLogoutClick = () => {
-    dispatch(logout());
     router.push("/login");
+    dispatch(logout());
   };
+
+  useOnClickOutside(ref, () => setShowActions(false));
 
   return (
     <div className={styles.panel}>
@@ -33,9 +37,12 @@ const UserPanel = () => {
       </div>
       <div className={styles.user} onClick={onUserClick}>
         <AvatarIcon />
-        <div className={cx({ actions: true, active: showActions })}>
+        <div className={cx({ actions: true, active: showActions })} ref={ref}>
           <button className={styles.actions_btn} onClick={onLogoutClick}>
-            logout
+            <span>
+              <LogoutIcon />
+            </span>
+            <span>logout</span>
           </button>
         </div>
       </div>
