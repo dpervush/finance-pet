@@ -1,19 +1,34 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
+import { setWithExpiry } from "../../utils/localStorageWithExpiry";
 
 export const login = createAsyncThunk("/login", async (body) => {
-  // const { email, password } = body;
-  return await $api.post("/auth/login", body).then((res) => res.data);
+  return await $api.post("/auth/login", body).then((res) => {
+    setWithExpiry(
+      "access_token",
+      res.data.accessToken,
+      5 * 24 * 60 * 60 * 1000
+    );
+    return res.data;
+  });
 });
 
 export const registration = createAsyncThunk("/register", async (body) => {
-  // const { email, password } = body;
-  return await $api.post("/auth/register", body).then((res) => res.data);
+  return await $api.post("/auth/register", body).then((res) => {
+    setWithExpiry(
+      "access_token",
+      action.payload.accessToken,
+      5 * 24 * 60 * 60 * 1000
+    );
+    return res.data;
+  });
 });
 
 export const logout = createAsyncThunk("/logout", async () => {
-  // const { email, password } = body;
-  return await $api.post("/auth/logout").then((res) => res.data);
+  return await $api.post("/auth/logout").then((res) => {
+    localStorage.removeItem("access_token");
+    return res.data;
+  });
 });
 
 export const getMe = createAsyncThunk("/me", async () => {
