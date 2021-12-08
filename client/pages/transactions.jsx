@@ -8,11 +8,12 @@ import { PlusIcon } from "../components/icons";
 import AddTransactionModal from "../components/AddTransactionModal/AddTransactionModal";
 import Button from "../components/UI/Button/Button";
 import Dropdown from "../components/UI/Dropdown/Dropdown";
+import { PlusIcon } from "../components/icons";
 
 import { getCategories } from "../store/slices/categories";
 import { getTransactions } from "../store/slices/transactions";
 import { getValueFromCookie } from "../utils/getValueFromCookie";
-import { TRANSACTIONS_PER_PAGE } from "../utils/constants";
+import { useLoadTransactions } from "../hooks/useLoadTransactions";
 
 import styles from "../styles/Transactions.module.scss";
 
@@ -20,21 +21,22 @@ const dropdownFlow = [
   {
     id: 0,
     title: "All",
+    as: "Flow",
     selected: false,
-    key: "flow",
+    key: "flow"
   },
   {
     id: 1,
     title: "Income",
     selected: false,
-    key: "flow",
+    key: "flow"
   },
   {
     id: 2,
     title: "Expense",
     selected: false,
-    key: "flow",
-  },
+    key: "flow"
+  }
 ];
 const Transactions = ({ user }) => {
   const dispatch = useDispatch();
@@ -44,6 +46,7 @@ const Transactions = ({ user }) => {
     cards: { cards },
   } = useSelector((state) => state);
 
+  const [showModal, setShowModal] = React.useState(false);
   const [activePage, setActivePage] = React.useState(1);
   const [dropdownState, setDropdownState] = React.useState({
     flow: dropdownFlow,
@@ -54,11 +57,26 @@ const Transactions = ({ user }) => {
     flow: null,
   });
 
-  const [showModal, setShowModal] = React.useState(false);
+  const { transactions, hasMore, loading } = useLoadTransactions(
+    filters,
+    activePage
+  );
 
-  const fetchItemsAndPages = () => {
-    setActivePage(activePage + 1);
-  };
+  const observer = React.useRef();
+  const lastTransactionRef = React.useCallback(
+    (node) => {
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setActivePage((prevActivePage) => prevActivePage + 1);
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [hasMore]
+  );
 
   React.useEffect(() => {
     dispatch(
@@ -88,24 +106,26 @@ const Transactions = ({ user }) => {
         {
           id: 0,
           title: "All",
+          as: "Card",
           selected: false,
-          key: "card",
+          key: "card"
         },
-        ...dropdownCards,
+        ...dropdownCards
       ],
       categories: [
         {
           id: 0,
           title: "All",
+          as: "Category",
           selected: false,
-          key: "category",
+          key: "category"
         },
-        ...dropdownCategories,
-      ],
+        ...dropdownCategories
+      ]
     });
   }, [cards, categories]);
 
-  const filteredTransactions = transactions.reduce((obj, current) => {
+  const filteredTransactions = transactions?.reduce((obj, current, index) => {
     const year = new Date(current.date).getFullYear();
     const month = new Date(current.date).getMonth();
 
@@ -116,7 +136,11 @@ const Transactions = ({ user }) => {
       obj[year][month] = [];
     }
 
+    if (index === transactions.length - 1) {
+      obj[year][month].push({ ...current, last: true });
+    } else {
     obj[year][month].push(current);
+    }
 
     return obj;
   }, {});
@@ -138,41 +162,9 @@ const Transactions = ({ user }) => {
     setFilteres({ ...filters, [temp[0].key]: currentFilter });
   };
 
-  const getFlowFilter = () => {
-    let flowFilter;
-
-    if (filters.flow === 0 || !filters.flow) {
-      flowFilter = null;
-    } else {
-      flowFilter = filters.flow === 1 ? "Income" : "Expense";
-    }
-
-    return flowFilter;
-  };
-
   React.useEffect(() => {
-    dispatch(
-      getTransactions({
-        card: filters.card === 0 ? null : filters.card,
-        category: filters.category === 0 ? null : filters.category,
-        flow: getFlowFilter(),
-        page: activePage,
-        size: TRANSACTIONS_PER_PAGE,
-      })
-    );
+    setActivePage(1);
   }, [filters]);
-
-  React.useEffect(() => {
-    dispatch(
-      getTransactions({
-        card: filters.card === 0 ? null : filters.card,
-        category: filters.category === 0 ? null : filters.category,
-        flow: getFlowFilter(),
-        page: activePage,
-        size: TRANSACTIONS_PER_PAGE,
-      })
-    );
-  }, [activePage]);
 
   return (
     <Layout>
@@ -209,7 +201,12 @@ const Transactions = ({ user }) => {
           </div>
         </div>
         <div className={styles.transactions_list}>
-          <TransactionBlock items={filteredTransactions} />
+          {filteredTransactions && (
+            <TransactionBlock
+              items={filteredTransactions}
+              lastTransactionRef={lastTransactionRef}
+            />
+          )}
         </div>
         <button onClick={fetchItemsAndPages} className="btn more">
           👀

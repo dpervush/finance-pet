@@ -17,6 +17,8 @@ const TransactionItem = ({
   amount,
   type,
   comment,
+  last,
+  lastTransactionRef
 }) => {
   const dispatch = useDispatch();
 
@@ -33,7 +35,7 @@ const TransactionItem = ({
   };
 
   return (
-    <div className={styles.row}>
+    <div className={styles.row} ref={last && lastTransactionRef}>
       <div className={styles.name}>{title}</div>
       <div className={styles.date}>{formatDate(date)}</div>
       <div className={styles.gap}></div>
