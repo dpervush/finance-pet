@@ -7,7 +7,7 @@ export const getCategories = createAsyncThunk(
     return await $api.get("/categories/").then((res) =>
       res.data.map((item) => ({
         ...item.category_info,
-        id: item.id,
+        id: item.id
       }))
     );
   }
@@ -41,13 +41,46 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState: {
     categories: [],
+    loading: false,
+    error: null
   },
   reducers: {},
   extraReducers: {
+    [getCategories.pending]: (state, action) => {
+      state.loading = true;
+    },
     [getCategories.fulfilled]: (state, action) => {
       state.categories = action.payload;
+      state.loading = false;
     },
-  },
+    [getCategories.rejected]: (state, action) => {
+      state.loading = false;
+    },
+
+    [createCategory.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [createCategory.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    },
+
+    [updateCategory.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [updateCategory.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    },
+
+    [deleteCategory.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [deleteCategory.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    }
+  }
 });
 
 export const categoriesReducer = categoriesSlice.reducer;

@@ -16,8 +16,11 @@ export const BubbleBlock = ({ data }) => {
     const maxSum = Math.max(...data.map((item) => +item.sum));
 
     setMaxSum(maxSum);
-    renderBubbles();
   }, [data]);
+
+  React.useEffect(() => {
+    renderBubbles();
+  }, [maxSum]);
 
   const renderBubbles = () => {
     const bubblesWithoutCoordinates = [...data];
@@ -67,7 +70,7 @@ export const BubbleBlock = ({ data }) => {
         ...item,
         radius,
         xAxis,
-        yAxis,
+        yAxis
       };
     }
 

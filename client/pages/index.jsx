@@ -5,27 +5,33 @@ import { useSelector, useDispatch } from "react-redux";
 
 import Layout from "../containers/layout/Layout";
 import ShortStat from "../components/ShortStat/ShortStat";
+import { RoundStat } from "../components/RoundStat/RoundStat";
 import TransactionsShort from "../components/TransactionsShort/TransactionsShort";
 
-import styles from "../styles/Home.module.scss";
 import $api from "../http";
 import { getMe } from "../store/slices/auth";
 import { getValueFromCookie } from "../utils/getValueFromCookie";
+
+import styles from "../styles/Home.module.scss";
+import { getCategories } from "../store/slices/categories";
 
 const BubbleStat = dynamic(
   () => import("../components/BubbleStat/BubbleStat"),
   { ssr: false }
 );
-const RoundStat = dynamic(() => import("../components/RoundStat/RoundStat"), {
-  ssr: false,
-});
 
 export default function Home({ user }) {
   const { auth } = useSelector(({ auth }) => ({
-    auth,
+    auth
   }));
 
   const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(getCategories());
+  }, []);
 
   React.useEffect(() => {
     if (!auth.isAuth) {
@@ -73,8 +79,8 @@ export const getServerSideProps = async (context) => {
   if (!isAuth) {
     return {
       redirect: {
-        destination: "/login",
-      },
+        destination: "/login"
+      }
     };
   }
   return { props: { user } };

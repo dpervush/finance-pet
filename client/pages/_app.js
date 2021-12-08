@@ -9,6 +9,7 @@ import "../styles/globals.scss";
 import "../styles/fonts.scss";
 import "../styles/null.scss";
 import "../styles/Calendar.scss";
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 function MyApp({ Component, pageProps }) {
   return (

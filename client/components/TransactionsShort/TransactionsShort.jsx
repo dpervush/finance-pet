@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Loader from "react-loader-spinner";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { getRecentTransactions } from "../../store/slices/transactions";
@@ -10,7 +11,7 @@ import styles from "./TransactionsShort.module.scss";
 const TransactionsShort = () => {
   const dispatch = useDispatch();
 
-  const { recentTransactions } = useSelector(
+  const { recentTransactions, loading } = useSelector(
     ({ transactions }) => transactions
   );
 
@@ -29,17 +30,26 @@ const TransactionsShort = () => {
         </div>
       </div>
       <div className={styles.body}>
-        {recentTransactions?.map((item) => (
-          <TransactionItem
-            key={item.id}
-            date={item.date}
-            type={item.type}
-            amount={item.amount}
-            currency={item.card.currency}
-            comment={item.title}
-            category={item.category.title}
-          />
-        ))}
+        {loading && (
+          <div className={styles.loader}>
+            <Loader type="Oval" color="#24dffe" height={60} width={60} />
+          </div>
+        )}
+        {!loading && recentTransactions.length === 0 && (
+          <div className={styles.no_data}>No transactions here yet :(</div>
+        )}
+        {!loading &&
+          recentTransactions?.map((item) => (
+            <TransactionItem
+              key={item.id}
+              date={item.date}
+              type={item.type}
+              amount={item.amount}
+              currency={item.card.currency}
+              comment={item.title}
+              category={item.category.title}
+            />
+          ))}
       </div>
     </div>
   );

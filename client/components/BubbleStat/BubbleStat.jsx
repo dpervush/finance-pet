@@ -5,10 +5,15 @@ import { Pagination, Virtual } from "swiper";
 
 import { getStatsByCategory } from "../../store/slices/stats";
 import { BubbleBlock } from "./BubbleBlock/BubbleBlock";
+import Loader from "react-loader-spinner";
+
+import styles from "./BubbleStat.module.scss";
 
 const BubbleStat = () => {
   const dispatch = useDispatch();
-  const { statsByCategory } = useSelector(({ stats }) => stats);
+  const { statsByCategory, categoryStatLoading } = useSelector(
+    ({ stats }) => stats
+  );
 
   React.useEffect(() => {
     dispatch(getStatsByCategory());
@@ -46,22 +51,31 @@ const BubbleStat = () => {
   }, [statsByCategory]);
 
   return (
-    stats &&
-    stats.length > 0 && (
-      <Swiper
-        modules={[Pagination]}
-        initialSlide={statsLength}
-        spaceBetween={50}
-        slidesPerView={1}
-        pagination={{ clickable: true }}
-      >
-        {stats.map((block, index) => (
-          <SwiperSlide key={index}>
-            <BubbleBlock data={block} />
-          </SwiperSlide>
-        ))}
-      </Swiper>
-    )
+    <>
+      {categoryStatLoading && (
+        <div className={styles.loader}>
+          <Loader type="Oval" color="#24dffe" height={60} width={60} />
+        </div>
+      )}
+      {!categoryStatLoading && stats?.length === 0 && (
+        <div className={styles.no_data}>No data here :(</div>
+      )}
+      {!categoryStatLoading && stats && stats.length > 0 && (
+        <Swiper
+          modules={[Pagination]}
+          initialSlide={statsLength}
+          spaceBetween={50}
+          slidesPerView={1}
+          pagination={{ clickable: true }}
+        >
+          {stats.map((block, index) => (
+            <SwiperSlide key={index}>
+              <BubbleBlock data={block} />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      )}
+    </>
   );
 };
 

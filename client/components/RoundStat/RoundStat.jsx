@@ -1,12 +1,19 @@
 import React from "react";
-import { Stage, Layer, Text, Arc, Circle } from "react-konva";
+import dynamic from "next/dynamic";
+import Loader from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
-import { getStatsByCard } from "../../store/slices/stats";
-import { formatCurrency } from "../../utils";
-import { CoinsIcon, PlayIcon, SettingsIcon } from "../icons";
+
+import AddTransactionModal from "../AddTransactionModal/AddTransactionModal";
 import Button from "../UI/Button/Button";
+import { CoinsIcon, PlayIcon, PlusIcon, SettingsIcon } from "../icons";
+
+import { getStatsByCard } from "../../store/slices/stats";
 
 import styles from "./RoundStat.module.scss";
+
+const StatConva = dynamic(() => import("./StatConva"), {
+  ssr: false
+});
 
 const calcRotationAndAngle = (cards, allMoney) => {
   const array = [...cards];
@@ -24,13 +31,19 @@ const calcRotationAndAngle = (cards, allMoney) => {
   return array;
 };
 
-const RoundStat = ({ radius = 130 }) => {
+export const RoundStat = () => {
   const dispatch = useDispatch();
-  const { statsByCard } = useSelector(({ stats }) => stats);
+  const { statsByCard, cardStatLoading } = useSelector(({ stats }) => stats);
 
   const [allAmount, setAllAmount] = React.useState(null);
   const [allAmountConsidered, setAllAmountConsidered] = React.useState(null);
   const [cardsWithAngles, setCardsWithAngles] = React.useState(null);
+
+  const [showModal, setShowModal] = React.useState(false);
+
+  const toggleNewTransactionModal = () => {
+    setShowModal(!showModal);
+  };
 
   React.useEffect(() => {
     dispatch(getStatsByCard());
@@ -59,72 +72,29 @@ const RoundStat = ({ radius = 130 }) => {
 
   return (
     <div className={styles.wrapper}>
-      <div className={styles.settings}>
+      {/* <div className={styles.settings}>
         <Button padding="12px">
           <SettingsIcon />
         </Button>
+      </div> */}
+      <div className={styles.add_transaction}>
+        <Button padding="12px" onClick={toggleNewTransactionModal}>
+          <PlusIcon />
+        </Button>
       </div>
       <div className={styles.canvas}>
-        <Stage width={270} height={270}>
-          <Layer>
-            <Circle
-              x={135}
-              y={135}
-              radius={radius}
-              opacity={0.2}
-              stroke="#ffffff"
-              strokeWidth={6}
-            />
-            <Arc
-              x={135}
-              y={135}
-              angle={(allAmountConsidered / allAmount) * 360}
-              innerRadius={radius - 3}
-              outerRadius={radius + 3}
-              fill="#172EFF"
-              rotation={-90}
-              lineCap="round"
-            />
-            {cardsWithAngles?.map((card, index) => (
-              <Arc
-                key={card.id}
-                x={135}
-                y={135}
-                innerRadius={radius - 10}
-                outerRadius={radius - 16}
-                lineCap="round"
-                fill={card.color}
-                angle={(card.balance / allAmountConsidered) * 360 - 5}
-                rotation={card.rotation - 90}
-              />
-            ))}
-            <Arc angle={160} rotation={-90} />
-            <Arc angle={30} rotation={80} />
-            <Text
-              x={135 - radius}
-              y={135 - radius / 2}
-              width={radius * 2}
-              align="center"
-              text={"Overall"}
-              fontSize={14}
-              fontFamily="Montserrat"
-              fill="#ffffff"
-            />
-            <Text
-              x={135 - radius}
-              y={135 - 13}
-              width={radius * 2}
-              align="center"
-              text={
-                allAmountConsidered &&
-                formatCurrency(allAmountConsidered, "RUB").slice(0, -3)
-              }
-              fontSize={42}
-              fontFamily="BebasNeue"
-              fill="#ffffff"
-            />
-          </Layer>
-        </Stage>
+        {cardStatLoading && (
+          <div className={styles.loader}>
+            <Loader type="Oval" color="#24dffe" height={60} width={60} />
+          </div>
+        )}
+        {!cardStatLoading && (
+          <StatConva
+            allAmount={allAmount}
+            allAmountConsidered={allAmountConsidered}
+            cardsWithAngles={cardsWithAngles}
+          />
+        )}
       </div>
       <div className={styles.goals}>
         <div className={styles.coins}>
@@ -135,8 +105,7 @@ const RoundStat = ({ radius = 130 }) => {
           <PlayIcon />
         </button>
       </div>
+      {showModal && <AddTransactionModal onClose={toggleNewTransactionModal} />}
     </div>
   );
 };
-
-export default RoundStat;

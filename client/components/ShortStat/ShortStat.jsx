@@ -1,6 +1,9 @@
 import React from "react";
+import Loader from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
+
 import { getStatsByPeriod } from "../../store/slices/stats";
+
 import Dropdown from "../UI/Dropdown/Dropdown";
 import PostItem from "./PostItem/PostItem";
 
@@ -12,27 +15,29 @@ const state = {
       id: 0,
       title: "Week",
       selected: true,
-      key: "periods",
+      key: "periods"
     },
     {
       id: 1,
       title: "Month",
       selected: false,
-      key: "periods",
+      key: "periods"
     },
     {
       id: 2,
       title: "Year",
       selected: false,
-      key: "periods",
-    },
-  ],
+      key: "periods"
+    }
+  ]
 };
 
 const ShortStat = () => {
   const dispatch = useDispatch();
 
-  const statsByPeriod = useSelector(({ stats }) => stats.statsByPeriod);
+  const { statsByPeriod, periodStatLoading } = useSelector(
+    ({ stats }) => stats
+  );
 
   const [selectedPeriod, setSelectedPeriod] = React.useState("week");
 
@@ -62,14 +67,17 @@ const ShortStat = () => {
   const fillStat = () => {
     const statArray = Array(7).fill({});
 
-    for (let i = 0; i < statArray.length; i++) {
-      const weeks = Object.values(statsByPeriod);
+    const weeks = Object.values(statsByPeriod);
 
+    for (let i = statArray.length - 1; i >= 0; i--) {
       if (selectedPeriod === "year") {
         statArray[i] = { ...weeks[i] };
       } else {
-        for (let key in weeks) {
-          statArray[i] = { ...Object.values(weeks[key])[i] };
+        for (let key of weeks) {
+          const values = Object.values(key);
+          statArray[i] = {
+            ...values[values.length - i - 1]
+          };
         }
       }
     }
@@ -92,8 +100,6 @@ const ShortStat = () => {
     }
   }, [statsByPeriod]);
 
-  console.log(statArray);
-
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -104,15 +110,22 @@ const ShortStat = () => {
           resetThenSet={resetThenSet}
         />
       </div>
-      <div className={styles.posts}>
-        {statArray?.map((item, index) => (
-          <PostItem
-            key={index}
-            percentTop={(item.expense / maxs.expense) * 50 || 0}
-            percentBottom={(item.income / maxs.income) * 30 || 0}
-          />
-        ))}
-      </div>
+      {periodStatLoading && (
+        <div className={styles.loader}>
+          <Loader type="Oval" color="#24dffe" height={60} width={60} />
+        </div>
+      )}
+      {!periodStatLoading && (
+        <div className={styles.posts}>
+          {statArray?.map((item, index) => (
+            <PostItem
+              key={index}
+              percentTop={(item.expense / maxs.expense) * 50 || 0}
+              percentBottom={(item.income / maxs.income) * 30 || 0}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 };

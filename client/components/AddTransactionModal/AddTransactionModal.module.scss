@@ -121,6 +121,10 @@
 
   margin-bottom: 30px;
 }
+.from_block,
+.to_block {
+  min-height: 60px;
+}
 .date_block {
   flex-wrap: nowrap;
 }

@@ -32,7 +32,7 @@ const Day = ({ date, register, checked }) => {
   );
 };
 
-const SWIPER_SLIDES_COUNT = 1000;
+const SWIPER_SLIDES_COUNT = 30;
 
 const DateBlock = ({ register, onSelectDate }) => {
   const [showCalendar, setShowCalendar] = React.useState(false);

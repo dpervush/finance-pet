@@ -2,17 +2,14 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
 import { getStatsByCard } from "./stats";
 
-export const getCards = createAsyncThunk(
-  "cards/getCards",
-  async (dispatch, getState) => {
-    return await $api.get("/cards/").then((res) =>
-      res.data.map((item) => ({
-        ...item.card_info,
-        id: item.id,
-      }))
-    );
-  }
-);
+export const getCards = createAsyncThunk("cards/getCards", async () => {
+  return await $api.get("/cards/").then((res) =>
+    res.data.map((item) => ({
+      ...item.card_info,
+      id: item.id
+    }))
+  );
+});
 
 export const createCard = createAsyncThunk(
   "cards/createCard",
@@ -25,7 +22,6 @@ export const createCard = createAsyncThunk(
 export const updateCard = createAsyncThunk(
   "cards/updateCard",
   async (body, { dispatch }) => {
-    console.log(body);
     await $api
       .put(`/cards/`, body)
       .then((res) => res.data)
@@ -47,16 +43,43 @@ const cardsSlice = createSlice({
   initialState: {
     cards: [],
     error: null,
+    loading: false
   },
   reducers: {},
   extraReducers: {
+    [getCards.pending]: (state, action) => {
+      state.loading = true;
+    },
     [getCards.fulfilled]: (state, action) => {
       state.cards = action.payload;
+      state.loading = false;
+    },
+    [getCards.rejected]: (state, action) => {
+      state.cards = action.payload;
+      state.loading = false;
+    },
+    [createCard.pending]: (state, action) => {
+      state.loading = true;
     },
     [createCard.rejected]: (state, action) => {
       state.error = action.error;
+      state.loading = false;
     },
-  },
+    [updateCard.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [updateCard.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    },
+    [deleteCard.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [deleteCard.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    }
+  }
 });
 
 export const cardsReducer = cardsSlice.reducer;

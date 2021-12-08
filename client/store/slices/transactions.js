@@ -7,24 +7,30 @@ export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
   async (body, { dispatch, getState }) => {
     const bodyToSend = body || { page: 1, size: TRANSACTIONS_PER_PAGE };
+
     return await $api
       .get("/transactions/", {
-        params: { ...bodyToSend },
+        params: { ...bodyToSend }
       })
-      .then((res) =>
-        res.data.rows.map((item) => ({
-          id: item.id,
-          ...item.transaction_info,
-          card: {
-            id: item.account_card.id,
-            ...item.account_card.card_info,
-          },
-          category: {
-            id: item.account_category.id,
-            ...item.account_category.category_info,
-          },
-        }))
-      );
+      .then((res) => {
+        return {
+          count: res.data.count,
+          items: [
+            ...res.data.rows.map((item) => ({
+              id: item.id,
+              ...item.transaction_info,
+              card: {
+                id: item.account_card.id,
+                ...item.account_card.card_info
+              },
+              category: {
+                id: item.account_category.id,
+                ...item.account_category.category_info
+              }
+            }))
+          ]
+        };
+      });
   }
 );
 
@@ -37,12 +43,12 @@ export const getRecentTransactions = createAsyncThunk(
         ...item.transaction_info,
         card: {
           id: item.account_card.id,
-          ...item.account_card.card_info,
+          ...item.account_card.card_info
         },
         category: {
           id: item.account_category.id,
-          ...item.account_category.category_info,
-        },
+          ...item.account_category.category_info
+        }
       }))
     );
   }
@@ -80,16 +86,59 @@ const transactionsSlice = createSlice({
   initialState: {
     transactions: [],
     recentTransactions: [],
+    loading: false,
+    error: null
   },
   reducers: {},
-  extraReducers: (builder) => {
-    builder.addCase(getTransactions.fulfilled, (state, action) => {
+  extraReducers: {
+    [getTransactions.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getTransactions.fulfilled]: (state, action) => {
       state.transactions = action.payload;
-    });
-    builder.addCase(getRecentTransactions.fulfilled, (state, action) => {
+      state.loading = false;
+    },
+    [getTransactions.rejected]: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
+    [getRecentTransactions.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [getRecentTransactions.fulfilled]: (state, action) => {
       state.recentTransactions = action.payload;
-    });
-  },
+      state.loading = false;
+    },
+    [getRecentTransactions.rejected]: (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    },
+
+    [createTransaction.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [createTransaction.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    },
+
+    [updateTransaction.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [updateTransaction.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    },
+
+    [deleteTransaction.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [deleteTransaction.rejected]: (state, action) => {
+      state.error = action.error;
+      state.loading = false;
+    }
+  }
 });
 
 export const transactionsReducer = transactionsSlice.reducer;

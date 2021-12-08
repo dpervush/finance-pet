@@ -9,10 +9,24 @@
   top: 34px;
   left: 50px;
 }
+.add_transaction {
+  position: absolute;
+  top: 34px;
+  right: 30px;
+}
 .canvas {
   display: flex;
   justify-content: center;
   margin-bottom: 40px;
+  min-height: 270px;
+}
+.loader {
+  min-height: 270px;
+  width: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .goals {
   display: flex;

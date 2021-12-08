@@ -1,17 +1,16 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import $api from "../http";
+import Loader from "react-loader-spinner";
 
 import Layout from "../containers/layout/Layout";
 import TransactionBlock from "../components/TransactionBlock/TransactionBlock";
-import { PlusIcon } from "../components/icons";
 import AddTransactionModal from "../components/AddTransactionModal/AddTransactionModal";
 import Button from "../components/UI/Button/Button";
 import Dropdown from "../components/UI/Dropdown/Dropdown";
 import { PlusIcon } from "../components/icons";
 
 import { getCategories } from "../store/slices/categories";
-import { getTransactions } from "../store/slices/transactions";
 import { getValueFromCookie } from "../utils/getValueFromCookie";
 import { useLoadTransactions } from "../hooks/useLoadTransactions";
 
@@ -41,20 +40,19 @@ const dropdownFlow = [
 const Transactions = ({ user }) => {
   const dispatch = useDispatch();
   const {
-    transactions: { transactions },
     categories: { categories },
-    cards: { cards },
+    cards: { cards }
   } = useSelector((state) => state);
 
   const [showModal, setShowModal] = React.useState(false);
   const [activePage, setActivePage] = React.useState(1);
   const [dropdownState, setDropdownState] = React.useState({
-    flow: dropdownFlow,
+    flow: dropdownFlow
   });
   const [filters, setFilteres] = React.useState({
     card: null,
     category: null,
-    flow: null,
+    flow: null
   });
 
   const { transactions, hasMore, loading } = useLoadTransactions(
@@ -79,9 +77,6 @@ const Transactions = ({ user }) => {
   );
 
   React.useEffect(() => {
-    dispatch(
-      getTransactions({ page: activePage, size: TRANSACTIONS_PER_PAGE })
-    );
     dispatch(getCategories());
   }, []);
 
@@ -90,14 +85,14 @@ const Transactions = ({ user }) => {
       id: card.id,
       title: card.name || card.number,
       selected: false,
-      key: "cards",
+      key: "cards"
     }));
 
     const dropdownCategories = categories.map((category) => ({
       id: category.id,
       title: category.title,
       selected: false,
-      key: "categories",
+      key: "categories"
     }));
 
     setDropdownState({
@@ -139,7 +134,7 @@ const Transactions = ({ user }) => {
     if (index === transactions.length - 1) {
       obj[year][month].push({ ...current, last: true });
     } else {
-    obj[year][month].push(current);
+      obj[year][month].push(current);
     }
 
     return obj;
@@ -208,9 +203,16 @@ const Transactions = ({ user }) => {
             />
           )}
         </div>
-        <button onClick={fetchItemsAndPages} className="btn more">
-          👀
-        </button>
+        {!loading &&
+          filteredTransactions &&
+          Object.keys(filteredTransactions).length == 0 && (
+            <div className={styles.no_data}>No transactions here yet :(</div>
+          )}
+        {loading && (
+          <div className={styles.loader}>
+            <Loader type="Oval" color="#24dffe" height={60} width={60} />
+          </div>
+        )}
       </div>
     </Layout>
   );
@@ -238,8 +240,8 @@ export const getServerSideProps = async (context) => {
   if (!isAuth) {
     return {
       redirect: {
-        destination: "/login",
-      },
+        destination: "/login"
+      }
     };
   }
 
