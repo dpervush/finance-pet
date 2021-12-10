@@ -14,15 +14,26 @@ const CardsList = () => {
   const ref = React.useRef();
 
   const dispatch = useDispatch();
-  const { cards } = useSelector((state) => ({
-    cards: state.cards.cards,
+  const {
+    cards: { cards, loading }
+  } = useSelector((state) => ({
+    cards: state.cards
   }));
 
   const [showModal, setShowModal] = React.useState(false);
+  const [activeCard, setActiveCard] = React.useState(-1);
 
   React.useEffect(() => {
     dispatch(getCards());
   }, []);
+
+  const onCardClickHandle = (event, index) => {
+    if (index === activeCard) {
+      // setActiveCard(-1);
+    } else {
+      // setActiveCard(index);
+    }
+  };
 
   return (
     <div className={styles.card_list} ref={ref}>
@@ -31,8 +42,9 @@ const CardsList = () => {
           <Card
             key={item.id}
             {...item}
-            // onClick={() => onCardClickHandle(index)}
+            onClick={(event) => onCardClickHandle(event, index)}
             // isActive={activeCard === index}
+            isActive={true}
           />
         ))}
       </ul>

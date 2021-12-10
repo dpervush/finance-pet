@@ -9,6 +9,7 @@ import { formatCurrency } from "../../../utils";
 import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
 import styles from "./Card.module.scss";
+import { DeleteConfirmModal } from "../../../containers/DeleteConfirmModal/DeleteConfirmModal";
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +32,7 @@ const Card = ({
 
   const [showActions, setShowActions] = React.useState(false);
   const [showModal, setShowModal] = React.useState(false);
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
 
   const formatNumber = (number) => {
     const formattedNumber =
@@ -51,43 +53,61 @@ const Card = ({
 
   useOnClickOutside(ref, () => setShowActions(false));
 
+  const openModal = () => {
+    setShowDeleteModal(true);
+  };
+  const closeModal = () => {
+    setShowDeleteModal(false);
+  };
+
   return (
-    <Wrapper
-      color={color}
-      onClick={onClick}
-      className={cx({ card: true, active: true })}
-    >
-      <div className={styles.actions_wrapper} ref={ref}>
-        <div
-          className={styles.more}
-          onClick={() => setShowActions(!showActions)}
-        >
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        {showActions && (
-          <div className={styles.actions}>
-            <button className={styles.btn} onClick={onUpdateClickHandler}>
-              Update
-            </button>
-            <button className={styles.btn} onClick={onDeleteClickHandler}>
-              Delete
-            </button>
+    <>
+      <Wrapper
+        color={color}
+        onClick={onClick}
+        className={cx({ card: true, active: isActive })}
+      >
+        <div className={styles.actions_wrapper} ref={ref}>
+          <div
+            className={styles.more}
+            onClick={() => setShowActions(!showActions)}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
           </div>
+          {showActions && (
+            <div className={styles.actions}>
+              <button className={styles.btn} onClick={onUpdateClickHandler}>
+                Update
+              </button>
+              <button className={styles.btn} onClick={openModal}>
+                Delete
+              </button>
+            </div>
+          )}
+        </div>
+        <div className={styles.system}></div>
+        <div className={styles.balance}>
+          {formatCurrency(balance, currency)}
+        </div>
+        <div className={styles.title}>{formatNumber(name) ?? name}</div>
+        {showModal && (
+          <AddCardModal
+            onClose={() => setShowModal(false)}
+            initValues={{ id, balance, currency, name, number, color, total }}
+            method="UPDATE"
+          />
         )}
-      </div>
-      <div className={styles.system}></div>
-      <div className={styles.balance}>{formatCurrency(balance, currency)}</div>
-      <div className={styles.title}>{name ?? formatNumber(number)}</div>
-      {showModal && (
-        <AddCardModal
-          onClose={() => setShowModal(false)}
-          initValues={{ id, balance, currency, name, number, color, total }}
-          method="UPDATE"
+      </Wrapper>
+      {showDeleteModal && (
+        <DeleteConfirmModal
+          title={"Delete card?"}
+          onClose={closeModal}
+          onSubmit={onDeleteClickHandler}
         />
       )}
-    </Wrapper>
+    </>
   );
 };
 

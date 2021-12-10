@@ -23,8 +23,8 @@ const AddCardModal = ({ onClose, method, initValues }) => {
     defaultValues: initValues || {
       total: true,
       color: "#8A16FF",
-      currency: activeCurrency,
-    },
+      currency: activeCurrency
+    }
   });
 
   const handleCurrency = () => {
@@ -34,8 +34,10 @@ const AddCardModal = ({ onClose, method, initValues }) => {
 
   const onSubmit = (data) => {
     method === "UPDATE"
-      ? dispatch(updateCard({ ...data, id: initValues.id }))
-      : dispatch(createCard({ ...data }));
+      ? dispatch(
+          updateCard({ ...data, balance: +data.balance, id: initValues.id })
+        )
+      : dispatch(createCard({ ...data, balance: +data.balance }));
     reset();
     onClose();
   };
@@ -69,7 +71,7 @@ const AddCardModal = ({ onClose, method, initValues }) => {
               className={styles.input}
               type="text"
               placeholder="Название или номер карты"
-              {...register("name", { maxLength: 80 })}
+              {...register("name", { required: true, maxLength: 80 })}
             />
             {/* <div className={styles.icon}></div> */}
           </div>
@@ -77,7 +79,7 @@ const AddCardModal = ({ onClose, method, initValues }) => {
             <div
               className={styles.icon}
               style={{
-                backgroundImage: `url(/assets/icons/${activeCurrency.toLowerCase()}-icon.svg)`,
+                backgroundImage: `url(/assets/icons/${activeCurrency.toLowerCase()}-icon.svg)`
               }}
               onClick={() => setShowCurrencyBlock(true)}
             ></div>

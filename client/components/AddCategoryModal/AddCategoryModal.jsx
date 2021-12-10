@@ -12,13 +12,15 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
   const dispatch = useDispatch();
 
   const { register, handleSubmit, reset } = useForm({
-    defaultValues: initValues || { total: true, color: "#8A16FF" },
+    defaultValues: initValues || { total: true, color: "#8A16FF" }
   });
 
   const onSubmit = (data) => {
     method === "UPDATE"
-      ? dispatch(updateCategory({ ...data, id: initValues.id }))
-      : dispatch(createCategory({ ...data }));
+      ? dispatch(
+          updateCategory({ ...data, budget: +data.budget, id: initValues.id })
+        )
+      : dispatch(createCategory({ ...data, budget: +data.budget }));
     reset();
     onClose();
   };
@@ -47,7 +49,7 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
               className={styles.input}
               type="text"
               placeholder="Название категории"
-              {...register("title", { maxLength: 80 })}
+              {...register("title", { maxLength: 80, required: true })}
             />
             <div className={styles.icon}></div>
           </div>
