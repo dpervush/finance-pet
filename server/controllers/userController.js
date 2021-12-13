@@ -1,4 +1,7 @@
 const UserService = require("../services/userService");
+const CardsService = require("../services/cardsService");
+const CategoriesService = require("../services/categoriesService");
+
 const { validationResult } = require("express-validator");
 const ApiError = require("../exceptions/apiError.js");
 const getValueFromCookie = require("../utils/getValueFromCookie.js");
@@ -23,9 +26,38 @@ class UserController {
         password
       );
 
+      await CardsService.create({
+        name: "Cash",
+        color: "#372e79",
+        balance: 0,
+        currency: "RUB",
+        total: true,
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "groceries",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "entertainment",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "transport",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "shopping",
+        accountId: userData.user.accountId
+      });
+
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
+        httpOnly: true
       });
 
       return res.json(userData);
@@ -42,11 +74,11 @@ class UserController {
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
+        httpOnly: true
       });
 
       res.cookie("accountId", userData.user.accountId, {
-        httpOnly: true,
+        httpOnly: true
       });
 
       return res.json(userData);
@@ -103,7 +135,7 @@ class UserController {
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
+        httpOnly: true
       });
 
       return res.json(userData);

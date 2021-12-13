@@ -8,7 +8,7 @@ const {
   CardInfo,
   CategoryInfo,
   AccountCards,
-  AccountCategories,
+  AccountCategories
 } = require("../models");
 
 const getWeek = (date) => {
@@ -29,10 +29,10 @@ class StatsService {
           model: TransactionInfo,
           required: true,
           attributes: {
-            exclude: ["createdAt", "updatedAt", "accountTransactionId"],
-          },
-        },
-      ],
+            exclude: ["createdAt", "updatedAt", "accountTransactionId"]
+          }
+        }
+      ]
     });
 
     return transactions;
@@ -253,7 +253,8 @@ class StatsService {
       ), 0) as incomes
       FROM account_cards as account_cards
       inner join card_infos as card_infos
-      on account_cards.id = card_infos."accountCardId"`);
+      on account_cards.id = card_infos."accountCardId"
+      where account_cards."accountId" = ${accountId}`);
 
     return cards;
   }
