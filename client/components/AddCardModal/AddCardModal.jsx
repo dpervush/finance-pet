@@ -7,9 +7,9 @@ import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.s
 
 import { createCard, updateCard } from "../../store/slices/cards";
 import Button from "../UI/Button/Button";
+import { CurrencyBlock } from "./CurrencyBlock/CurrencyBlock";
 
 import styles from "./AddCardModal.module.scss";
-import { CurrencyBlock } from "./CurrencyBlock/CurrencyBlock";
 
 const AddCardModal = ({ onClose, method, initValues }) => {
   const dispatch = useDispatch();
@@ -19,7 +19,13 @@ const AddCardModal = ({ onClose, method, initValues }) => {
   );
   const [showCurrencyBlock, setShowCurrencyBlock] = React.useState(false);
 
-  const { register, handleSubmit, reset, getValues } = useForm({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    getValues,
+    formState: { errors }
+  } = useForm({
     defaultValues: initValues || {
       total: true,
       color: "#8A16FF",
@@ -66,14 +72,21 @@ const AddCardModal = ({ onClose, method, initValues }) => {
       <div className={styles.body} ref={contentRef}>
         <div className={styles.title}>Add new card</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-          <div className={`${styles.form_item} ${styles.form_item__input}`}>
-            <input
-              className={styles.input}
-              type="text"
-              placeholder="Название или номер карты"
-              {...register("name", { required: true, maxLength: 80 })}
-            />
-            {/* <div className={styles.icon}></div> */}
+          <div className={styles.form_block}>
+            <div className={`${styles.form_item} ${styles.form_item__input}`}>
+              <input
+                className={styles.input}
+                type="text"
+                placeholder="Название или номер карты"
+                {...register("name", { required: true, maxLength: 80 })}
+              />
+              {/* <div className={styles.icon}></div> */}
+            </div>
+            <div className={styles.error}>
+              {errors.name &&
+                errors.name.type === "required" &&
+                "This field is required"}
+            </div>
           </div>
           <div className={`${styles.form_item} ${styles.form_item__input}`}>
             <div

@@ -17,7 +17,7 @@ const schema = yup.object().shape({
   password: yup.string().min(2).max(32).required("Password is required"),
   passwordConfirmation: yup
     .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match"),
+    .oneOf([yup.ref("password"), null], "Passwords must match")
 });
 
 const Registration = () => {
@@ -41,8 +41,12 @@ const Registration = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+    watch,
+    formState: { errors }
+  } = useForm({});
+
+  const password = React.useRef({});
+  password.current = watch("password", "");
 
   const onSubmit = (data) => {
     dispatch(registration(data));
@@ -57,7 +61,10 @@ const Registration = () => {
             <input
               className={styles.input}
               {...register("firstName", {
-                required: true,
+                required: {
+                  value: true,
+                  message: "first name is required"
+                }
               })}
               placeholder="First name"
               onChange={onChangedForm}
@@ -70,7 +77,10 @@ const Registration = () => {
             <input
               className={styles.input}
               {...register("secondName", {
-                required: true,
+                required: {
+                  value: true,
+                  message: "second name is required"
+                }
               })}
               placeholder="Second name"
               onChange={onChangedForm}
@@ -83,7 +93,10 @@ const Registration = () => {
             <input
               className={styles.input}
               {...register("email", {
-                required: true,
+                required: {
+                  value: true,
+                  message: "email is required"
+                }
               })}
               placeholder="email"
               onChange={onChangedForm}
@@ -96,7 +109,13 @@ const Registration = () => {
             <input
               className={styles.input}
               type="password"
-              {...register("password", { required: true })}
+              {...register("password", {
+                required: "you must specify a password",
+                minLength: {
+                  value: 8,
+                  message: "password must have at least 8 characters"
+                }
+              })}
               placeholder="enter password"
               onChange={onChangedForm}
             />
@@ -108,9 +127,9 @@ const Registration = () => {
             <input
               className={styles.input}
               type="password"
-              {...register("passwordConfirmation", {
-                required: true,
-                maxLength: 32,
+              ref={register("passwordConfirmation", {
+                validate: (value) =>
+                  value === password.current || "The passwords do not match"
               })}
               placeholder="repeat password"
               onChange={onChangedForm}

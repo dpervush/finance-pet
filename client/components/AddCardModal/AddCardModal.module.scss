@@ -14,14 +14,15 @@
   font-size: 34px;
   text-align: center;
 }
+.form_block {
+  margin-bottom: 12px;
+}
 .form_item {
   &__input {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 25px;
-
-    margin-bottom: 12px;
 
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
@@ -74,6 +75,10 @@
   &::placeholder {
     color: rgba(8, 25, 69, 0.4);
   }
+}
+.error {
+  margin-top: 5px;
+  font-size: 12px;
 }
 .subtitle {
   font-weight: 500;

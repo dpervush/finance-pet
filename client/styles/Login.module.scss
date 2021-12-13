@@ -22,16 +22,10 @@
   line-height: 32px;
   text-align: center;
 }
+.form_block {
+  margin-bottom: 15px;
+}
 .form_item {
-  position: relative;
-  &_input {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 25px;
-
-    margin-bottom: 12px;
-  }
 }
 .input {
   display: block;
@@ -53,15 +47,11 @@
   }
 }
 .error {
-  position: absolute;
-  top: 50%;
-  right: -15px;
-  max-width: 120px;
+  margin-top: 5px;
 
   font-size: 14px;
   font-family: $secondFont;
-
-  transform: translate(100%, -50%);
+  color: #bb164e;
 }
 .login_error {
   position: absolute;

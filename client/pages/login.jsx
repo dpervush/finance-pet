@@ -13,10 +13,8 @@ import $api from "../http";
 
 import styles from "../styles/Login.module.scss";
 
-const schema = yup.object().shape({
-  email: yup.string().email().required(),
-  password: yup.string().min(2).max(32).required(),
-});
+const emailPattern =
+  '/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/i';
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -39,12 +37,14 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm({ resolver: yupResolver(schema) });
+    formState: { errors }
+  } = useForm();
 
   const onSubmit = (data) => {
     dispatch(login(data));
   };
+
+  console.log(errors);
 
   return (
     <div className={styles.login}>
@@ -55,34 +55,56 @@ const Login = () => {
           onSubmit={handleSubmit(onSubmit)}
           autoComplete="off"
         >
-          <div className={`${styles.form_item} ${styles.form_item_input}`}>
-            <input
-              className={styles.input}
-              {...register("email", {
-                required: true,
-                pattern: /^[A-Za-z]+$/i,
-              })}
-              onChange={onChangedForm}
-              type="email"
-              placeholder="email"
-              autoComplete="off"
-            />
-            {errors.email && (
-              <span className={styles.error}>{errors.email.message}</span>
-            )}
+          <div className={styles.form_block}>
+            <div className={`${styles.form_item} ${styles.form_item_input}`}>
+              <input
+                className={styles.input}
+                {...register("email", {
+                  required: {
+                    value: true,
+                    message: "email is required"
+                  },
+                  pattern: {
+                    value: emailPattern,
+                    message: "enter valid email"
+                  }
+                })}
+                onChange={onChangedForm}
+                type="email"
+                placeholder="email"
+                autoComplete="off"
+              />
+            </div>
+            <div className={styles.error}>
+              {errors.email &&
+                errors.email.type === "required" &&
+                errors.email.message}
+            </div>
           </div>
-          <div className={`${styles.form_item} ${styles.form_item_input}`}>
-            <input
-              className={styles.input}
-              type="password"
-              {...register("password", { required: true, maxLength: 32 })}
-              onChange={onChangedForm}
-              placeholder="password"
-            />
-            {errors.password && (
-              <span className={styles.error}>{errors.password.message}</span>
-            )}
+          <div className={styles.form_block}>
+            <div className={`${styles.form_item} ${styles.form_item_input}`}>
+              <input
+                className={styles.input}
+                type="password"
+                {...register("password", {
+                  required: {
+                    value: true,
+                    message: "password is required"
+                  },
+                  maxLength: {
+                    value: 32,
+                    message: "max length exceeded"
+                  }
+                })}
+                onChange={onChangedForm}
+                placeholder="password"
+              />
+            </div>
+            <div className={styles.error}>
+              {errors.password && errors.password.message}
+            </div>
           </div>
+
           <div className={`${styles.form_item} ${styles.info}`}>
             <div className={styles.register}>
               Нет аккаунта?{" "}
@@ -128,8 +150,8 @@ export const getServerSideProps = async (context) => {
   if (isAuth) {
     return {
       redirect: {
-        destination: "/",
-      },
+        destination: "/"
+      }
     };
   }
   return { props: {} };
