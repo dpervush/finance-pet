@@ -4,11 +4,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Virtual } from "swiper";
 
 import icon from "../../../public/assets/icons/calendar.svg";
+import { CustomCalendar } from "./Calendar/CustomCalendar";
 
 import { monthNamesShort, weekDayNames } from "../../../utils/constants";
 
 import styles from "../AddTransactionModal.module.scss";
-import { CustomCalendar } from "./Calendar/CustomCalendar";
 
 const Day = ({ date, register, checked }) => {
   return (
@@ -32,33 +32,57 @@ const Day = ({ date, register, checked }) => {
   );
 };
 
-const SWIPER_SLIDES_COUNT = 30;
+const SWIPER_SLIDES_COUNT = 35;
+
+const formDates = (date = new Date()) => {
+  const dates = Array.from({ length: SWIPER_SLIDES_COUNT }).map((_, index) => {
+    const d = new Date(date);
+
+    return new Date(d.setDate(d.getDate() - index));
+  });
+
+  return dates;
+};
 
 const DateBlock = ({ register, onSelectDate }) => {
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [swiperRef, setSwiperRef] = React.useState(null);
+  const [date, setDate] = React.useState(new Date());
+  const [calendarDate, setCalendarDate] = React.useState(new Date());
+  const [prevCalendarDate, setPrevCalendarDate] = React.useState(new Date());
 
-  const dates = Array.from({ length: SWIPER_SLIDES_COUNT }).map((_, index) => {
-    const d = new Date();
-    return new Date(d.setDate(d.getDate() - index));
-  });
+  const [dates, setDates] = React.useState([]);
 
   const openCalendar = () => setShowCalendar(true);
   const closeCalendar = () => setShowCalendar(false);
 
-  const onDateChange = (date) => {
-    const diffDays =
-      Math.abs(date.setHours(0, 0, 0, 0) - new Date().setHours(0, 0, 0, 0)) /
-      86400000;
+  React.useEffect(() => {
+    setDates(formDates());
+  }, []);
 
-    swiperRef.slideTo(diffDays);
+  const onDateChange = (newDate) => {
+    setPrevCalendarDate(calendarDate);
+    setDate(newDate);
+    setCalendarDate(newDate);
+
+    setDates(formDates(newDate));
+
+    swiperRef.slideTo(0);
   };
 
   const onDateSlideChange = (event) => {
-    const d = new Date();
+    const d = new Date(date);
 
-    onSelectDate(new Date(d.setDate(d.getDate() - event.activeIndex)));
+    if (prevCalendarDate !== calendarDate) {
+      setDate(
+        new Date(
+          d.setDate(d.getDate() - (event.activeIndex - event.previousIndex))
+        )
+      );
+    }
   };
+
+  console.log(date);
 
   return (
     <>
@@ -80,7 +104,7 @@ const DateBlock = ({ register, onSelectDate }) => {
           dir="rtl"
           slidesPerView={4}
           pagination={{
-            type: "fraction",
+            type: "fraction"
           }}
           spaceBetween={13}
           navigation={true}
@@ -92,7 +116,7 @@ const DateBlock = ({ register, onSelectDate }) => {
             <SwiperSlide
               key={date}
               virtualIndex={index}
-              onClick={(e) => swiperRef.slideTo(index)}
+              onClick={() => swiperRef.slideTo(index)}
             >
               {({ isActive }) => (
                 <Day register={register} date={date} checked={isActive} />

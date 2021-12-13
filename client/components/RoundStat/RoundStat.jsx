@@ -7,9 +7,10 @@ import AddTransactionModal from "../AddTransactionModal/AddTransactionModal";
 import Button from "../UI/Button/Button";
 import { CoinsIcon, PlayIcon, PlusIcon, SettingsIcon } from "../icons";
 
-import { getStatsByCard } from "../../store/slices/stats";
+import { getStatsByCard, getStatsByCategory } from "../../store/slices/stats";
 
 import styles from "./RoundStat.module.scss";
+import { useCategoryBalance } from "../../hooks/useCategoryBalance";
 
 const StatConva = dynamic(() => import("./StatConva"), {
   ssr: false
@@ -33,7 +34,11 @@ const calcRotationAndAngle = (cards, allMoney) => {
 
 export const RoundStat = () => {
   const dispatch = useDispatch();
-  const { statsByCard, cardStatLoading } = useSelector(({ stats }) => stats);
+  const { statsByCard, cardStatLoading, statsByCategory } = useSelector(
+    ({ stats }) => stats
+  );
+
+  const { categoriesBalance } = useCategoryBalance(statsByCategory);
 
   const [allAmount, setAllAmount] = React.useState(null);
   const [allAmountConsidered, setAllAmountConsidered] = React.useState(null);
@@ -46,6 +51,7 @@ export const RoundStat = () => {
   };
 
   React.useEffect(() => {
+    dispatch(getStatsByCategory());
     dispatch(getStatsByCard());
   }, []);
 
@@ -105,7 +111,13 @@ export const RoundStat = () => {
           <PlayIcon />
         </button>
       </div>
-      {showModal && <AddTransactionModal onClose={toggleNewTransactionModal} />}
+
+      {showModal && (
+        <AddTransactionModal
+          onClose={toggleNewTransactionModal}
+          categories={categoriesBalance}
+        />
+      )}
     </div>
   );
 };

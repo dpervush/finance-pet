@@ -1,30 +1,40 @@
 @import "styles/vars.scss";
 
 .body {
-  min-width: 500px;
-  padding: 30px;
+  width: 400px;
+  padding: 25px 30px 20px;
 }
-.subtitle {
-  margin-bottom: 12px;
+.title {
+  margin-bottom: 15px;
+
+  font-weight: 500;
+  font-size: 22px;
+  text-align: center;
 }
 .subtitle,
 .label {
   font-weight: 500;
-  font-size: 16px;
+  font-size: 12px;
   text-transform: uppercase;
 }
+.subtitle {
+  margin-bottom: 12px;
+}
 .label {
+  flex: 0 0 20%;
   font-weight: 500;
-  font-size: 12px;
+  font-size: 10px;
   text-transform: uppercase;
   text-align: center;
 
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-
   .text {
+    display: inline-block;
+    width: 60px;
+
     text-align: center;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 .radio.visually_hidden {
@@ -39,10 +49,10 @@
 .icon {
   position: relative;
   display: inline-block;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   padding: 12px;
-  margin: 3px auto;
+  margin: 3px auto 5px;
 
   display: flex;
   align-items: center;
@@ -70,12 +80,12 @@
     display: inline-block;
     width: 100%;
 
-    font-size: 14px;
+    font-size: 12px;
   }
   span {
     display: inline-block;
     width: 100%;
-    padding: 8px 12px;
+    padding: 8px 10px;
 
     background-color: rgba(20, 34, 79, 0.1);
 
@@ -100,13 +110,6 @@
   }
 }
 
-.title {
-  margin-bottom: 30px;
-
-  font-weight: 500;
-  font-size: 34px;
-  text-align: center;
-}
 // .form {
 //   margin-bottom: 30px;
 // }
@@ -116,33 +119,35 @@
   display: flex;
   align-items: flex-start;
 
-  justify-content: space-between;
+  justify-content: flex-starts;
   flex-wrap: wrap;
 
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 .from_block,
 .to_block {
   min-height: 60px;
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 }
 .date_block {
   flex-wrap: nowrap;
 }
 .add_btn {
   position: relative;
-  height: 12px;
+  height: 10px;
   margin-top: -2px;
 
   color: #081945;
   background-color: transparent;
   span {
-    display: inline-block;
-    height: 12px;
-    margin-bottom: 12px;
+    max-height: 10px;
 
     font-family: $secondFont;
     font-weight: 500;
-    font-size: 12px;
+    font-size: 10px;
+    line-height: 10px;
     text-transform: uppercase;
     color: inherit;
   }
@@ -157,18 +162,18 @@
   &::after {
     top: 16px;
 
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 
     border-radius: 50%;
     border: 1px dashed #081945;
   }
   &::before {
-    top: calc(12px + 16px);
+    top: 26px;
     left: 50%;
 
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
 
     transform: translateX(-50%);
 
@@ -186,24 +191,24 @@
   justify-content: center;
   align-items: center;
 
-  margin: 0 5px;
+  margin: 5px 5px;
 }
 
-.from_block .radio:checked + .icon {
+.from_block .radio:checked + .text + .icon {
   background-color: rgba(4, 24, 75, 0.7);
 }
-.to_block .radio:checked + .icon {
+.to_block .radio:checked + .text + .icon {
   background-color: rgba(138, 22, 255, 0.4);
 }
-.radio:checked + .icon::before {
+.radio:checked + .text + .icon::before {
   position: absolute;
   content: "";
   right: -5px;
   top: -2px;
   z-index: 4;
 
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 
   border-radius: 50%;
   background-color: #372e79;
@@ -233,11 +238,11 @@
 }
 .second_page {
   .header {
-    margin: 0 auto 30px;
-    padding: 12px 10px;
+    margin: 0 auto 20px;
+    padding: 10px;
 
     font-weight: 500;
-    font-size: 16px;
+    font-size: 14px;
     text-transform: uppercase;
     color: #081945;
     text-align: center;
@@ -276,7 +281,7 @@
 .input {
   display: block;
   width: 100%;
-  padding: 12px 10px;
+  padding: 10px 10px;
 
   font-family: $secondFont;
   font-weight: 500;
@@ -309,25 +314,26 @@
   }
 
   &.date_item__calendar {
-    width: 75px;
-    padding: 10px;
+    flex: 0 0 45px;
+    padding: 7px 5px;
 
     border-color: transparent;
   }
   .date_day {
-    width: 75px;
-    padding: 10px;
+    width: 55px;
+    padding: 7px 5px;
 
+    text-align: center;
     border-radius: 10px;
     border: 1px solid transparent;
   }
   .number {
     text-align: center;
-    font-size: 20px;
+    font-size: 14px;
   }
   .day {
-    font-size: 10px;
-    line-height: 12px;
+    font-size: 8px;
+    line-height: 10px;
   }
 }
 .date_block .radio:checked + .date_day {

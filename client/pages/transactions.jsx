@@ -15,6 +15,8 @@ import { getValueFromCookie } from "../utils/getValueFromCookie";
 import { useLoadTransactions } from "../hooks/useLoadTransactions";
 
 import styles from "../styles/Transactions.module.scss";
+import { getStatsByCategory } from "../store/slices/stats";
+import { useCategoryBalance } from "../hooks/useCategoryBalance";
 
 const dropdownFlow = [
   {
@@ -43,6 +45,10 @@ const Transactions = ({ user }) => {
     categories: { categories },
     cards: { cards }
   } = useSelector((state) => state);
+
+  const { statsByCategory } = useSelector(({ stats }) => stats);
+
+  const { categoriesBalance } = useCategoryBalance(statsByCategory);
 
   const [showModal, setShowModal] = React.useState(false);
   const [activePage, setActivePage] = React.useState(1);
@@ -77,6 +83,7 @@ const Transactions = ({ user }) => {
   );
 
   React.useEffect(() => {
+    dispatch(getStatsByCategory());
     dispatch(getCategories());
   }, []);
 
@@ -163,7 +170,12 @@ const Transactions = ({ user }) => {
 
   return (
     <Layout>
-      {showModal && <AddTransactionModal onClose={() => setShowModal(false)} />}
+      {showModal && (
+        <AddTransactionModal
+          onClose={() => setShowModal(false)}
+          categories={categoriesBalance}
+        />
+      )}
       <div className={styles.content}>
         <div className={styles.filters}>
           <div className={styles.filter}>

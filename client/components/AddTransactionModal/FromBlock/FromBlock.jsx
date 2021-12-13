@@ -29,7 +29,7 @@ export const FromBlock = ({ items, register, onAddCardHandle }) => {
                 type="radio"
                 value={id}
               />
-              {name}
+              <span className={styles.text}>{name}</span>
               <span className={styles.icon}>
                 <Image src={icon} alt="icon" />
               </span>

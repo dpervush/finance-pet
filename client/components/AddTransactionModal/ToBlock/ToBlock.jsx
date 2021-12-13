@@ -3,8 +3,10 @@ import Image from "next/image";
 import icon from "../../../public/assets/icons/shopping.svg";
 
 import styles from "../AddTransactionModal.module.scss";
+import { formatCurrency } from "../../../utils";
 
 export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
+  console.log(items);
   return (
     <>
       <div className={styles.subtitle}>To</div>
@@ -18,7 +20,7 @@ export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
             <span>category</span>
           </button>
         </div>
-        {items?.map(({ id, title, budget }) => (
+        {items?.map(({ id, title, budget, sum }) => (
           <div key={id} className={styles.from_item}>
             <label className={styles.label}>
               <input
@@ -27,12 +29,16 @@ export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
                 type="radio"
                 value={id}
               />
-              {title}
+              <span className={styles.text}>{title}</span>
               <span className={styles.icon}>
                 <Image src={icon} alt="icon" />
               </span>
-              <span className={styles.balance}>600</span>
-              <span className={styles.budget}>{budget}</span>
+              <span className={styles.balance}>
+                {formatCurrency(+sum).slice(0, -3)}
+              </span>
+              <span className={styles.budget}>
+                {formatCurrency(+budget).slice(0, -3)}
+              </span>
             </label>
           </div>
         ))}

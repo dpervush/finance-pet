@@ -14,21 +14,26 @@ import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.s
 
 import {
   createTransaction,
-  updateTransaction,
+  updateTransaction
 } from "../../store/slices/transactions";
 
 import styles from "./AddTransactionModal.module.scss";
 
 const DateBlock = dynamic(() => import("./DateBlock/DateBlock"), {
-  ssr: false,
+  ssr: false
 });
 
-const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
+const AddTransactionModal = ({
+  show,
+  onClose,
+  method,
+  initValues = {},
+  categories
+}) => {
   const dispatch = useDispatch();
 
   const {
-    categories: { categories },
-    cards: { cards },
+    cards: { cards }
   } = useSelector((store) => store);
 
   const [activePage, setActivePage] = React.useState(0);
@@ -46,8 +51,8 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
       to: initValues.category?.id.toString() || null,
       amount: initValues.amount || null,
       comment: initValues.comment || "",
-      date: initValues.date || new Date(),
-    },
+      date: initValues.date || new Date()
+    }
   });
 
   const [source, target, type] = watch(["from", "to", "type"]);
@@ -63,7 +68,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
           amount,
           cardId: selectedCard.id,
           categoryId: selectedCategory.id,
-          date: new Date(date),
+          date: new Date(date)
         })
       );
     } else {
@@ -74,7 +79,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
           amount,
           cardId: selectedCard.id,
           categoryId: selectedCategory.id,
-          date: new Date(date),
+          date: new Date(date)
         })
       );
     }
@@ -147,7 +152,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
                 <Button
                   innerText="Next"
                   type="button"
-                  padding="13px 35px"
+                  padding="7px 35px"
                   onClick={navNextPage}
                   isDisabled={!source || !target}
                 ></Button>
@@ -160,8 +165,8 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
                 {selectedCard.name} {">"} {selectedCategory.title}
               </div>
               <div className={styles.form_item}>
+                <div className={styles.subtitle}>Сколько</div>
                 <label className={styles.label}>
-                  <span>Сколько</span>
                   <input
                     className={styles.input}
                     type="number"
@@ -172,8 +177,8 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
               </div>
               <DateBlock register={register} onSelectDate={setDate} />
               <div className={styles.form_item}>
+                <div className={styles.subtitle}>Комментарий</div>
                 <label className={styles.label}>
-                  <span>Комментарий</span>
                   <input
                     className={styles.input}
                     type="text"
@@ -187,13 +192,13 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
                 <Button
                   innerText="Back"
                   type="button"
-                  padding="13px 35px"
+                  padding="7px 35px"
                   onClick={navPrevPage}
                 ></Button>
                 <Button
                   innerText="Finish"
                   type="submit"
-                  padding="13px 35px"
+                  padding="7px 35px"
                   isDisabled={!watchSecondBlockValues[0]}
                 ></Button>
               </div>
