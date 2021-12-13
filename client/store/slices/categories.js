@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
+import { clearError } from "./auth";
 
 export const getCategories = createAsyncThunk(
   "categories/getCategories",
@@ -45,41 +46,33 @@ const categoriesSlice = createSlice({
     error: null
   },
   reducers: {},
-  extraReducers: {
-    [getCategories.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [getCategories.fulfilled]: (state, action) => {
-      state.categories = action.payload;
-      state.loading = false;
-    },
-    [getCategories.rejected]: (state, action) => {
-      state.loading = false;
-    },
-
-    [createCategory.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [createCategory.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    },
-
-    [updateCategory.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [updateCategory.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    },
-
-    [deleteCategory.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [deleteCategory.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    }
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCategories.fulfilled, (state, action) => {
+        state.categories = action.payload;
+      })
+      .addCase(clearError, (state, action) => {
+        state.error = null;
+      })
+      .addMatcher(
+        (action) => action.type.endsWith("/pending"),
+        (state, action) => {
+          state.loading = true;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.error = action.error;
+          state.loading = false;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled"),
+        (state, action) => {
+          state.loading = false;
+        }
+      );
   }
 });
 

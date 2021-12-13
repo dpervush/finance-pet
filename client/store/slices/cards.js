@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
 import { getStatsByCard } from "./stats";
+import { clearError } from "./auth";
 
 export const getCards = createAsyncThunk("cards/getCards", async () => {
   return await $api.get("/cards/").then((res) =>
@@ -46,39 +47,33 @@ const cardsSlice = createSlice({
     loading: false
   },
   reducers: {},
-  extraReducers: {
-    [getCards.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [getCards.fulfilled]: (state, action) => {
-      state.cards = action.payload;
-      state.loading = false;
-    },
-    [getCards.rejected]: (state, action) => {
-      state.cards = action.payload;
-      state.loading = false;
-    },
-    [createCard.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [createCard.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    },
-    [updateCard.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [updateCard.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    },
-    [deleteCard.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [deleteCard.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    }
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCards.fulfilled, (state, action) => {
+        state.cards = action.payload;
+      })
+      .addCase(clearError, (state, action) => {
+        state.error = null;
+      })
+      .addMatcher(
+        (action) => action.type.endsWith("/pending"),
+        (state, action) => {
+          state.loading = true;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.error = action.error;
+          state.loading = false;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled"),
+        (state, action) => {
+          state.loading = false;
+        }
+      );
   }
 });
 

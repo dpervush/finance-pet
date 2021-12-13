@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
+import { clearError } from "./auth";
 
 export const getStatsByPeriod = createAsyncThunk(
   "stats/getStatsByPeriod",
@@ -34,42 +35,47 @@ const statsSlice = createSlice({
     periodStatLoading: false
   },
   reducers: {},
-  extraReducers: {
-    [getStatsByPeriod.pending]: (state, action) => {
-      state.periodStatLoading = true;
-    },
-    [getStatsByCategory.pending]: (state, action) => {
-      state.categoryStatLoading = true;
-    },
-    [getStatsByCard.pending]: (state, action) => {
-      state.cardStatLoading = true;
-    },
-
-    [getStatsByPeriod.fulfilled]: (state, action) => {
-      state.statsByPeriod = action.payload;
-      state.periodStatLoading = false;
-    },
-    [getStatsByCategory.fulfilled]: (state, action) => {
-      state.statsByCategory = action.payload;
-      state.categoryStatLoading = false;
-    },
-    [getStatsByCard.fulfilled]: (state, action) => {
-      state.statsByCard = action.payload;
-      state.cardStatLoading = false;
-    },
-
-    [getStatsByPeriod.rejected]: (state, action) => {
-      state.error = action.payload;
-      state.periodStatLoading = false;
-    },
-    [getStatsByCategory.rejected]: (state, action) => {
-      state.error = action.payload;
-      state.categoryStatLoading = false;
-    },
-    [getStatsByCard.rejected]: (state, action) => {
-      state.error = action.payload;
-      state.cardStatLoading = false;
-    }
+  extraReducers: (builder) => {
+    builder
+      .addCase(getStatsByPeriod.fulfilled, (state, action) => {
+        state.statsByPeriod = action.payload;
+        state.periodStatLoading = false;
+      })
+      .addCase(getStatsByCategory.fulfilled, (state, action) => {
+        state.statsByCategory = action.payload;
+        state.categoryStatLoading = false;
+      })
+      .addCase(getStatsByCard.fulfilled, (state, action) => {
+        state.statsByCard = action.payload;
+        state.cardStatLoading = false;
+      })
+      .addCase(getStatsByPeriod.pending, (state, action) => {
+        state.periodStatLoading = true;
+      })
+      .addCase(getStatsByCategory.pending, (state, action) => {
+        state.categoryStatLoading = true;
+      })
+      .addCase(getStatsByCard.pending, (state, action) => {
+        state.cardStatLoading = true;
+      })
+      .addCase(getStatsByPeriod.rejected, (state, action) => {
+        state.periodStatLoading = false;
+      })
+      .addCase(getStatsByCategory.rejected, (state, action) => {
+        state.categoryStatLoading = false;
+      })
+      .addCase(getStatsByCard.rejected, (state, action) => {
+        state.cardStatLoading = false;
+      })
+      .addCase(clearError, (state, action) => {
+        state.error = null;
+      })
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.error = action.error;
+        }
+      );
   }
 });
 

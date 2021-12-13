@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import $api from "../../http";
 import { TRANSACTIONS_PER_PAGE } from "../../utils/constants";
+import { clearError } from "./auth";
 import { getCards } from "./cards";
 
 export const getTransactions = createAsyncThunk(
@@ -90,54 +91,36 @@ const transactionsSlice = createSlice({
     error: null
   },
   reducers: {},
-  extraReducers: {
-    [getTransactions.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [getTransactions.fulfilled]: (state, action) => {
-      state.transactions = action.payload;
-      state.loading = false;
-    },
-    [getTransactions.rejected]: (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
-    },
-
-    [getRecentTransactions.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [getRecentTransactions.fulfilled]: (state, action) => {
-      state.recentTransactions = action.payload;
-      state.loading = false;
-    },
-    [getRecentTransactions.rejected]: (state, action) => {
-      state.error = action.payload;
-      state.loading = false;
-    },
-
-    [createTransaction.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [createTransaction.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    },
-
-    [updateTransaction.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [updateTransaction.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    },
-
-    [deleteTransaction.pending]: (state, action) => {
-      state.loading = true;
-    },
-    [deleteTransaction.rejected]: (state, action) => {
-      state.error = action.error;
-      state.loading = false;
-    }
+  extraReducers: (builder) => {
+    builder
+      .addCase(getTransactions.fulfilled, (state, action) => {
+        state.transactions = action.payload;
+      })
+      .addCase(getRecentTransactions.fulfilled, (state, action) => {
+        state.recentTransactions = action.payload;
+      })
+      .addCase(clearError, (state, action) => {
+        state.error = null;
+      })
+      .addMatcher(
+        (action) => action.type.endsWith("/pending"),
+        (state, action) => {
+          state.loading = true;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/rejected"),
+        (state, action) => {
+          state.error = action.error;
+          state.loading = false;
+        }
+      )
+      .addMatcher(
+        (action) => action.type.endsWith("/fulfilled"),
+        (state, action) => {
+          state.loading = false;
+        }
+      );
   }
 });
 
