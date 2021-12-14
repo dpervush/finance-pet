@@ -26,7 +26,8 @@ const Card = ({
   total,
   onClick,
   isActive,
-  id,
+  icon,
+  id
 }) => {
   const dispatch = useDispatch();
 
@@ -95,7 +96,16 @@ const Card = ({
         {showModal && (
           <AddCardModal
             onClose={() => setShowModal(false)}
-            initValues={{ id, balance, currency, name, number, color, total }}
+            initValues={{
+              id,
+              balance,
+              currency,
+              name,
+              number,
+              color,
+              total,
+              icon
+            }}
             method="UPDATE"
           />
         )}

@@ -12,7 +12,7 @@ export const monthNamesShort = [
   "Sep",
   "Oct",
   "Nov",
-  "Dec",
+  "Dec"
 ];
 
 export const monthNamesLong = [
@@ -27,7 +27,19 @@ export const monthNamesLong = [
   "September",
   "October",
   "November",
-  "December",
+  "December"
 ];
 
 export const weekDayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export const icons = [
+  "airplane",
+  "bag-handle",
+  "bicycle",
+  "book",
+  "call",
+  "cafe",
+  "easel",
+  "car",
+  "pricetags"
+];

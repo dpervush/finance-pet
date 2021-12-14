@@ -8,8 +8,11 @@ import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.s
 import { createCard, updateCard } from "../../store/slices/cards";
 import Button from "../UI/Button/Button";
 import { CurrencyBlock } from "./CurrencyBlock/CurrencyBlock";
+import { IconsBlock } from "../UI/IconsBlock/IconsBlock";
 
 import styles from "./AddCardModal.module.scss";
+import CategoriesIcons from "../icons/categoriesIcons/CategoriesIcons";
+import { icons } from "../../utils/constants";
 
 const AddCardModal = ({ onClose, method, initValues }) => {
   const dispatch = useDispatch();
@@ -18,6 +21,11 @@ const AddCardModal = ({ onClose, method, initValues }) => {
     initValues?.currency || "RUB"
   );
   const [showCurrencyBlock, setShowCurrencyBlock] = React.useState(false);
+
+  const [activeIcon, setActiveIcon] = React.useState(
+    initValues?.icon || icons[0]
+  );
+  const [showIconsBlock, setShowIconsBlock] = React.useState(false);
 
   const {
     register,
@@ -29,13 +37,19 @@ const AddCardModal = ({ onClose, method, initValues }) => {
     defaultValues: initValues || {
       total: true,
       color: "#8A16FF",
-      currency: activeCurrency
+      currency: activeCurrency,
+      icon: icons[0]
     }
   });
 
   const handleCurrency = () => {
     setActiveCurrency(getValues("currency"));
     setShowCurrencyBlock(false);
+  };
+
+  const handleIcon = () => {
+    setActiveIcon(getValues("icon"));
+    setShowIconsBlock(false);
   };
 
   const onSubmit = (data) => {
@@ -80,7 +94,12 @@ const AddCardModal = ({ onClose, method, initValues }) => {
                 placeholder="Название или номер карты"
                 {...register("name", { required: true, maxLength: 80 })}
               />
-              {/* <div className={styles.icon}></div> */}
+              <div
+                className={styles.icon}
+                onClick={() => setShowIconsBlock(true)}
+              >
+                <CategoriesIcons name={activeIcon} color="#fff" size="29" />
+              </div>
             </div>
             <div className={styles.error}>
               {errors.name &&
@@ -185,6 +204,14 @@ const AddCardModal = ({ onClose, method, initValues }) => {
               onSubmit={handleCurrency}
               register={register}
               onClose={() => setShowCurrencyBlock(false)}
+            />
+          )}
+          {showIconsBlock && (
+            <IconsBlock
+              icons={icons}
+              onSubmit={handleIcon}
+              register={register}
+              onClose={() => setShowIconsBlock(false)}
             />
           )}
 

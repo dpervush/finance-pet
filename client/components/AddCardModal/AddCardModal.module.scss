@@ -49,6 +49,10 @@
 }
 .icon {
   flex: 0 0 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   height: 50px;
 
   background: rgba(4, 24, 75, 0.6);

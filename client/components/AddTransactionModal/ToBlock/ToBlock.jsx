@@ -4,9 +4,9 @@ import icon from "../../../public/assets/icons/shopping.svg";
 
 import styles from "../AddTransactionModal.module.scss";
 import { formatCurrency } from "../../../utils";
+import CategoriesIcons from "../../icons/categoriesIcons/CategoriesIcons";
 
-export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
-  console.log(items);
+const ToBlock = ({ items, register, onAddCategoryHandle }) => {
   return (
     <>
       <div className={styles.subtitle}>To</div>
@@ -31,6 +31,11 @@ export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
               />
               <span className={styles.text}>{title}</span>
               <span className={styles.icon}>
+                            <CategoriesIcons
+                              name="airplane"
+                              color="#fff"
+                              size="16"
+                            />
                 <Image src={icon} alt="icon" />
               </span>
               <span className={styles.balance}>
@@ -46,3 +51,5 @@ export const ToBlock = ({ items, register, onAddCategoryHandle }) => {
     </>
   );
 };
+
+export default ToBlock;

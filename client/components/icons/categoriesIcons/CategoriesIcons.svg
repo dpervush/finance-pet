@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.9 595.3">
+  <symbol id="airplane" viewBox="0 0 512 512">
+    <path d="M407.72 224c-3.4 0-14.79.1-18 .3l-64.9 1.7a1.83 1.83 0 01-1.69-.9L193.55 67.56a9 9 0 00-6.66-3.56H160l73 161a2.35 2.35 0 01-2.26 3.35l-121.69 1.8a8.06 8.06 0 01-6.6-3.1l-37-45c-3-3.9-8.62-6-13.51-6H33.08c-1.29 0-1.1 1.21-.75 2.43l19.84 71.42a16.3 16.3 0 010 11.9L32.31 333c-.59 1.95-.52 3 1.77 3H52c8.14 0 9.25-1.06 13.41-6.3l37.7-45.7a8.19 8.19 0 016.6-3.1l120.68 2.7a2.7 2.7 0 012.43 3.74L160 448h26.64a9 9 0 006.65-3.55L323.14 287c.39-.6 2-.9 2.69-.9l63.9 1.7c3.3.2 14.59.3 18 .3C452 288.1 480 275.93 480 256s-27.88-32-72.28-32z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="20"/>
+  </symbol>
+  <symbol id="bag-handle" viewBox="0 0 512 512">
+    <path d="M80 176a16 16 0 00-16 16v216c0 30.24 25.76 56 56 56h272c30.24 0 56-24.51 56-54.75V192a16 16 0 00-16-16zM160 176v-32a96 96 0 0196-96h0a96 96 0 0196 96v32" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/><path d="M160 224v16a96 96 0 0096 96h0a96 96 0 0096-96v-16" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+  </symbol>
+  <symbol id="bicycle" viewBox="0 0 512 512">
+    <path d="M388 288a76 76 0 1076 76 76.24 76.24 0 00-76-76zM124 288a76 76 0 1076 76 76.24 76.24 0 00-76-76z" fill="none" stroke-miterlimit="10" stroke-width="32"/>
+    <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 360v-86l-64-42 80-88 40 72h56"/>
+    <path d="M320 136a31.89 31.89 0 0032-32.1A31.55 31.55 0 00320.2 72a32 32 0 10-.2 64z"/>
+  </symbol>
+  <symbol id="book" viewBox="0 0 512 512">
+    <path d="M256 160c16-63.16 76.43-95.41 208-96a15.94 15.94 0 0116 16v288a16 16 0 01-16 16c-128 0-177.45 25.81-208 64-30.37-38-80-64-208-64-9.88 0-16-8.05-16-17.93V80a15.94 15.94 0 0116-16c131.57.59 192 32.84 208 96zM256 160v288" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+  </symbol>
+  <symbol id="call" viewBox="0 0 512 512">
+    <path d="M451 374c-15.88-16-54.34-39.35-73-48.76-24.3-12.24-26.3-13.24-45.4.95-12.74 9.47-21.21 17.93-36.12 14.75s-47.31-21.11-75.68-49.39-47.34-61.62-50.53-76.48 5.41-23.23 14.79-36c13.22-18 12.22-21 .92-45.3-8.81-18.9-32.84-57-48.9-72.8C119.9 44 119.9 47 108.83 51.6A160.15 160.15 0 0083 65.37C67 76 58.12 84.83 51.91 98.1s-9 44.38 23.07 102.64 54.57 88.05 101.14 134.49S258.5 406.64 310.85 436c64.76 36.27 89.6 29.2 102.91 23s22.18-15 32.83-31a159.09 159.09 0 0013.8-25.8C465 391.17 468 391.17 451 374z" fill="none" stroke-miterlimit="10" stroke-width="32"/>
+  </symbol>
+  <symbol id="cafe" viewBox="0 0 512 512">
+    <path d="M368 80h64a16 16 0 0116 16v34a46 46 0 01-46 46h-34M96 80h272v192a80 80 0 01-80 80H176a80 80 0 01-80-80V80h0zM64 416h336" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+  </symbol>
+  <symbol id="easel" viewBox="0 0 512 512">
+    <rect x="48" y="80" width="416" height="272" rx="32" ry="32" fill="none" stroke-linejoin="round" stroke-width="32"/>
+    <path fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M256 416v-64M256 80V48M400 464l-32-112M112 464l32-112"/>
+  </symbol>
+  <symbol id="car" viewBox="0 0 512 512">
+    <path d="M80 224l37.78-88.15C123.93 121.5 139.6 112 157.11 112h197.78c17.51 0 33.18 9.5 39.33 23.85L432 224M80 224h352v144H80zM112 368v32H80v-32M432 368v32h-32v-32" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+    <circle cx="144" cy="288" r="16" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+    <circle cx="368" cy="288" r="16" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+  </symbol>
+  <symbol id="pricetags" viewBox="0 0 512 512">
+    <path d="M403.29 32H280.36a14.46 14.46 0 00-10.2 4.2L24.4 281.9a28.85 28.85 0 000 40.7l117 117a28.86 28.86 0 0040.71 0L427.8 194a14.46 14.46 0 004.2-10.2v-123A28.66 28.66 0 00403.29 32z" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+    <path d="M352 144a32 32 0 1132-32 32 32 0 01-32 32z"/>
+    <path d="M230 480l262-262a13.81 13.81 0 004-10V80" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="32"/>
+  </symbol>
+</svg>

@@ -3,11 +3,15 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 
 import ModalWindow from "../../containers/ModalWindow/ModalWindow";
+import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.scss";
+import { IconsBlock } from "../UI/IconsBlock/IconsBlock";
 import Button from "../UI/Button/Button";
 
 import { createCategory, updateCategory } from "../../store/slices/categories";
 
 import styles from "./AddCategoryModal.module.scss";
+import CategoriesIcons from "../icons/categoriesIcons/CategoriesIcons";
+import { icons } from "../../utils/constants";
 
 const AddCategoryModal = ({ onClose, method, initValues }) => {
   const dispatch = useDispatch();
@@ -16,10 +20,21 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
     register,
     handleSubmit,
     reset,
+    getValues,
     formState: { errors }
   } = useForm({
     defaultValues: initValues || { total: true, color: "#8A16FF" }
   });
+
+  const [showIconsBlock, setShowIconsBlock] = React.useState(false);
+  const [activeIcon, setActiveIcon] = React.useState(
+    initValues?.icon || icons[0]
+  );
+
+  const handleIcon = () => {
+    setActiveIcon(getValues("icon"));
+    setShowIconsBlock(false);
+  };
 
   const onSubmit = (data) => {
     method === "UPDATE"
@@ -34,7 +49,12 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
   const contentRef = React.useRef();
 
   const handleClickOnDocument = (e) => {
-    if (contentRef.current && !contentRef.current.contains(e.target)) {
+    if (
+      contentRef.current &&
+      !contentRef.current.contains(e.target) &&
+      contentRef.current?.closest("." + ModalWindowStyles.wrapper) ===
+        e.target.closest("." + ModalWindowStyles.wrapper)
+    ) {
       onClose();
     }
   };
@@ -58,7 +78,12 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
                 placeholder="Название категории"
                 {...register("title", { required: true })}
               />
-              <div className={styles.icon}></div>
+              <div
+                className={styles.icon}
+                onClick={() => setShowIconsBlock(true)}
+              >
+                <CategoriesIcons name={activeIcon} color="#fff" size="16" />
+              </div>
             </div>
             <div className={styles.error}>
               {errors.title &&
@@ -74,7 +99,6 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
                 placeholder="Бюджет"
                 {...register("budget")}
               />
-              <div className={styles.icon}></div>
             </div>
           </div>
 
@@ -87,6 +111,14 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
           </div>
         </form>
       </div>
+      {showIconsBlock && (
+        <IconsBlock
+          icons={icons}
+          onSubmit={handleIcon}
+          register={register}
+          onClose={() => setShowIconsBlock(false)}
+        />
+      )}
     </ModalWindow>
   );
 };

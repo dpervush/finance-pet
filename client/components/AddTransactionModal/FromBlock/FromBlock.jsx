@@ -5,8 +5,9 @@ import icon from "../../../public/assets/icons/shopping.svg";
 import { formatCurrency } from "../../../utils";
 
 import styles from "../AddTransactionModal.module.scss";
+import CategoriesIcons from "../../icons/categoriesIcons/CategoriesIcons";
 
-export const FromBlock = ({ items, register, onAddCardHandle }) => {
+const FromBlock = ({ items, register, onAddCardHandle }) => {
   return (
     <>
       <div className={styles.subtitle}>From</div>
@@ -31,7 +32,7 @@ export const FromBlock = ({ items, register, onAddCardHandle }) => {
               />
               <span className={styles.text}>{name}</span>
               <span className={styles.icon}>
-                <Image src={icon} alt="icon" />
+                      <CategoriesIcons name={icon} color="#fff" size="16" />
               </span>
               <span className={styles.balance}>
                 {formatCurrency(balance, currency)}
@@ -43,3 +44,5 @@ export const FromBlock = ({ items, register, onAddCardHandle }) => {
     </>
   );
 };
+
+export default FromBlock;
