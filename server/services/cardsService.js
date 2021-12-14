@@ -1,7 +1,7 @@
 const { AccountCards, CardInfo } = require("../models");
 
 class CardService {
-  async create({ name, color, balance, currency, total, accountId }) {
+  async create({ name, color, balance, currency, total, icon, accountId }) {
     const createdCard = await AccountCards.create({
       accountId
     });
@@ -12,6 +12,7 @@ class CardService {
       balance,
       currency,
       total,
+      icon,
       accountCardId: createdCard.id
     });
 
