@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 
 import { TypesBlock } from "./TypesBlock/TypesBlock";
-import { FromBlock } from "./FromBlock/FromBlock";
-import { ToBlock } from "./ToBlock/ToBlock";
 import Button from "../UI/Button/Button";
 import AddCardModal from "../AddCardModal/AddCardModal";
 import AddCategoryModal from "../AddCategoryModal/AddCategoryModal";
@@ -20,6 +18,14 @@ import {
 import styles from "./AddTransactionModal.module.scss";
 
 const DateBlock = dynamic(() => import("./DateBlock/DateBlock"), {
+  ssr: false
+});
+
+const FromBlock = dynamic(() => import("./FromBlock/FromBlock"), {
+  ssr: false
+});
+
+const ToBlock = dynamic(() => import("./ToBlock/ToBlock"), {
   ssr: false
 });
 

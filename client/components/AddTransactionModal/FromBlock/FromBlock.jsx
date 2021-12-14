@@ -1,4 +1,6 @@
 import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper";
 import Image from "next/image";
 import icon from "../../../public/assets/icons/shopping.svg";
 
@@ -12,34 +14,51 @@ const FromBlock = ({ items, register, onAddCardHandle }) => {
     <>
       <div className={styles.subtitle}>From</div>
       <div className={styles.from_block}>
-        <div className={styles.from_item}>
-          <button
-            className={styles.add_btn}
-            onClick={onAddCardHandle}
-            type="button"
+        {items && (
+          <Swiper
+            modules={[Pagination]}
+            slidesPerView={4}
+            navigation={true}
+            freeMode={true}
+            pagination={{
+              type: "bullets",
+              clickable: true
+            }}
           >
-            <span>account</span>
-          </button>
-        </div>
-        {items?.map(({ id, name, balance, currency }) => (
-          <div key={id} className={styles.from_item}>
-            <label className={styles.label}>
-              <input
-                className={`${styles.radio} ${styles.visually_hidden}`}
-                {...register("from", { required: true })}
-                type="radio"
-                value={id}
-              />
-              <span className={styles.text}>{name}</span>
-              <span className={styles.icon}>
+            <SwiperSlide>
+              <div className={styles.add_btn}>
+                <button
+                  className={styles.btn}
+                  onClick={onAddCardHandle}
+                  type="button"
+                >
+                  <span>account</span>
+                </button>
+              </div>
+            </SwiperSlide>
+            {items.map(({ id, name, balance, currency, icon }) => (
+              <SwiperSlide key={id}>
+                <div className={styles.from_item}>
+                  <label className={styles.label}>
+                    <input
+                      className={`${styles.radio} ${styles.visually_hidden}`}
+                      {...register("from", { required: true })}
+                      type="radio"
+                      value={id}
+                    />
+                    <span className={styles.text}>{name}</span>
+                    <span className={styles.icon}>
                       <CategoriesIcons name={icon} color="#fff" size="16" />
-              </span>
-              <span className={styles.balance}>
-                {formatCurrency(balance, currency)}
-              </span>
-            </label>
-          </div>
-        ))}
+                    </span>
+                    <span className={styles.balance}>
+                      {formatCurrency(balance, currency)}
+                    </span>
+                  </label>
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        )}
       </div>
     </>
   );
