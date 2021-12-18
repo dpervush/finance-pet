@@ -10,7 +10,7 @@ import { CoinsIcon, PlayIcon, PlusIcon, SettingsIcon } from "../icons";
 import { getStatsByCard, getStatsByCategory } from "../../store/slices/stats";
 
 import styles from "./RoundStat.module.scss";
-import { useCategoryBalance } from "../../hooks/useCategoryBalance";
+import { useLastMonthCategories } from "../../hooks/useLastMonthCategories";
 
 const StatConva = dynamic(() => import("./StatConva"), {
   ssr: false
@@ -34,11 +34,24 @@ const calcRotationAndAngle = (cards, allMoney) => {
 
 export const RoundStat = () => {
   const dispatch = useDispatch();
-  const { statsByCard, cardStatLoading, statsByCategory } = useSelector(
-    ({ stats }) => stats
-  );
+  const {
+    stats: {
+      statsByCard,
+      cardStatLoading,
+      statsByCategoryExpense,
+      statsByCategoryIncome
+    },
+    categories: { categories, categoriesIncome }
+  } = useSelector((store) => store);
 
-  const { categoriesBalance } = useCategoryBalance(statsByCategory);
+  const { categoriesBalance: categoriesBalanceExpense } =
+    useLastMonthCategories(
+      statsByCategoryExpense?.length > 0 ? statsByCategoryExpense : categories
+    );
+
+  const { categoriesBalance: categoriesBalanceIncome } = useLastMonthCategories(
+    statsByCategoryIncome?.length > 0 ? statsByCategoryIncome : categoriesIncome
+  );
 
   const [allAmount, setAllAmount] = React.useState(null);
   const [allAmountConsidered, setAllAmountConsidered] = React.useState(null);
@@ -102,7 +115,7 @@ export const RoundStat = () => {
           />
         )}
       </div>
-      <div className={styles.goals}>
+      {/* <div className={styles.goals}>
         <div className={styles.coins}>
           <CoinsIcon />
         </div>
@@ -110,12 +123,13 @@ export const RoundStat = () => {
         <button className={styles.btn}>
           <PlayIcon />
         </button>
-      </div>
+      </div> */}
 
       {showModal && (
         <AddTransactionModal
           onClose={toggleNewTransactionModal}
-          categories={categoriesBalance}
+          categoriesExpense={categoriesBalanceExpense}
+          categoriesIncome={categoriesBalanceIncome}
         />
       )}
     </div>

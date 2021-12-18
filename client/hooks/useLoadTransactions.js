@@ -19,7 +19,7 @@ export const useLoadTransactions = (filters, page) => {
     if (filters.flow === 0 || !filters.flow) {
       flowFilter = null;
     } else {
-      flowFilter = filters.flow === 1 ? "Income" : "Expense";
+      flowFilter = filters.flow === 1 ? "income" : "expense";
     }
 
     return flowFilter;

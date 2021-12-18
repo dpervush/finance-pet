@@ -16,7 +16,7 @@ import { useLoadTransactions } from "../hooks/useLoadTransactions";
 
 import styles from "../styles/Transactions.module.scss";
 import { getStatsByCategory } from "../store/slices/stats";
-import { useCategoryBalance } from "../hooks/useCategoryBalance";
+import { useLastMonthCategories } from "../hooks/useLastMonthCategories";
 
 const dropdownFlow = [
   {
@@ -42,13 +42,22 @@ const dropdownFlow = [
 const Transactions = ({ user }) => {
   const dispatch = useDispatch();
   const {
-    categories: { categories },
+    categories: { categories, categoriesIncome },
     cards: { cards }
   } = useSelector((state) => state);
 
-  const { statsByCategory } = useSelector(({ stats }) => stats);
+  const { statsByCategoryExpense, statsByCategoryIncome } = useSelector(
+    ({ stats }) => stats
+  );
 
-  const { categoriesBalance } = useCategoryBalance(statsByCategory);
+  const { categoriesBalance: categoriesBalanceExpense } =
+    useLastMonthCategories(
+      statsByCategoryExpense?.length > 0 ? statsByCategoryExpense : categories
+    );
+
+  const { categoriesBalance: categoriesBalanceIncome } = useLastMonthCategories(
+    statsByCategoryIncome?.length > 0 ? statsByCategoryIncome : categoriesIncome
+  );
 
   const [showModal, setShowModal] = React.useState(false);
   const [activePage, setActivePage] = React.useState(1);
@@ -173,7 +182,8 @@ const Transactions = ({ user }) => {
       {showModal && (
         <AddTransactionModal
           onClose={() => setShowModal(false)}
-          categories={categoriesBalance}
+          categoriesExpense={categoriesBalanceExpense}
+          categoriesIncome={categoriesBalanceIncome}
         />
       )}
       <div className={styles.content}>
@@ -212,6 +222,8 @@ const Transactions = ({ user }) => {
             <TransactionBlock
               items={filteredTransactions}
               lastTransactionRef={lastTransactionRef}
+              categoriesExpense={categoriesBalanceExpense}
+              categoriesIncome={categoriesBalanceIncome}
             />
           )}
         </div>

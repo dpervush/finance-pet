@@ -6,9 +6,10 @@ class CategoriesController {
     const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
     try {
-      const { title, color, budget, icon } = req.body;
+      const { title, type, color, budget, icon } = req.body;
       const category = await categoriesService.create({
         title,
+        type,
         color,
         budget,
         icon,

@@ -11,7 +11,7 @@ import styles from "./BubbleStat.module.scss";
 
 const BubbleStat = () => {
   const dispatch = useDispatch();
-  const { statsByCategory, categoryStatLoading } = useSelector(
+  const { statsByCategoryExpense, categoryStatLoading } = useSelector(
     ({ stats }) => stats
   );
 
@@ -20,7 +20,7 @@ const BubbleStat = () => {
   }, []);
 
   const groupStats = () => {
-    return statsByCategory.reduce((result, current) => {
+    return statsByCategoryExpense.reduce((result, current) => {
       if (
         !Object.prototype.hasOwnProperty.call(
           result,
@@ -48,7 +48,7 @@ const BubbleStat = () => {
 
     setStats(sortedStats);
     setStatsLength(sortedStats.length - 1 || 0);
-  }, [statsByCategory]);
+  }, [statsByCategoryExpense]);
 
   return (
     <>

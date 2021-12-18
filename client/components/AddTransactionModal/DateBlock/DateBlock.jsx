@@ -18,7 +18,7 @@ const Day = ({ date, register, checked }) => {
           className={`${styles.radio} ${styles.visually_hidden}`}
           {...register("date", { required: true })}
           type="radio"
-          value={date}
+          value={date.toISOString()}
           checked={checked}
         />
         <div className={styles.date_day}>
@@ -32,7 +32,7 @@ const Day = ({ date, register, checked }) => {
   );
 };
 
-const SWIPER_SLIDES_COUNT = 35;
+const SWIPER_SLIDES_COUNT = 7;
 
 const formDates = (date = new Date()) => {
   const dates = Array.from({ length: SWIPER_SLIDES_COUNT }).map((_, index) => {
@@ -44,12 +44,11 @@ const formDates = (date = new Date()) => {
   return dates;
 };
 
-const DateBlock = ({ register, onSelectDate }) => {
+const DateBlock = ({ initialDate = new Date(), register, onSelectDate }) => {
   const [showCalendar, setShowCalendar] = React.useState(false);
   const [swiperRef, setSwiperRef] = React.useState(null);
-  const [date, setDate] = React.useState(new Date());
+  const [date, setDate] = React.useState(initialDate);
   const [calendarDate, setCalendarDate] = React.useState(new Date());
-  const [prevCalendarDate, setPrevCalendarDate] = React.useState(new Date());
 
   const [dates, setDates] = React.useState([]);
 
@@ -57,32 +56,33 @@ const DateBlock = ({ register, onSelectDate }) => {
   const closeCalendar = () => setShowCalendar(false);
 
   React.useEffect(() => {
-    setDates(formDates());
+    setDates([...formDates(date)]);
   }, []);
 
   const onDateChange = (newDate) => {
-    setPrevCalendarDate(calendarDate);
     setDate(newDate);
     setCalendarDate(newDate);
 
     setDates(formDates(newDate));
-
-    swiperRef.slideTo(0);
   };
 
   const onDateSlideChange = (event) => {
     const d = new Date(date);
 
-    if (prevCalendarDate !== calendarDate) {
-      setDate(
-        new Date(
-          d.setDate(d.getDate() - (event.activeIndex - event.previousIndex))
-        )
-      );
-    }
+    setDate(
+      new Date(
+        d.setDate(d.getDate() - (event.activeIndex - event.previousIndex))
+      )
+    );
   };
 
-  console.log(date);
+  React.useEffect(() => {
+    swiperRef && swiperRef.slideTo(0);
+  }, [swiperRef, calendarDate]);
+
+  React.useEffect(() => {
+    onSelectDate(date);
+  }, [onSelectDate, date]);
 
   return (
     <>
@@ -113,11 +113,7 @@ const DateBlock = ({ register, onSelectDate }) => {
           onSlideChange={onDateSlideChange}
         >
           {dates.map((date, index) => (
-            <SwiperSlide
-              key={date}
-              virtualIndex={index}
-              onClick={() => swiperRef.slideTo(index)}
-            >
+            <SwiperSlide key={date} onClick={() => swiperRef.slideTo(index)}>
               {({ isActive }) => (
                 <Day register={register} date={date} checked={isActive} />
               )}

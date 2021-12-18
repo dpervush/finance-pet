@@ -3,6 +3,7 @@ import $api from "../../http";
 import { TRANSACTIONS_PER_PAGE } from "../../utils/constants";
 import { clearError } from "./auth";
 import { getCards } from "./cards";
+import { getStatsByCategory } from "./stats";
 
 export const getTransactions = createAsyncThunk(
   "transactions/getTransactions",
@@ -61,6 +62,7 @@ export const createTransaction = createAsyncThunk(
     await $api.post(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
     dispatch(getCards());
+    dispatch(getStatsByCategory());
   }
 );
 
@@ -70,6 +72,7 @@ export const updateTransaction = createAsyncThunk(
     await $api.put(`/transactions/`, body).then((res) => res.data);
     dispatch(getTransactions());
     dispatch(getCards());
+    dispatch(getStatsByCategory());
   }
 );
 
@@ -79,6 +82,7 @@ export const deleteTransaction = createAsyncThunk(
     await $api.delete(`/transactions/${transactionId}`).then((res) => res.data);
     dispatch(getTransactions());
     dispatch(getCards());
+    dispatch(getStatsByCategory());
   }
 );
 
@@ -103,20 +107,26 @@ const transactionsSlice = createSlice({
         state.error = null;
       })
       .addMatcher(
-        (action) => action.type.endsWith("/pending"),
+        (action) =>
+          action.type.startsWith("transactions") &&
+          action.type.endsWith("/pending"),
         (state, action) => {
           state.loading = true;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith("/rejected"),
+        (action) =>
+          action.type.startsWith("transactions") &&
+          action.type.endsWith("/rejected"),
         (state, action) => {
           state.error = action.error;
           state.loading = false;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith("/fulfilled"),
+        (action) =>
+          action.type.startsWith("transactions") &&
+          action.type.endsWith("/fulfilled"),
         (state, action) => {
           state.loading = false;
         }

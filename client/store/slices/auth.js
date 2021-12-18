@@ -3,23 +3,28 @@ import $api from "../../http";
 import { setWithExpiry } from "../../utils/localStorageWithExpiry";
 
 export const login = createAsyncThunk("/login", async (body) => {
-  return await $api.post("/auth/login", body).then((res) => {
-    setWithExpiry(
-      "access_token",
-      res.data.accessToken,
-      5 * 24 * 60 * 60 * 1000
-    );
-    return res.data;
-  });
+  return await $api
+    .post("/auth/login", body)
+    .then((res) => {
+      setWithExpiry(
+        "access_token",
+        res.data.accessToken,
+        5 * 24 * 60 * 60 * 1000
+      );
+
+      return res.data;
+    })
+    .catch((error) => console.log(error));
 });
 
 export const registration = createAsyncThunk("/register", async (body) => {
   return await $api.post("/auth/register", body).then((res) => {
     setWithExpiry(
       "access_token",
-      action.payload.accessToken,
+      res.data.accessToken,
       5 * 24 * 60 * 60 * 1000
     );
+
     return res.data;
   });
 });

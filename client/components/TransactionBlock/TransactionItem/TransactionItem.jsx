@@ -9,6 +9,8 @@ import styles from "./TransactionItem.module.scss";
 import { DeleteConfirmModal } from "../../../containers/DeleteConfirmModal/DeleteConfirmModal";
 
 const TransactionItem = ({
+  categoriesExpense,
+  categoriesIncome,
   id,
   title,
   date,
@@ -47,7 +49,7 @@ const TransactionItem = ({
       </div>
       <div className={styles.amount}>
         <span className={styles.text}>
-          {type === "Income"
+          {type === "income"
             ? formatCurrency(amount, card.currency)
             : "-" + formatCurrency(amount, card.currency)}
         </span>
@@ -68,8 +70,10 @@ const TransactionItem = ({
         <AddTransactionModal
           show={showEditModal}
           onClose={() => closeModal(setShowEditModal)}
-          initValues={{ id, amount, card, category, type, comment }}
+          initValues={{ id, amount, card, category, type, comment, date }}
           method="UPDATE"
+          categoriesExpense={categoriesExpense}
+          categoriesIncome={categoriesIncome}
         />
       )}
       {showDeleteModal && (

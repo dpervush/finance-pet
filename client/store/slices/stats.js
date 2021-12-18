@@ -13,7 +13,17 @@ export const getStatsByPeriod = createAsyncThunk(
 export const getStatsByCategory = createAsyncThunk(
   "stats/getStatsByCategory",
   async () => {
-    return await $api.get("/stats/categories").then((res) => res.data);
+    return await $api.get("/stats/categories").then((res) => {
+      const categoriesIncome = res.data.filter(
+        (item) => item.type === "income"
+      );
+
+      const categoriesExpense = res.data.filter(
+        (item) => item.type === "expense"
+      );
+
+      return { categoriesIncome, categoriesExpense };
+    });
   }
 );
 export const getStatsByCard = createAsyncThunk(
@@ -27,7 +37,8 @@ const statsSlice = createSlice({
   name: "stats",
   initialState: {
     statsByPeriod: [],
-    statsByCategory: [],
+    statsByCategoryIncome: [],
+    statsByCategoryExpense: [],
     statsByCard: [],
     error: null,
     cardStatLoading: false,
@@ -42,7 +53,8 @@ const statsSlice = createSlice({
         state.periodStatLoading = false;
       })
       .addCase(getStatsByCategory.fulfilled, (state, action) => {
-        state.statsByCategory = action.payload;
+        state.statsByCategoryIncome = action.payload.categoriesIncome;
+        state.statsByCategoryExpense = action.payload.categoriesExpense;
         state.categoryStatLoading = false;
       })
       .addCase(getStatsByCard.fulfilled, (state, action) => {
@@ -71,7 +83,8 @@ const statsSlice = createSlice({
         state.error = null;
       })
       .addMatcher(
-        (action) => action.type.endsWith("/rejected"),
+        (action) =>
+          action.type.startsWith("/stats") && action.type.endsWith("/rejected"),
         (state, action) => {
           state.error = action.error;
         }

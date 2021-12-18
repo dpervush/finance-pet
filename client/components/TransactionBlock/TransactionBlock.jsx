@@ -5,7 +5,12 @@ import { monthNamesLong } from "../../utils/constants";
 
 import styles from "./TransactionBlock.module.scss";
 
-const TransactionBlock = ({ items, lastTransactionRef }) => {
+const TransactionBlock = ({
+  items,
+  lastTransactionRef,
+  categoriesExpense,
+  categoriesIncome
+}) => {
   const parsedItems = Object.keys(items).reduce((obj, key) => {
     const dataArray = Object.keys(items[key]).reduce((objYear, keyMonth) => {
       objYear.push({ month: +keyMonth, transactions: items[key][keyMonth] });
@@ -41,6 +46,8 @@ const TransactionBlock = ({ items, lastTransactionRef }) => {
               key={item.id}
               {...item}
               lastTransactionRef={lastTransactionRef}
+              categoriesExpense={categoriesExpense}
+              categoriesIncome={categoriesIncome}
             />
           ))}
         </div>

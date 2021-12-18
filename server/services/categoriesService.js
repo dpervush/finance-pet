@@ -1,13 +1,14 @@
 const { AccountCategories, CategoryInfo } = require("../models");
 
 class CategoriesService {
-  async create({ title, color, budget, icon, accountId }) {
+  async create({ title, type, color, budget, icon, accountId }) {
     const createdCategory = await AccountCategories.create({
       accountId
     });
 
     const categoryInfo = await CategoryInfo.create({
       title,
+      type,
       color,
       budget,
       icon,
@@ -23,7 +24,7 @@ class CategoriesService {
       where: { accountId }
     });
 
-    const categories = await AccountCategories.findAll({
+    const categoriesIncome = await AccountCategories.findAll({
       attributes: ["id", "accountId"],
       where: { accountId },
       include: [
@@ -32,12 +33,28 @@ class CategoriesService {
           required: true,
           attributes: {
             exclude: ["createdAt", "updatedAt", "accountCategoryId"]
-          }
+          },
+          where: { type: "income" }
         }
       ]
     });
 
-    return categories;
+    const categoriesExpense = await AccountCategories.findAll({
+      attributes: ["id", "accountId"],
+      where: { accountId },
+      include: [
+        {
+          model: CategoryInfo,
+          required: true,
+          attributes: {
+            exclude: ["createdAt", "updatedAt", "accountCategoryId"]
+          },
+          where: { type: "expense" }
+        }
+      ]
+    });
+
+    return { categoriesIncome, categoriesExpense };
   }
   async getOne(id) {
     if (!id) {

@@ -42,6 +42,7 @@ const CategoryInfo = sequelize.define("category_info", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   title: { type: DataTypes.STRING, allowNull: false },
   color: { type: DataTypes.STRING },
+  type: { type: DataTypes.STRING },
   budget: { type: DataTypes.INTEGER },
   icon: { type: DataTypes.STRING }
 });

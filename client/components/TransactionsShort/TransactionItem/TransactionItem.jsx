@@ -19,14 +19,14 @@ const TransactionItem = ({
       <div
         className={cx({
           icon: true,
-          icon_down: type === "Expense",
-          icon_up: type === "Income",
+          icon_down: type === "expense",
+          icon_up: type === "income",
         })}
       ></div>
       <div className={styles.info}>
         <div className={styles.name}>{comment || category}</div>
         <div className={styles.amount}>{`${
-          type === "Income" ? "" : "-"
+          type === "income" ? "" : "-"
         }${formatCurrency(amount, currency)}`}</div>
       </div>
       <div className={styles.date}>{formatDate(date)}</div>

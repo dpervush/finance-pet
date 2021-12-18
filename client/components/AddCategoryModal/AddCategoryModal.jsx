@@ -13,7 +13,7 @@ import styles from "./AddCategoryModal.module.scss";
 import CategoriesIcons from "../icons/categoriesIcons/CategoriesIcons";
 import { icons } from "../../utils/constants";
 
-const AddCategoryModal = ({ onClose, method, initValues }) => {
+const AddCategoryModal = ({ type, onClose, method, initValues }) => {
   const dispatch = useDispatch();
 
   const {
@@ -23,7 +23,7 @@ const AddCategoryModal = ({ onClose, method, initValues }) => {
     getValues,
     formState: { errors }
   } = useForm({
-    defaultValues: initValues || { total: true, color: "#8A16FF" }
+    defaultValues: initValues || { total: true, color: "#8A16FF", type }
   });
 
   const [showIconsBlock, setShowIconsBlock] = React.useState(false);

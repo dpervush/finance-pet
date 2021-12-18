@@ -5,12 +5,19 @@ import { clearError } from "./auth";
 export const getCategories = createAsyncThunk(
   "categories/getCategories",
   async (dispatch, getState) => {
-    return await $api.get("/categories/").then((res) =>
-      res.data.map((item) => ({
+    return await $api.get("/categories/").then((res) => {
+      const categoriesExpense = res.data.categoriesExpense.map((item) => ({
         ...item.category_info,
         id: item.id
-      }))
-    );
+      }));
+
+      const categoriesIncome = res.data.categoriesIncome.map((item) => ({
+        ...item.category_info,
+        id: item.id
+      }));
+
+      return { categoriesExpense, categoriesIncome };
+    });
   }
 );
 
@@ -42,6 +49,7 @@ const categoriesSlice = createSlice({
   name: "categories",
   initialState: {
     categories: [],
+    categoriesIncome: [],
     loading: false,
     error: null
   },
@@ -49,26 +57,33 @@ const categoriesSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getCategories.fulfilled, (state, action) => {
-        state.categories = action.payload;
+        state.categories = action.payload.categoriesExpense;
+        state.categoriesIncome = action.payload.categoriesIncome;
       })
       .addCase(clearError, (state, action) => {
         state.error = null;
       })
       .addMatcher(
-        (action) => action.type.endsWith("/pending"),
+        (action) =>
+          action.type.startsWith("categories") &&
+          action.type.endsWith("/pending"),
         (state, action) => {
           state.loading = true;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith("/rejected"),
+        (action) =>
+          action.type.startsWith("categories") &&
+          action.type.endsWith("/rejected"),
         (state, action) => {
           state.error = action.error;
           state.loading = false;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith("/fulfilled"),
+        (action) =>
+          action.type.startsWith("categories") &&
+          action.type.endsWith("/fulfilled"),
         (state, action) => {
           state.loading = false;
         }

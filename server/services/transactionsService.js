@@ -35,7 +35,7 @@ class TransactionService {
       ]
     });
 
-    const transactionAmount = type === "Income" ? amount : -amount;
+    const transactionAmount = type === "income" ? amount : -amount;
 
     await cardsService.update({
       id: cardId,
@@ -240,8 +240,8 @@ class TransactionService {
       ]
     });
 
-    const transactionNewAmount = type === "Income" ? amount : -amount;
-    const transactionOldAmount = oldType === "Income" ? oldAmount : -oldAmount;
+    const transactionNewAmount = type === "income" ? amount : -amount;
+    const transactionOldAmount = oldType === "income" ? oldAmount : -oldAmount;
 
     await cardsService.update({
       id: cardId,
@@ -270,7 +270,7 @@ class TransactionService {
     });
 
     const transactionAmount =
-      transaction.transaction_info.type === "Income"
+      transaction.transaction_info.type === "income"
         ? transaction.transaction_info.amount
         : -transaction.transaction_info.amount;
 

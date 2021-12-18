@@ -34,7 +34,8 @@ const AddTransactionModal = ({
   onClose,
   method,
   initValues = {},
-  categories
+  categoriesExpense,
+  categoriesIncome
 }) => {
   const dispatch = useDispatch();
 
@@ -46,13 +47,13 @@ const AddTransactionModal = ({
   const [openNewCategoryModal, setOpenNewCategoryModal] = React.useState(false);
   const [openNewCardModal, setOpenNewCardModal] = React.useState(false);
 
-  const [selectedCard, setSelectedCard] = React.useState(null);
-  const [selectedCategory, setSelectedCategory] = React.useState(null);
+  const [selectedSource, setSelectedSource] = React.useState(null);
+  const [selectedTarget, setSelectedTarget] = React.useState(null);
   const [date, setDate] = React.useState(new Date());
 
   const { register, handleSubmit, watch, reset, getValues } = useForm({
     defaultValues: {
-      type: initValues.type || "Expense",
+      type: initValues.type || "expense",
       from: initValues.card?.id.toString() || null,
       to: initValues.category?.id.toString() || null,
       amount: initValues.amount || null,
@@ -65,27 +66,26 @@ const AddTransactionModal = ({
   const watchSecondBlockValues = watch(["amount"]);
 
   const onSubmit = ({ type, comment, amount }) => {
+    const body = {
+      title: type === "expense" ? selectedTarget.title : selectedSource.title,
+      type,
+      amount,
+      date: new Date(date),
+      cardId: type === "expense" ? selectedSource.id : selectedTarget.id,
+      categoryId: type === "expense" ? selectedTarget.id : selectedSource.id
+    };
+
     if (method === "UPDATE") {
       dispatch(
         updateTransaction({
           id: initValues.id,
-          title: comment || selectedCategory.title,
-          type,
-          amount,
-          cardId: selectedCard.id,
-          categoryId: selectedCategory.id,
-          date: new Date(date)
+          ...body
         })
       );
     } else {
       dispatch(
         createTransaction({
-          title: comment || selectedCategory.title,
-          type,
-          amount,
-          cardId: selectedCard.id,
-          categoryId: selectedCategory.id,
-          date: new Date(date)
+          ...body
         })
       );
     }
@@ -101,11 +101,20 @@ const AddTransactionModal = ({
     const fromId = getValues("from");
     const toId = getValues("to");
 
-    const selectedFrom = cards.find((card) => card.id === +fromId);
-    const selectedTo = categories.find((category) => category.id === +toId);
+    let selectedFrom, selectedTo;
 
-    setSelectedCard(selectedFrom);
-    setSelectedCategory(selectedTo);
+    if (type === "expense") {
+      selectedFrom = cards.find((card) => card.id === +fromId);
+      selectedTo = categoriesExpense.find((category) => category.id === +toId);
+    } else {
+      selectedFrom = categoriesIncome.find(
+        (category) => category.id === +fromId
+      );
+      selectedTo = cards.find((card) => card.id === +toId);
+    }
+
+    setSelectedSource(selectedFrom);
+    setSelectedTarget(selectedTo);
 
     setActivePage(activePage + 1);
   };
@@ -144,16 +153,42 @@ const AddTransactionModal = ({
           {activePage === 0 ? (
             <div className={styles.first_page}>
               <TypesBlock register={register} />
-              <FromBlock
-                items={cards}
-                register={register}
-                onAddCardHandle={onAddCardHandle}
-              />
-              <ToBlock
-                items={categories}
-                register={register}
-                onAddCategoryHandle={onAddCategoryHandle}
-              />
+              {type === "expense" && (
+                <>
+                  <div className={styles.subtitle}>From</div>
+                  <FromBlock
+                    items={cards}
+                    register={register}
+                    fieldName="from"
+                    onAddCardHandle={onAddCardHandle}
+                  />
+                  <div className={styles.subtitle}>To</div>
+                  <ToBlock
+                    items={categoriesExpense}
+                    register={register}
+                    fieldName="to"
+                    onAddCategoryHandle={onAddCategoryHandle}
+                  />
+                </>
+              )}
+              {type === "income" && (
+                <>
+                  <div className={styles.subtitle}>From</div>
+                  <ToBlock
+                    items={categoriesIncome}
+                    register={register}
+                    fieldName="from"
+                    onAddCategoryHandle={onAddCategoryHandle}
+                  />
+                  <div className={styles.subtitle}>To</div>
+                  <FromBlock
+                    items={cards}
+                    register={register}
+                    fieldName="to"
+                    onAddCardHandle={onAddCardHandle}
+                  />
+                </>
+              )}
               <div className={styles.actions}>
                 <Button
                   innerText="Next"
@@ -168,7 +203,9 @@ const AddTransactionModal = ({
           {activePage === 1 ? (
             <div className={styles.second_page}>
               <div className={styles.header}>
-                {selectedCard.name} {">"} {selectedCategory.title}
+                {type === "expense"
+                  ? `${selectedSource.name} > ${selectedTarget.title}`
+                  : `${selectedSource.title} > ${selectedTarget.name}`}
               </div>
               <div className={styles.form_item}>
                 <div className={styles.subtitle}>Сколько</div>
@@ -181,7 +218,11 @@ const AddTransactionModal = ({
                   />
                 </label>
               </div>
-              <DateBlock register={register} onSelectDate={setDate} />
+              <DateBlock
+                initialDate={initValues.date}
+                register={register}
+                onSelectDate={setDate}
+              />
               <div className={styles.form_item}>
                 <div className={styles.subtitle}>Комментарий</div>
                 <label className={styles.label}>
@@ -214,7 +255,7 @@ const AddTransactionModal = ({
       </div>
       {openNewCardModal && <AddCardModal onClose={onCloseAddCardHandle} />}
       {openNewCategoryModal && (
-        <AddCategoryModal onClose={onCloseAddCategoryHandle} />
+        <AddCategoryModal onClose={onCloseAddCategoryHandle} type={type} />
       )}
     </ModalWindow>
   );

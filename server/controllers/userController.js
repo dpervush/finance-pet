@@ -28,35 +28,56 @@ class UserController {
 
       await CardsService.create({
         name: "Cash",
-        color: "#372e79",
+        color: "#8a16ff",
         balance: 0,
         currency: "RUB",
         total: true,
+        icon: "airplane",
         accountId: userData.user.accountId
       });
 
       await CategoriesService.create({
         title: "groceries",
+        type: "expense",
         accountId: userData.user.accountId
       });
 
       await CategoriesService.create({
         title: "entertainment",
+        type: "expense",
         accountId: userData.user.accountId
       });
 
       await CategoriesService.create({
         title: "transport",
+        type: "expense",
         accountId: userData.user.accountId
       });
 
       await CategoriesService.create({
         title: "shopping",
+        type: "expense",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "salary",
+        type: "income",
+        accountId: userData.user.accountId
+      });
+
+      await CategoriesService.create({
+        title: "extra",
+        type: "income",
         accountId: userData.user.accountId
       });
 
       res.cookie("refreshToken", userData.refreshToken, {
         maxAge: 10 * 24 * 60 * 60 * 1000,
+        httpOnly: true
+      });
+
+      res.cookie("accountId", userData.user.accountId, {
         httpOnly: true
       });
 

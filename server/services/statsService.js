@@ -209,24 +209,37 @@ class StatsService {
 
   async getByCategory(accountId) {
     const [categories, meta] = await sequelize.query(`
-      SELECT account_categories.id, title, color, budget, tbc.sum, tbc.year, tbc.month
+      SELECT account_categories.id, category_infos.type, tbc.year, tbc.month, tbc2.sum, title, color, budget, icon
       FROM account_categories as account_categories
       inner join category_infos as category_infos 
       on account_categories.id = category_infos."accountCategoryId"
-      
-      inner join (
-        select account_categories.id, sum(amount), extract (year from date) as year, extract (month from date) as month
-      from account_transactions
-      inner join transaction_infos
-      on account_transactions.id = transaction_infos."accountTransactionId"
-      
-      inner join account_categories
-      on account_categories.id = account_transactions."accountCategoryId"
-      
-      where account_transactions."accountId" = ${accountId} and transaction_infos.type = 'Expense'
-      group by account_categories.id, year, month
+          
+      cross join (
+        select extract (year from date) as year, extract (month from date) as month
+        from account_transactions
+        inner join transaction_infos
+        on account_transactions.id = transaction_infos."accountTransactionId"
+          
+        inner join account_categories
+        on account_categories.id = account_transactions."accountCategoryId"
+          
+        where account_transactions."accountId" = ${accountId}
+        group by year, month
       ) as tbc
-      on account_categories.id = tbc."id"
+    
+      left join (
+            select account_categories.id, sum(amount), extract (year from date) as year, extract (month from date) as month
+          from account_transactions
+          inner join transaction_infos
+          on account_transactions.id = transaction_infos."accountTransactionId"
+          
+          inner join account_categories
+          on account_categories.id = account_transactions."accountCategoryId"
+          
+          where account_transactions."accountId" = ${accountId}
+          group by account_categories.id, year, month
+          ) as tbc2
+          on account_categories.id = tbc2."id" and tbc.month=tbc2.month
       order by tbc.year, tbc.month`);
 
     return categories;
@@ -240,7 +253,7 @@ class StatsService {
         inner join transaction_infos
         on account_transactions.id = transaction_infos."accountTransactionId"
       
-        where account_transactions."accountId" = ${accountId} and transaction_infos.type = 'Expense' and account_cards.id=account_transactions."accountCardId"
+        where account_transactions."accountId" = ${accountId} and transaction_infos.type = 'expense' and account_cards.id=account_transactions."accountCardId"
         group by account_cards.id
       ), 0) as expenses,
       COALESCE((select sum(amount)
@@ -248,7 +261,7 @@ class StatsService {
         inner join transaction_infos
         on account_transactions.id = transaction_infos."accountTransactionId"
       
-        where account_transactions."accountId" = ${accountId} and transaction_infos.type = 'Income' and account_cards.id=account_transactions."accountCardId"
+        where account_transactions."accountId" = ${accountId} and transaction_infos.type = 'income' and account_cards.id=account_transactions."accountCardId"
         group by account_cards.id
       ), 0) as incomes
       FROM account_cards as account_cards
@@ -302,3 +315,24 @@ module.exports = new StatsService();
 
 //
 //
+
+// вывод статы котегорий
+// SELECT account_categories.id, title, color, budget, tbc.sum, tbc.year, tbc.month
+//       FROM account_categories as account_categories
+//       inner join category_infos as category_infos
+//       on account_categories.id = category_infos."accountCategoryId"
+
+//       inner join (
+//         select account_categories.id, sum(amount), extract (year from date) as year, extract (month from date) as month
+//       from account_transactions
+//       inner join transaction_infos
+//       on account_transactions.id = transaction_infos."accountTransactionId"
+
+//       inner join account_categories
+//       on account_categories.id = account_transactions."accountCategoryId"
+
+//       where account_transactions."accountId" = ${accountId} and transaction_infos.type = 'Expense'
+//       group by account_categories.id, year, month
+//       ) as tbc
+//       on account_categories.id = tbc."id"
+//       order by tbc.year, tbc.month

@@ -56,20 +56,23 @@ const cardsSlice = createSlice({
         state.error = null;
       })
       .addMatcher(
-        (action) => action.type.endsWith("/pending"),
+        (action) =>
+          action.type.startsWith("cards") && action.type.endsWith("/pending"),
         (state, action) => {
           state.loading = true;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith("/rejected"),
+        (action) =>
+          action.type.startsWith("cards") && action.type.endsWith("/rejected"),
         (state, action) => {
           state.error = action.error;
           state.loading = false;
         }
       )
       .addMatcher(
-        (action) => action.type.endsWith("/fulfilled"),
+        (action) =>
+          action.type.startsWith("cards") && action.type.endsWith("/fulfilled"),
         (state, action) => {
           state.loading = false;
         }
