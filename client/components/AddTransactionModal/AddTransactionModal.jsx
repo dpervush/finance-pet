@@ -54,8 +54,14 @@ const AddTransactionModal = ({
   const { register, handleSubmit, watch, reset, getValues } = useForm({
     defaultValues: {
       type: initValues.type || "expense",
-      from: initValues.card?.id.toString() || null,
-      to: initValues.category?.id.toString() || null,
+      from:
+        type === "expense"
+          ? initValues.card?.id.toString()
+          : initValues.category?.id.toString(),
+      to:
+        type === "expense"
+          ? initValues.category?.id.toString()
+          : initValues.card?.id.toString(),
       amount: initValues.amount || null,
       comment: initValues.comment || "",
       date: initValues.date || new Date()
@@ -151,44 +157,46 @@ const AddTransactionModal = ({
         <div className={styles.title}>Add transaction</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
           {activePage === 0 ? (
-            <div className={styles.first_page}>
-              <TypesBlock register={register} />
-              {type === "expense" && (
-                <>
-                  <div className={styles.subtitle}>From</div>
-                  <FromBlock
-                    items={cards}
-                    register={register}
-                    fieldName="from"
-                    onAddCardHandle={onAddCardHandle}
-                  />
-                  <div className={styles.subtitle}>To</div>
-                  <ToBlock
-                    items={categoriesExpense}
-                    register={register}
-                    fieldName="to"
-                    onAddCategoryHandle={onAddCategoryHandle}
-                  />
-                </>
-              )}
-              {type === "income" && (
-                <>
-                  <div className={styles.subtitle}>From</div>
-                  <ToBlock
-                    items={categoriesIncome}
-                    register={register}
-                    fieldName="from"
-                    onAddCategoryHandle={onAddCategoryHandle}
-                  />
-                  <div className={styles.subtitle}>To</div>
-                  <FromBlock
-                    items={cards}
-                    register={register}
-                    fieldName="to"
-                    onAddCardHandle={onAddCardHandle}
-                  />
-                </>
-              )}
+            <>
+              <div className={styles.form_body}>
+                <TypesBlock register={register} />
+                {type === "expense" && (
+                  <>
+                    <div className={styles.subtitle}>From</div>
+                    <FromBlock
+                      items={cards}
+                      register={register}
+                      fieldName="from"
+                      onAddCardHandle={onAddCardHandle}
+                    />
+                    <div className={styles.subtitle}>To</div>
+                    <ToBlock
+                      items={categoriesExpense}
+                      register={register}
+                      fieldName="to"
+                      onAddCategoryHandle={onAddCategoryHandle}
+                    />
+                  </>
+                )}
+                {type === "income" && (
+                  <>
+                    <div className={styles.subtitle}>From</div>
+                    <ToBlock
+                      items={categoriesIncome}
+                      register={register}
+                      fieldName="from"
+                      onAddCategoryHandle={onAddCategoryHandle}
+                    />
+                    <div className={styles.subtitle}>To</div>
+                    <FromBlock
+                      items={cards}
+                      register={register}
+                      fieldName="to"
+                      onAddCardHandle={onAddCardHandle}
+                    />
+                  </>
+                )}
+              </div>
               <div className={styles.actions}>
                 <Button
                   innerText="Next"
@@ -198,43 +206,44 @@ const AddTransactionModal = ({
                   isDisabled={!source || !target}
                 ></Button>
               </div>
-            </div>
+            </>
           ) : null}
           {activePage === 1 ? (
-            <div className={styles.second_page}>
-              <div className={styles.header}>
-                {type === "expense"
-                  ? `${selectedSource.name} > ${selectedTarget.title}`
-                  : `${selectedSource.title} > ${selectedTarget.name}`}
+            <>
+              <div className={`${styles.form_body} ${styles.second_page}`}>
+                <div className={styles.header}>
+                  {type === "expense"
+                    ? `${selectedSource.name} > ${selectedTarget.title}`
+                    : `${selectedSource.title} > ${selectedTarget.name}`}
+                </div>
+                <div className={styles.form_item}>
+                  <div className={styles.subtitle}>Сколько</div>
+                  <label className={styles.label}>
+                    <input
+                      className={styles.input}
+                      type="number"
+                      placeholder="amount"
+                      {...register("amount", { required: true })}
+                    />
+                  </label>
+                </div>
+                <DateBlock
+                  initialDate={initValues.date}
+                  register={register}
+                  onSelectDate={setDate}
+                />
+                <div className={styles.form_item}>
+                  <div className={styles.subtitle}>Комментарий</div>
+                  <label className={styles.label}>
+                    <input
+                      className={styles.input}
+                      type="text"
+                      placeholder="Оставьте комментарий"
+                      {...register("comment", { maxLength: 80 })}
+                    />
+                  </label>
+                </div>
               </div>
-              <div className={styles.form_item}>
-                <div className={styles.subtitle}>Сколько</div>
-                <label className={styles.label}>
-                  <input
-                    className={styles.input}
-                    type="number"
-                    placeholder="amount"
-                    {...register("amount", { required: true })}
-                  />
-                </label>
-              </div>
-              <DateBlock
-                initialDate={initValues.date}
-                register={register}
-                onSelectDate={setDate}
-              />
-              <div className={styles.form_item}>
-                <div className={styles.subtitle}>Комментарий</div>
-                <label className={styles.label}>
-                  <input
-                    className={styles.input}
-                    type="text"
-                    placeholder="Оставьте комментарий"
-                    {...register("comment", { maxLength: 80 })}
-                  />
-                </label>
-              </div>
-
               <div className={styles.actions}>
                 <Button
                   innerText="Back"
@@ -249,7 +258,7 @@ const AddTransactionModal = ({
                   isDisabled={!watchSecondBlockValues[0]}
                 ></Button>
               </div>
-            </div>
+            </>
           ) : null}
         </form>
       </div>

@@ -28,3 +28,10 @@ export function formatCurrency(
     });
   }
 }
+
+export let isTouchDevice;
+export let bodyWidth;
+if (process.browser) {
+  isTouchDevice = "ontouchstart" in document.documentElement;
+  bodyWidth = window.innerWidth;
+}

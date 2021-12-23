@@ -70,38 +70,39 @@ const AddCategoryModal = ({ type, onClose, method, initValues }) => {
       <div className={styles.body} ref={contentRef}>
         <div className={styles.title}>Add category</div>
         <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-          <div className={styles.form_block}>
-            <div className={`${styles.form_item} ${styles.form_item__input}`}>
-              <input
-                className={styles.input}
-                type="text"
-                placeholder="Название категории"
-                {...register("title", { required: true })}
-              />
-              <div
-                className={styles.icon}
-                onClick={() => setShowIconsBlock(true)}
-              >
-                <CategoriesIcons name={activeIcon} color="#fff" size="16" />
+          <div className={styles.form_body}>
+            <div className={styles.form_block}>
+              <div className={`${styles.form_item} ${styles.form_item__input}`}>
+                <input
+                  className={styles.input}
+                  type="text"
+                  placeholder="Название категории"
+                  {...register("title", { required: true })}
+                />
+                <div
+                  className={styles.icon}
+                  onClick={() => setShowIconsBlock(true)}
+                >
+                  <CategoriesIcons name={activeIcon} color="#fff" size="16" />
+                </div>
+              </div>
+              <div className={styles.error}>
+                {errors.title &&
+                  errors.title.type === "required" &&
+                  "This field is required"}
               </div>
             </div>
-            <div className={styles.error}>
-              {errors.title &&
-                errors.title.type === "required" &&
-                "This field is required"}
+            <div className={styles.form_block}>
+              <div className={`${styles.form_item} ${styles.form_item__input}`}>
+                <input
+                  className={styles.input}
+                  type="number"
+                  placeholder="Бюджет"
+                  {...register("budget")}
+                />
+              </div>
             </div>
           </div>
-          <div className={styles.form_block}>
-            <div className={`${styles.form_item} ${styles.form_item__input}`}>
-              <input
-                className={styles.input}
-                type="number"
-                placeholder="Бюджет"
-                {...register("budget")}
-              />
-            </div>
-          </div>
-
           <div className={styles.btn_wrapper}>
             <Button
               innerText={method === "UPDATE" ? "Update" : "Create"}

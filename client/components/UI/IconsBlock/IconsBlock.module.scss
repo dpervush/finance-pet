@@ -1,6 +1,9 @@
 @import "styles/vars.scss";
 
 .body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   padding: 30px;
 
   font-family: $secondFont;
@@ -29,9 +32,11 @@
   height: 40px;
 }
 .icons {
-  display: flex;
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-auto-rows: 50px;
   align-items: center;
-  flex-wrap: wrap;
 
   margin-bottom: 20px;
 }

@@ -1,8 +1,13 @@
 @import "styles/vars.scss";
+@import "styles/base/mixins.scss";
 
 .wrapper {
   position: relative;
-  padding: 50px 39px 30px 35px;
+  // padding: 50px 39px 30px 35px;
+  @include adaptiveValue("padding-top", 50, 20, $containerWidth, 710);
+  @include adaptiveValue("padding-right", 39, 30);
+  @include adaptiveValue("padding-bottom", 30, 30, $containerWidth, 710);
+  @include adaptiveValue("padding-left", 35, 20);
 }
 .settings {
   position: absolute;
@@ -67,5 +72,19 @@
   svg {
     width: 14px;
     height: 14px;
+  }
+}
+@media (max-width: 710px) {
+  .wrapper {
+    @include adaptiveValue("padding-top", 50, 30, 710);
+    @include adaptiveValue("padding-bottom", 30, 30, 710);
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+@media (max-width: 400px) {
+  .add_transaction {
+    top: 20px;
+    right: 10px;
   }
 }

@@ -2,6 +2,7 @@
 
 .body {
   width: 400px;
+  height: 100%;
   padding: 25px 30px 20px;
 
   font-family: $secondFont;
@@ -13,6 +14,14 @@
   font-weight: 500;
   font-size: 22px;
   text-align: center;
+}
+.form {
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 40px);
+}
+.form_body {
+  flex: 1 1 auto;
 }
 .subtitle,
 .label {
@@ -103,4 +112,10 @@
 .btn_wrapper {
   display: flex;
   justify-content: center;
+}
+@media (max-width: 710px) {
+  .body {
+    width: 100%;
+    height: 100%;
+  }
 }

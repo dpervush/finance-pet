@@ -1,6 +1,8 @@
 import React from "react";
 
 import ModalWindow from "../ModalWindow/ModalWindow";
+import ModalWindowStyles from "../ModalWindow/ModalWindow.module.scss";
+
 import Button from "../../components/UI/Button/Button";
 
 import styles from "./DeleteConfirmModal.module.scss";
@@ -9,7 +11,12 @@ export const DeleteConfirmModal = ({ title, children, onClose, onSubmit }) => {
   const contentRef = React.useRef();
 
   const handleClickOnDocument = (e) => {
-    if (contentRef.current && !contentRef.current.contains(e.target)) {
+    if (
+      contentRef.current &&
+      !contentRef.current.contains(e.target) &&
+      contentRef.current?.closest("." + ModalWindowStyles.wrapper) ===
+        e.target.closest("." + ModalWindowStyles.wrapper)
+    ) {
       onClose();
     }
   };

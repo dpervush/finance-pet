@@ -8,7 +8,7 @@ import styles from "../BubbleStat.module.scss";
 const CANVA_WIDTH = 475;
 const CANVA_HEIGHT = 390;
 
-export const BubbleBlock = ({ data }) => {
+export const BubbleBlock = ({ data, width }) => {
   const [maxSum, setMaxSum] = React.useState(0);
   const [bubbles, setBubbles] = React.useState([]);
 
@@ -42,7 +42,7 @@ export const BubbleBlock = ({ data }) => {
       intervalsCountYAxis -= 1;
     }
 
-    const intervalsWidth = CANVA_WIDTH / intervalsCountXAxis;
+    const intervalsWidth = width / intervalsCountXAxis;
 
     const intervalsHeight = CANVA_HEIGHT / intervalsCountYAxis;
 
@@ -79,7 +79,7 @@ export const BubbleBlock = ({ data }) => {
 
   return (
     <div className={styles.canvas}>
-      <Stage width={CANVA_WIDTH} height={CANVA_HEIGHT}>
+      <Stage width={width} height={CANVA_HEIGHT}>
         <Layer>
           {bubbles.map((category, index) => (
             <Bubble
@@ -87,10 +87,11 @@ export const BubbleBlock = ({ data }) => {
               x={category.xAxis}
               y={category.yAxis}
               radius={category.radius}
-              category={category.title}
+              category={width > 430 ? category.title : null}
               color={category.color}
               balance={category.sum}
               budget={category.budget}
+              icon={category.icon}
             />
           ))}
         </Layer>

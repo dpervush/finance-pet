@@ -34,12 +34,22 @@ export const weekDayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export const icons = [
   "airplane",
-  "bag-handle",
-  "bicycle",
-  "book",
-  "call",
+  "bag",
+  "basketball",
+  "business",
+  "subway",
   "cafe",
-  "easel",
-  "car",
-  "pricetags"
+  "cart",
+  "pricetags",
+  "game",
+  "desktop",
+  "card",
+  "storefront",
+  "trophy",
+  "fast-food",
+  "cut",
+  "construct",
+  "library",
+  "home",
+  "ticket"
 ];

@@ -17,7 +17,7 @@ const UserPanel = () => {
 
   const [showActions, setShowActions] = React.useState(false);
 
-  const onUserClick = () => setShowActions(!showActions);
+  const onUserClick = () => setShowActions(true);
 
   const onLogoutClick = () => {
     router.push("/login");
@@ -35,9 +35,9 @@ const UserPanel = () => {
         <NotificationIcon />
         <span></span>
       </div>
-      <div className={styles.user} onClick={onUserClick}>
+      <div className={styles.user} onClick={onUserClick} ref={ref}>
         <AvatarIcon />
-        <div className={cx({ actions: true, active: showActions })} ref={ref}>
+        <div className={cx({ actions: true, active: showActions })}>
           <button className={styles.actions_btn} onClick={onLogoutClick}>
             <span>
               <LogoutIcon />

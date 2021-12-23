@@ -50,7 +50,7 @@ const FromBlock = ({ items, register, fieldName, onAddCardHandle }) => {
                   </span>
                   <span className={styles.balance}>
                     {sum && formatCurrency(+sum).slice(0, -3)}
-                    {balance && formatCurrency(balance, currency)}
+                    {balance && formatCurrency(balance, currency).slice(0, -3)}
                   </span>
                 </label>
               </div>
