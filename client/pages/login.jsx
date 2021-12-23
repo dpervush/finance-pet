@@ -112,11 +112,11 @@ const Login = () => {
                 <a className={styles.link}>Зарегестрироваться</a>
               </Link>
             </div>
-            <div className={styles.reset}>
+            {/* <div className={styles.reset}>
               <Link href="/login">
                 <a className={styles.link}>Забыли пароль?</a>
               </Link>
-            </div>
+            </div> */}
           </div>
           <button type="submit" className={styles.submit_btn}>
             Login

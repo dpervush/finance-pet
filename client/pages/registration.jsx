@@ -1,24 +1,11 @@
 import React from "react";
 import { useRouter } from "next/router";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import Link from "next/link";
 import { clearError, registration } from "../store/slices/auth";
 
 import styles from "../styles/Registration.module.scss";
-import { useSelector } from "react-redux";
-
-const schema = yup.object().shape({
-  firstName: yup.string().required(),
-  secondName: yup.string().required(),
-  email: yup.string().email().required(),
-  password: yup.string().min(2).max(32).required("Password is required"),
-  passwordConfirmation: yup
-    .string()
-    .oneOf([yup.ref("password"), null], "Passwords must match")
-});
 
 const Registration = () => {
   const dispatch = useDispatch();
@@ -42,11 +29,12 @@ const Registration = () => {
     register,
     handleSubmit,
     watch,
+    getValues,
     formState: { errors }
   } = useForm({});
 
-  const password = React.useRef({});
-  password.current = watch("password", "");
+  const password = React.useRef();
+  password.current = watch("password");
 
   const onSubmit = (data) => {
     dispatch(registration(data));
@@ -112,8 +100,8 @@ const Registration = () => {
               {...register("password", {
                 required: "you must specify a password",
                 minLength: {
-                  value: 8,
-                  message: "password must have at least 8 characters"
+                  value: 2,
+                  message: "password must have at least 2 characters"
                 }
               })}
               placeholder="enter password"
@@ -127,9 +115,14 @@ const Registration = () => {
             <input
               className={styles.input}
               type="password"
-              ref={register("passwordConfirmation", {
+              {...register("passwordConfirmation", {
+                required: "you must specify a password",
+                minLength: {
+                  value: 2,
+                  message: "password must have at least 2 characters"
+                },
                 validate: (value) =>
-                  value === password.current || "The passwords do not match"
+                  value === watch("password") || "The passwords do not match"
               })}
               placeholder="repeat password"
               onChange={onChangedForm}
