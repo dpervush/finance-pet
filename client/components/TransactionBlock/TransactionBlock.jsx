@@ -1,9 +1,19 @@
 import React from "react";
+import { SwipeableList } from "@sandstreamdev/react-swipeable-list";
 
 import TransactionItem from "./TransactionItem/TransactionItem";
 import { monthNamesLong } from "../../utils/constants";
+import { bodyWidth, isTouchDevice } from "../../utils";
 
 import styles from "./TransactionBlock.module.scss";
+
+const SwipeableWrapper = ({ children }) => {
+  if (isTouchDevice || bodyWidth < 710) {
+    return <SwipeableList>{children}</SwipeableList>;
+  } else {
+    return <div>{children}</div>;
+  }
+};
 
 const TransactionBlock = ({
   items,
@@ -41,15 +51,17 @@ const TransactionBlock = ({
             <div className={styles.card}>Card</div>
             <div className={styles.amount}>Amount</div>
           </div>
-          {blockData.transactions.map((item) => (
-            <TransactionItem
-              key={item.id}
-              {...item}
-              lastTransactionRef={lastTransactionRef}
-              categoriesExpense={categoriesExpense}
-              categoriesIncome={categoriesIncome}
-            />
-          ))}
+          <SwipeableWrapper>
+            {blockData.transactions.map((item) => (
+              <TransactionItem
+                key={item.id}
+                {...item}
+                lastTransactionRef={lastTransactionRef}
+                categoriesExpense={categoriesExpense}
+                categoriesIncome={categoriesIncome}
+              />
+            ))}
+          </SwipeableWrapper>
         </div>
       </div>
     );

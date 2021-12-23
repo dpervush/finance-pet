@@ -4,6 +4,7 @@ import { store } from "../store";
 
 import "swiper/css";
 import "swiper/css/pagination";
+import "@sandstreamdev/react-swipeable-list/dist/styles.css";
 
 import "../styles/globals.scss";
 import "../styles/fonts.scss";

@@ -1,4 +1,4 @@
-export async function setWithExpiry(key, value, timeToLive) {
+export function setWithExpiry(key, value, timeToLive) {
   const now = new Date();
 
   const item = {

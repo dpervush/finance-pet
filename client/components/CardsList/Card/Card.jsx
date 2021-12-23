@@ -2,10 +2,11 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import classNames from "classnames/bind";
 import styled from "styled-components";
+import { SwipeableListItem } from "@sandstreamdev/react-swipeable-list";
 
 import AddCardModal from "../../AddCardModal/AddCardModal";
 import { deleteCard } from "../../../store/slices/cards";
-import { formatCurrency } from "../../../utils";
+import { bodyWidth, formatCurrency, isTouchDevice } from "../../../utils";
 import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
 import styles from "./Card.module.scss";
@@ -13,11 +14,32 @@ import { DeleteConfirmModal } from "../../../containers/DeleteConfirmModal/Delet
 
 const cx = classNames.bind(styles);
 
-const Wrapper = styled.li`
+const Wrapper = styled.div`
   background-color: ${(props) => props.color};
 `;
 
+const SwipeableWrapper = ({ children, onSlideCard }) => {
+  if (isTouchDevice || bodyWidth < 710) {
+    return (
+      <SwipeableListItem
+        threshold={0.12}
+        swipeLeft={{
+          action: () => onSlideCard("left")
+        }}
+        swipeRight={{
+          action: () => onSlideCard("rigth")
+        }}
+      >
+        {children}
+      </SwipeableListItem>
+    );
+  } else {
+    return <div>{children}</div>;
+  }
+};
+
 const Card = ({
+  onSlideCard,
   balance,
   currency,
   name,
@@ -62,54 +84,59 @@ const Card = ({
   };
 
   return (
-    <>
-      <Wrapper
-        color={color}
-        onClick={onClick}
-        className={cx({ card: true, active: isActive })}
-      >
-        <div className={styles.actions_wrapper} ref={ref}>
-          <div
-            className={styles.more}
-            onClick={() => setShowActions(!showActions)}
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </div>
-          {showActions && (
-            <div className={styles.actions}>
-              <button className={styles.btn} onClick={onUpdateClickHandler}>
-                Update
-              </button>
-              <button className={styles.btn} onClick={openModal}>
-                Delete
-              </button>
+    <SwipeableWrapper onSlideCard={onSlideCard}>
+      <li className={styles.card_wrapper}>
+        <Wrapper
+          color={color}
+          onClick={onClick}
+          className={cx({ card: true, active: isActive })}
+        >
+          <div className={styles.card_inner}>
+            <div className={styles.actions_wrapper} ref={ref}>
+              <div
+                className={styles.more}
+                onClick={() => setShowActions(!showActions)}
+              >
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              {showActions && (
+                <div className={styles.actions}>
+                  <button className={styles.btn} onClick={onUpdateClickHandler}>
+                    Update
+                  </button>
+                  <button className={styles.btn} onClick={openModal}>
+                    Delete
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        <div className={styles.system}></div>
-        <div className={styles.balance}>
-          {formatCurrency(balance, currency)}
-        </div>
-        <div className={styles.title}>{formatNumber(name) ?? name}</div>
-        {showModal && (
-          <AddCardModal
-            onClose={() => setShowModal(false)}
-            initValues={{
-              id,
-              balance,
-              currency,
-              name,
-              number,
-              color,
-              total,
-              icon
-            }}
-            method="UPDATE"
-          />
-        )}
-      </Wrapper>
+            <div className={styles.system}></div>
+            <div className={styles.balance}>
+              {formatCurrency(balance, currency)}
+            </div>
+            <div className={styles.title}>{formatNumber(name) ?? name}</div>
+            {showModal && (
+              <AddCardModal
+                onClose={() => setShowModal(false)}
+                initValues={{
+                  id,
+                  balance,
+                  currency,
+                  name,
+                  number,
+                  color,
+                  total,
+                  icon
+                }}
+                method="UPDATE"
+              />
+            )}
+          </div>
+        </Wrapper>
+      </li>
+
       {showDeleteModal && (
         <DeleteConfirmModal
           title={"Delete card?"}
@@ -117,7 +144,7 @@ const Card = ({
           onSubmit={onDeleteClickHandler}
         />
       )}
-    </>
+    </SwipeableWrapper>
   );
 };
 
