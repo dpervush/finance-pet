@@ -129,6 +129,10 @@ class UserController {
     try {
       const authHeader = req.headers.authorization;
       const refreshToken = authHeader.split(" ")[1];
+      console.log(
+        "-----------------===================---------------- " + authHeader,
+        refreshToken
+      );
 
       const userData = await UserService.getMe(refreshToken);
 

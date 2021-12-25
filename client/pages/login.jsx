@@ -12,6 +12,7 @@ import { clearError, login } from "../store/slices/auth";
 import $api from "../http";
 
 import styles from "../styles/Login.module.scss";
+import axios from "axios";
 
 const emailPattern =
   '/^(([^<>()[]\\.,;:s@"]+(.[^<>()[]\\.,;:s@"]+)*)|(".+"))@(([[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}.[0-9]{1,3}])|(([a-zA-Z-0-9]+.)+[a-zA-Z]{2,}))$/i';
@@ -134,8 +135,12 @@ export const getServerSideProps = async (context) => {
   let isAuth = false;
 
   const cookie = getValueFromCookie("refreshToken", context.req.headers.cookie);
-  console.log(cookie);
   // const cookie = context.req.headers.cookie?.split(";")[0].trim().split("=")[1];
+
+  const $api = axios.create({
+    withCredentials: true,
+    baseURL: "http://server:8080/api"
+  });
 
   await $api
     .get("/auth/me", { headers: { Authorization: "Bearer " + cookie } })

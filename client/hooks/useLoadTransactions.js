@@ -67,6 +67,7 @@ export const useLoadTransactions = (filters, page) => {
             ]
           });
         })
+        .catch((error) => console.log(error))
         .finally(() => setLoading(false));
     };
 

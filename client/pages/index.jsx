@@ -14,6 +14,7 @@ import { getValueFromCookie } from "../utils/getValueFromCookie";
 
 import styles from "../styles/Home.module.scss";
 import { getCategories } from "../store/slices/categories";
+import axios from "axios";
 
 const BubbleStat = dynamic(
   () => import("../components/BubbleStat/BubbleStat"),
@@ -64,6 +65,11 @@ export const getServerSideProps = async (context) => {
   let user = {};
 
   const cookie = getValueFromCookie("refreshToken", context.req.headers.cookie);
+
+  const $api = axios.create({
+    withCredentials: true,
+    baseURL: "http://server:8080/api"
+  });
 
   await $api
     .get("/auth/me", { headers: { Authorization: "Bearer " + cookie } })

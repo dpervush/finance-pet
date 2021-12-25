@@ -17,6 +17,7 @@ import { useLoadTransactions } from "../hooks/useLoadTransactions";
 import styles from "../styles/Transactions.module.scss";
 import { getStatsByCategory } from "../store/slices/stats";
 import { useLastMonthCategories } from "../hooks/useLastMonthCategories";
+import axios from "axios";
 
 const dropdownFlow = [
   {
@@ -249,6 +250,11 @@ export const getServerSideProps = async (context) => {
   let user = {};
 
   const cookie = getValueFromCookie("refreshToken", context.req.headers.cookie);
+
+  const $api = axios.create({
+    withCredentials: true,
+    baseURL: "http://server:8080/api"
+  });
 
   await $api
     .get("/auth/me", { headers: { Authorization: "Bearer " + cookie } })

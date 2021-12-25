@@ -1,4 +1,4 @@
-require("dotenv").config();
+const dotenv = require("dotenv/config");
 const express = require("express");
 const sequelize = require("./db");
 const models = require("./models");
@@ -14,15 +14,11 @@ const app = express();
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true, //access-control-allow-credentials:true
-  optionSuccessStatus: 200,
+  optionSuccessStatus: 200
 };
 app.use(cors(corsOptions));
 
 app.use(express.json());
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "client/build")));
-}
 
 app.use("/api", router);
 
