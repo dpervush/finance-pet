@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getWithExpiry } from "../utils/localStorageWithExpiry";
 
-export const API_URL = "http://server:8080/api";
+export const API_URL = "209.250.239.10:8080/api";
 
 const $api = axios.create({
   withCredentials: true,
