@@ -4,11 +4,12 @@ import $api from "../http";
 
 import { TRANSACTIONS_PER_PAGE } from "../utils/constants";
 
-export const useLoadTransactions = (filters, page) => {
+export const useLoadTransactions = (filters) => {
   const { transactions: stateTransactions } = useSelector(
     (state) => state.transactions
   );
 
+  const [page, setPage] = React.useState(1);
   const [hasMore, setHasMore] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [transactions, setTransactions] = React.useState([]);
@@ -74,5 +75,29 @@ export const useLoadTransactions = (filters, page) => {
     fetchTransactions();
   }, [page, filters]);
 
-  return { transactions: transactions.items, hasMore, loading };
+  const observer = React.useRef();
+  const lastTransactionRef = React.useCallback(
+    (node) => {
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasMore) {
+          setPage((prevActivePage) => prevActivePage + 1);
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [hasMore]
+  );
+
+  React.useEffect(() => {
+    setPage(1);
+  }, [filters]);
+
+  return {
+    transactions: transactions.items,
+    loading,
+    lastTransactionRef
+  };
 };

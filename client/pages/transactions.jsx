@@ -1,182 +1,45 @@
 import React from "react";
+import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import $api from "../http";
 import Loader from "react-loader-spinner";
 
 import Layout from "../containers/layout/Layout";
-import TransactionBlock from "../components/TransactionBlock/TransactionBlock";
 import AddTransactionModal from "../components/AddTransactionModal/AddTransactionModal";
 import Button from "../components/UI/Button/Button";
 import Dropdown from "../components/UI/Dropdown/Dropdown";
 import { PlusIcon } from "../components/icons";
+import { TransactionList } from "../components/TransactionsList/TransactionsList";
 
 import { getCategories } from "../store/slices/categories";
+import { getStatsByCategory } from "../store/slices/stats";
+
 import { getValueFromCookie } from "../utils/getValueFromCookie";
 import { useLoadTransactions } from "../hooks/useLoadTransactions";
+import { useCategories } from "../hooks/useCategories";
+import { useFilters } from "../hooks/useFilters";
+import { useFilteredTransactions } from "../hooks/useFilteredTransactions";
 
 import styles from "../styles/Transactions.module.scss";
-import { getStatsByCategory } from "../store/slices/stats";
-import { useLastMonthCategories } from "../hooks/useLastMonthCategories";
-import axios from "axios";
 
-const dropdownFlow = [
-  {
-    id: 0,
-    title: "All",
-    as: "Flow",
-    selected: false,
-    key: "flow"
-  },
-  {
-    id: 1,
-    title: "Income",
-    selected: false,
-    key: "flow"
-  },
-  {
-    id: 2,
-    title: "Expense",
-    selected: false,
-    key: "flow"
-  }
-];
 const Transactions = ({ user }) => {
   const dispatch = useDispatch();
   const {
-    categories: { categories, categoriesIncome },
+    categories: { categories },
     cards: { cards }
   } = useSelector((state) => state);
 
-  const { statsByCategoryExpense, statsByCategoryIncome } = useSelector(
-    ({ stats }) => stats
-  );
-
-  const { categoriesBalance: categoriesBalanceExpense } =
-    useLastMonthCategories(
-      statsByCategoryExpense?.length > 0 ? statsByCategoryExpense : categories
-    );
-
-  const { categoriesBalance: categoriesBalanceIncome } = useLastMonthCategories(
-    statsByCategoryIncome?.length > 0 ? statsByCategoryIncome : categoriesIncome
-  );
-
   const [showModal, setShowModal] = React.useState(false);
-  const [activePage, setActivePage] = React.useState(1);
-  const [dropdownState, setDropdownState] = React.useState({
-    flow: dropdownFlow
-  });
-  const [filters, setFilteres] = React.useState({
-    card: null,
-    category: null,
-    flow: null
-  });
 
-  const { transactions, hasMore, loading } = useLoadTransactions(
-    filters,
-    activePage
-  );
-
-  const observer = React.useRef();
-  const lastTransactionRef = React.useCallback(
-    (node) => {
-      if (observer.current) observer.current.disconnect();
-
-      observer.current = new IntersectionObserver((entries) => {
-        if (entries[0].isIntersecting && hasMore) {
-          setActivePage((prevActivePage) => prevActivePage + 1);
-        }
-      });
-
-      if (node) observer.current.observe(node);
-    },
-    [hasMore]
-  );
+  const [categoriesBalanceExpense, categoriesBalanceIncome] = useCategories();
+  const [filters, dropdownState, resetThenSet] = useFilters(cards, categories);
+  const { transactions, loading, lastTransactionRef } =
+    useLoadTransactions(filters);
+  const [filteredTransactions] = useFilteredTransactions(transactions);
 
   React.useEffect(() => {
     dispatch(getStatsByCategory());
     dispatch(getCategories());
   }, []);
-
-  React.useEffect(() => {
-    const dropdownCards = cards.map((card) => ({
-      id: card.id,
-      title: card.name || card.number,
-      selected: false,
-      key: "cards"
-    }));
-
-    const dropdownCategories = categories.map((category) => ({
-      id: category.id,
-      title: category.title,
-      selected: false,
-      key: "categories"
-    }));
-
-    setDropdownState({
-      ...dropdownState,
-      cards: [
-        {
-          id: 0,
-          title: "All",
-          as: "Card",
-          selected: false,
-          key: "card"
-        },
-        ...dropdownCards
-      ],
-      categories: [
-        {
-          id: 0,
-          title: "All",
-          as: "Category",
-          selected: false,
-          key: "category"
-        },
-        ...dropdownCategories
-      ]
-    });
-  }, [cards, categories]);
-
-  const filteredTransactions = transactions?.reduce((obj, current, index) => {
-    const year = new Date(current.date).getFullYear();
-    const month = new Date(current.date).getMonth();
-
-    if (!Object.prototype.hasOwnProperty.call(obj, year)) {
-      obj[year] = {};
-    }
-    if (!Object.prototype.hasOwnProperty.call(obj[year], month)) {
-      obj[year][month] = [];
-    }
-
-    if (index === transactions.length - 1) {
-      obj[year][month].push({ ...current, last: true });
-    } else {
-      obj[year][month].push(current);
-    }
-
-    return obj;
-  }, {});
-
-  const resetThenSet = (id, items) => {
-    const temp = [...items];
-
-    let currentFilter;
-    temp.forEach((item) => {
-      if (item.id === id) {
-        currentFilter = id;
-        return (item.selected = true);
-      } else {
-        return (item.selected = false);
-      }
-    });
-
-    setDropdownState({ ...dropdownState, [temp[0].key]: [...temp] });
-    setFilteres({ ...filters, [temp[0].key]: currentFilter });
-  };
-
-  React.useEffect(() => {
-    setActivePage(1);
-  }, [filters]);
 
   return (
     <Layout>
@@ -220,11 +83,9 @@ const Transactions = ({ user }) => {
         </div>
         <div className={styles.transactions_list}>
           {filteredTransactions && (
-            <TransactionBlock
+            <TransactionList
               items={filteredTransactions}
               lastTransactionRef={lastTransactionRef}
-              categoriesExpense={categoriesBalanceExpense}
-              categoriesIncome={categoriesBalanceIncome}
             />
           )}
         </div>
@@ -253,7 +114,8 @@ export const getServerSideProps = async (context) => {
 
   const $api = axios.create({
     withCredentials: true,
-    baseURL: "http://server:8080/api"
+    // baseURL: "http://server:8080/api"
+    baseURL: "http://localhost:8080/api"
   });
 
   await $api
