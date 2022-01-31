@@ -63,7 +63,7 @@ const ShortStat = () => {
 
   React.useEffect(() => {
     dispatch(getStatsByPeriod({ period: selectedPeriod }));
-  }, [selectedPeriod]);
+  }, [dropdownState]);
 
   return (
     <div className={styles.wrapper}>
