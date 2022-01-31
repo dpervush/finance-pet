@@ -4,22 +4,13 @@ import Image from "next/image";
 import ModalWindow from "../../../containers/ModalWindow/ModalWindow";
 import Button from "../../UI/Button/Button";
 
-import styles from "./CurrencyBlock.module.scss";
+import styles from "./CurrencyModal.module.scss";
+import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
-export const CurrencyBlock = ({ onSubmit, register, onClose }) => {
+export const CurrencyModal = ({ onSubmit, register, onClose }) => {
   const contentRef = React.useRef();
 
-  const handleClickOnDocument = (e) => {
-    if (contentRef.current && !contentRef.current.contains(e.target)) {
-      onClose();
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOnDocument);
-
-    return () => document.removeEventListener("click", handleClickOnDocument);
-  }, []);
+  useOnClickOutside(contentRef, onClose);
 
   return (
     <ModalWindow onClose={onClose}>
