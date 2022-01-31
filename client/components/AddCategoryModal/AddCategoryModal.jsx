@@ -7,7 +7,7 @@ import ModalWindowStyles from "../../containers/ModalWindow/ModalWindow.module.s
 import { IconsBlock } from "../UI/IconsBlock/IconsBlock";
 import Button from "../UI/Button/Button";
 
-import { createCategory, updateCategory } from "../../store/slices/categories";
+import { useOnNestedClickOutside } from "../../hooks/useOnNestedClickOutside";
 
 import styles from "./AddCategoryModal.module.scss";
 import CategoriesIcons from "../icons/categoriesIcons/CategoriesIcons";
@@ -48,22 +48,7 @@ const AddCategoryModal = ({ type, onClose, method, initValues }) => {
 
   const contentRef = React.useRef();
 
-  const handleClickOnDocument = (e) => {
-    if (
-      contentRef.current &&
-      !contentRef.current.contains(e.target) &&
-      contentRef.current?.closest("." + ModalWindowStyles.wrapper) ===
-        e.target.closest("." + ModalWindowStyles.wrapper)
-    ) {
-      onClose();
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOnDocument);
-
-    return () => document.removeEventListener("click", handleClickOnDocument);
-  }, []);
+  useOnNestedClickOutside(contentRef, onClose, ModalWindowStyles);
 
   return (
     <ModalWindow onClose={onClose}>

@@ -11,11 +11,8 @@ import { CurrencyBlock } from "./CurrencyBlock/CurrencyBlock";
 import { IconsBlock } from "../UI/IconsBlock/IconsBlock";
 
 import styles from "./AddCardModal.module.scss";
-import CategoriesIcons from "../icons/categoriesIcons/CategoriesIcons";
-import { icons } from "../../utils/constants";
 
-const AddCardModal = ({ onClose, method, initValues }) => {
-  const dispatch = useDispatch();
+import { useOnNestedClickOutside } from "../../hooks/useOnNestedClickOutside";
 
   const [activeCurrency, setActiveCurrency] = React.useState(
     initValues?.currency || "RUB"
@@ -64,22 +61,7 @@ const AddCardModal = ({ onClose, method, initValues }) => {
 
   const contentRef = React.useRef();
 
-  const handleClickOnDocument = (e) => {
-    if (
-      contentRef.current &&
-      !contentRef.current.contains(e.target) &&
-      contentRef.current?.closest("." + ModalWindowStyles.wrapper) ===
-        e.target.closest("." + ModalWindowStyles.wrapper)
-    ) {
-      onClose();
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOnDocument);
-
-    return () => document.removeEventListener("click", handleClickOnDocument);
-  }, []);
+  useOnNestedClickOutside(contentRef, onClose, ModalWindowStyles);
 
   return (
     <ModalWindow onClose={onClose}>

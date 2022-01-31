@@ -16,18 +16,7 @@ import {
 } from "../../store/slices/transactions";
 
 import styles from "./AddTransactionModal.module.scss";
-
-const DateBlock = dynamic(() => import("./DateBlock/DateBlock"), {
-  ssr: false
-});
-
-const FromBlock = dynamic(() => import("./FromBlock/FromBlock"), {
-  ssr: false
-});
-
-const ToBlock = dynamic(() => import("./ToBlock/ToBlock"), {
-  ssr: false
-});
+import { useOnNestedClickOutside } from "../../hooks/useOnNestedClickOutside";
 
 const AddTransactionModal = ({
   show,
@@ -134,22 +123,7 @@ const AddTransactionModal = ({
 
   const ref = React.useRef();
 
-  const handleClickOnDocument = (e) => {
-    if (
-      ref.current &&
-      !ref.current.contains(e.target) &&
-      ref.current?.closest("." + ModalWindowStyles.wrapper) ===
-        e.target.closest("." + ModalWindowStyles.wrapper)
-    ) {
-      onClose();
-    }
-  };
-
-  React.useEffect(() => {
-    document.addEventListener("click", handleClickOnDocument);
-
-    return () => document.removeEventListener("click", handleClickOnDocument);
-  }, []);
+  useOnNestedClickOutside(ref, onClose, ModalWindowStyles);
 
   return (
     <ModalWindow show={show} onClose={onClose}>
