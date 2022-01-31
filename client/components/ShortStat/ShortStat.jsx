@@ -1,6 +1,7 @@
 import React from "react";
 import Loader from "react-loader-spinner";
 import { useDispatch, useSelector } from "react-redux";
+import { useShortStat } from "../../hooks/useShortStat";
 
 import { getStatsByPeriod } from "../../store/slices/stats";
 
@@ -54,51 +55,15 @@ const ShortStat = () => {
     setDropdownState({ ...dropdownState, [items[0].key]: temp });
   };
 
+  const [statArray, maxs] = useShortStat(statsByPeriod, selectedPeriod);
+
   React.useEffect(() => {
     dispatch(getStatsByPeriod({ period: selectedPeriod }));
   }, []);
 
   React.useEffect(() => {
     dispatch(getStatsByPeriod({ period: selectedPeriod }));
-  }, [dropdownState]);
-
-  const [statArray, setStatArray] = React.useState(null);
-
-  const fillStat = () => {
-    const statArray = Array(7).fill({});
-
-    const weeks = Object.values(statsByPeriod);
-
-    for (let i = statArray.length - 1; i >= 0; i--) {
-      if (selectedPeriod === "year") {
-        statArray[i] = { ...weeks[i] };
-      } else {
-        for (let key of weeks) {
-          const values = Object.values(key);
-          statArray[i] = {
-            ...values[values.length - i - 1]
-          };
-        }
-      }
-    }
-    return statArray;
-  };
-
-  const [maxs, setMaxs] = React.useState({ income: 0, expense: 0 });
-
-  React.useEffect(() => {
-    const statByPeriodArray = fillStat();
-    setStatArray([...statByPeriodArray]);
-
-    if (statArray) {
-      const maxIncome = Math.max(...statArray.map((item) => item.income ?? 0));
-      const maxExpense = Math.max(
-        ...statArray.map((item) => item.expense ?? 0)
-      );
-
-      setMaxs({ income: maxIncome, expense: maxExpense });
-    }
-  }, [statsByPeriod]);
+  }, [selectedPeriod]);
 
   return (
     <div className={styles.wrapper}>
