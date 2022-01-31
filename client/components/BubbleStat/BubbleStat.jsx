@@ -1,14 +1,16 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "react-loader-spinner";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Virtual } from "swiper";
+import { Pagination } from "swiper";
+
+import { BubbleBlock } from "./BubbleBlock/BubbleBlock";
 
 import { getStatsByCategory } from "../../store/slices/stats";
-import { BubbleBlock } from "./BubbleBlock/BubbleBlock";
-import Loader from "react-loader-spinner";
+import { useCanvasSize } from "./hooks/useCanvasSize";
+import { useBubbleStat } from "./hooks/useBubbleStat";
 
 import styles from "./BubbleStat.module.scss";
-import { useWindowSize } from "../../hooks/useWindowSize";
 
 const BubbleStat = () => {
   const dispatch = useDispatch();
@@ -20,57 +22,8 @@ const BubbleStat = () => {
     dispatch(getStatsByCategory());
   }, []);
 
-  const groupStats = () => {
-    return statsByCategoryExpense.reduce((result, current) => {
-      if (
-        !Object.prototype.hasOwnProperty.call(
-          result,
-          `${current.month}${current.year}`
-        )
-      ) {
-        result[`${current.month}${current.year}`] = [];
-      }
-
-      result[`${current.month}${current.year}`].push(current);
-
-      return result;
-    }, {});
-  };
-
-  const [stats, setStats] = React.useState(null);
-  const [statsLength, setStatsLength] = React.useState(0);
-
-  React.useEffect(() => {
-    const stats = groupStats();
-
-    const sortedStats = Object.entries(stats)
-      .sort((obj1, obj2) => obj1[0] - obj2[0])
-      .map((item) => item[1]);
-
-    setStats(sortedStats);
-    setStatsLength(sortedStats.length - 1 || 0);
-  }, [statsByCategoryExpense]);
-
-  const [canvasWidth, setCanvasWidth] = React.useState(0);
-  const canvasRef = React.useRef();
-
-  const size = useWindowSize();
-
-  React.useEffect(() => {
-    const computedStyle = getComputedStyle(canvasRef.current);
-
-    let width = canvasRef.current.clientWidth; // width with padding
-    let height = canvasRef.current.clientHeight; // height with padding
-
-    height -=
-      parseFloat(computedStyle.paddingTop) +
-      parseFloat(computedStyle.paddingBottom);
-    width -=
-      parseFloat(computedStyle.paddingLeft) +
-      parseFloat(computedStyle.paddingRight);
-
-    setCanvasWidth(width);
-  }, [size]);
+  const { canvasWidth, canvasRef } = useCanvasSize();
+  const { stats, statsLength } = useBubbleStat(statsByCategoryExpense);
 
   return (
     <div className={styles.wrapper} ref={canvasRef}>
