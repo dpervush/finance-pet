@@ -11,10 +11,10 @@ import { getCards } from "../../store/slices/cards";
 import styles from "./CardsList.module.scss";
 import { getStatsByCard } from "../../store/slices/stats";
 import { bodyWidth } from "../../utils";
+import { useAddModal } from "./hooks/useAddModal";
+import { useOrderedCards } from "./hooks/useOrderedCards";
 
 const CardsList = () => {
-  const ref = React.useRef();
-
   const dispatch = useDispatch();
   const {
     cards: { cards, loading }
@@ -22,43 +22,28 @@ const CardsList = () => {
     cards: state.cards
   }));
 
-  const [showModal, setShowModal] = React.useState(false);
-  const [activeCard, setActiveCard] = React.useState(-1);
-  const [orederedCards, setOrderedCards] = React.useState(null);
+  const [addModalShown, closeAddModal, openAddModal] = useAddModal();
+  const [orderedCards, onSlideCard] = useOrderedCards(cards);
 
   React.useEffect(() => {
     dispatch(getCards());
   }, []);
 
-  React.useEffect(() => {
-    setOrderedCards(cards);
-  }, [cards]);
-
-  const onCardClickHandle = (event, index) => {
-    if (index === activeCard) {
-      // setActiveCard(-1);
-    } else {
-      // setActiveCard(index);
-    }
-  };
-
-  const onSlideCard = (direction) => {
-    if (direction === "left") {
-      setOrderedCards([...orederedCards.slice(1), orederedCards[0]]);
-    } else {
-      setOrderedCards([
-        orederedCards[orederedCards.length - 1],
-        ...orederedCards.slice(0, -1)
-      ]);
-    }
-  };
+  // const [activeCard, setActiveCard] = React.useState(-1);
+  // const onCardClickHandle = (event, index) => {
+  //   if (index === activeCard) {
+  //     // setActiveCard(-1);
+  //   } else {
+  //     // setActiveCard(index);
+  //   }
+  // };
 
   return (
-    <div ref={ref}>
+    <div>
       <SwipeableList>
         <ul className={styles.card_list}>
-          {orederedCards?.map((item, index) => (
-            <>
+          {orderedCards?.map((item, index) => (
+            <React.Fragment key={item.id}>
               <div
                 className={styles.card_wrapper}
                 key={item.id}
@@ -83,25 +68,21 @@ const CardsList = () => {
                   onSlideCard={onSlideCard}
                 />
               </div>
-            </>
+            </React.Fragment>
           ))}
         </ul>
       </SwipeableList>
 
       <div className={styles.btn_wrapper}>
-        <Button
-          innerText="New card"
-          padding="18px 17px"
-          onClick={() => setShowModal(true)}
-        >
+        <Button innerText="New card" padding="18px 17px" onClick={openAddModal}>
           <PlusIcon />
         </Button>
         <Button padding="15px 16px">
           <ExpandIcon />
         </Button>
       </div>
-      {showModal && (
-        <AddCardModal onClose={() => setShowModal(false)} show={showModal} />
+      {addModalShown && (
+        <AddCardModal onClose={closeAddModal} show={addModalShown} />
       )}
     </div>
   );

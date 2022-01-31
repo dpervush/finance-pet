@@ -11,6 +11,7 @@ import { useOnClickOutside } from "../../../hooks/useOnClickOutside";
 
 import styles from "./Card.module.scss";
 import { DeleteConfirmModal } from "../../../containers/DeleteConfirmModal/DeleteConfirmModal";
+import { useShowActions, useAddModal, useDeleteModal } from "./hooks";
 
 const cx = classNames.bind(styles);
 
@@ -38,6 +39,12 @@ const SwipeableWrapper = ({ children, onSlideCard }) => {
   }
 };
 
+const formatNumber = (number) => {
+  const formattedNumber =
+    number.slice(0, 14).replace("[0-9]*/g", "*") + " " + number.slice(15, 19);
+  return formattedNumber;
+};
+
 const Card = ({
   onSlideCard,
   balance,
@@ -53,35 +60,19 @@ const Card = ({
 }) => {
   const dispatch = useDispatch();
 
-  const [showActions, setShowActions] = React.useState(false);
-  const [showModal, setShowModal] = React.useState(false);
-  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
-
-  const formatNumber = (number) => {
-    const formattedNumber =
-      number.slice(0, 14).replace("[0-9]*/g", "*") + " " + number.slice(15, 19);
-    return formattedNumber;
-  };
-
-  const onUpdateClickHandler = () => {
-    setShowModal(true);
-  };
-  const onDeleteClickHandler = () => dispatch(deleteCard(id));
+  const [actionsShown, closeActions, showActions] = useShowActions();
+  const [addModalShown, closeAddModal, openAddModal] = useAddModal();
+  const [deleteModalShown, closeDeleteModal, showDeleteModal] =
+    useDeleteModal();
 
   React.useEffect(() => {
-    !isActive && setShowActions(false);
-  }, [isActive]);
+    !isActive && closeActions();
+  }, [isActive, closeActions]);
 
   const ref = React.useRef();
+  useOnClickOutside(ref, closeActions);
 
-  useOnClickOutside(ref, () => setShowActions(false));
-
-  const openModal = () => {
-    setShowDeleteModal(true);
-  };
-  const closeModal = () => {
-    setShowDeleteModal(false);
-  };
+  const onDeleteClickHandler = () => dispatch(deleteCard(id));
 
   return (
     <SwipeableWrapper onSlideCard={onSlideCard}>
@@ -95,18 +86,18 @@ const Card = ({
             <div className={styles.actions_wrapper} ref={ref}>
               <div
                 className={styles.more}
-                onClick={() => setShowActions(!showActions)}
+                onClick={() => (actionsShown ? closeActions() : showActions())}
               >
                 <span></span>
                 <span></span>
                 <span></span>
               </div>
-              {showActions && (
+              {actionsShown && (
                 <div className={styles.actions}>
-                  <button className={styles.btn} onClick={onUpdateClickHandler}>
+                  <button className={styles.btn} onClick={openAddModal}>
                     Update
                   </button>
-                  <button className={styles.btn} onClick={openModal}>
+                  <button className={styles.btn} onClick={showDeleteModal}>
                     Delete
                   </button>
                 </div>
@@ -117,9 +108,9 @@ const Card = ({
               {formatCurrency(balance, currency)}
             </div>
             <div className={styles.title}>{formatNumber(name) ?? name}</div>
-            {showModal && (
+            {addModalShown && (
               <AddCardModal
-                onClose={() => setShowModal(false)}
+                onClose={closeAddModal}
                 initValues={{
                   id,
                   balance,
@@ -137,10 +128,10 @@ const Card = ({
         </Wrapper>
       </li>
 
-      {showDeleteModal && (
+      {deleteModalShown && (
         <DeleteConfirmModal
           title={"Delete card?"}
-          onClose={closeModal}
+          onClose={closeDeleteModal}
           onSubmit={onDeleteClickHandler}
         />
       )}
