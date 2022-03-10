@@ -2,12 +2,12 @@ import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper";
 import Image from "next/image";
-import icon from "../../../public/assets/icons/shopping.svg";
+import icon from "../../../../public/assets/icons/shopping.svg";
 
-import { formatCurrency } from "../../../utils";
+import { formatCurrency } from "../../../../utils";
 
-import styles from "../AddTransactionModal.module.scss";
-import CategoriesIcons from "../../icons/categoriesIcons/CategoriesIcons";
+import styles from "../../AddTransactionModal.module.scss";
+import CategoriesIcons from "../../../icons/categoriesIcons/CategoriesIcons";
 
 const FromBlock = ({ items, register, fieldName, onAddCardHandle }) => {
   return (

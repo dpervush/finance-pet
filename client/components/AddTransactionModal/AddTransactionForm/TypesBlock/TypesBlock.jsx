@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "../AddTransactionModal.module.scss";
+import styles from "../../AddTransactionModal.module.scss";
 
 export const TypesBlock = ({ register }) => {
   return (

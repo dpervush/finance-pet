@@ -1,7 +1,7 @@
 import React from "react";
 import Calendar from "react-calendar";
 
-import ModalWindow from "../../../../containers/ModalWindow/ModalWindow";
+import ModalWindow from "../../../../../containers/ModalWindow/ModalWindow";
 
 import styles from "./CustomCalendar.module.scss";
 

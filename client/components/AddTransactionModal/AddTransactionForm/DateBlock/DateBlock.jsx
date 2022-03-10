@@ -3,12 +3,12 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Virtual } from "swiper";
 
-import icon from "../../../public/assets/icons/calendar.svg";
+import icon from "../../../../public/assets/icons/calendar.svg";
 import { CustomCalendar } from "./Calendar/CustomCalendar";
 
-import { monthNamesShort, weekDayNames } from "../../../utils/constants";
+import { monthNamesShort, weekDayNames } from "../../../../utils/constants";
 
-import styles from "../AddTransactionModal.module.scss";
+import styles from "../../AddTransactionModal.module.scss";
 
 const Day = ({ date, register, checked }) => {
   return (
