@@ -17,7 +17,12 @@ const AddCategoryModal = ({ type, method, initValues, onClose }) => {
     <ModalWindow onClose={onClose}>
       <div className={styles.body} ref={contentRef}>
         <div className={styles.title}>Add category</div>
-        <AddForm type={type} method={method} initValues={initValues} />
+        <AddForm
+          type={type}
+          method={method}
+          initValues={initValues}
+          onClose={onClose}
+        />
       </div>
     </ModalWindow>
   );

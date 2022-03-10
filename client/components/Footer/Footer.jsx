@@ -78,7 +78,7 @@ export const Footer = () => {
             </Link>
           </li>
           <li className={styles.nav_item}>
-            <Link href="">
+            <Link href="/">
               <a
                 ref={ref}
                 className={cx({

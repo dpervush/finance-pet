@@ -19,5 +19,6 @@ export const useCategories = () => {
   const { categoriesBalance: categoriesBalanceIncome } = useLastMonthCategories(
     statsByCategoryIncome?.length > 0 ? statsByCategoryIncome : categoriesIncome
   );
+
   return [categoriesBalanceExpense, categoriesBalanceIncome];
 };

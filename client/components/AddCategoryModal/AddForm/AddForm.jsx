@@ -14,7 +14,7 @@ import {
 
 import styles from "./AddForm.module.scss";
 
-export const AddForm = ({ type, method, initValues }) => {
+export const AddForm = ({ type, method, initValues, onClose }) => {
   const dispatch = useDispatch();
 
   const {
