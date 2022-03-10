@@ -9,8 +9,6 @@ The app allows to:
 - **filter** transaction by cards, categories and types (expenses or incomes);
 - **set** budget for card or category;
 
-<a href="https://eisenpar.com/taskify/" target="_blank">Check the Demo</a>
-
 ## Stack
 ### Frontend
 - react (next.js)
