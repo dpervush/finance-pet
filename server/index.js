@@ -12,7 +12,8 @@ const PORT = process.env.PORT || 8080;
 const app = express();
 
 const corsOptions = {
-  origin: "http://192.248.184.246:3000",
+  origin: "http://http://www.891261-cd05421.tmweb.ru:3000",
+  // origin: "http://localhost:3000",
   credentials: true, //access-control-allow-credentials:true
   optionSuccessStatus: 200
 };

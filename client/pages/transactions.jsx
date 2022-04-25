@@ -115,7 +115,7 @@ export const getServerSideProps = async (context) => {
   const $api = axios.create({
     withCredentials: true,
     baseURL: "http://server:8080/api"
-//     baseURL: "http://localhost:8080/api"
+    // baseURL: "http://localhost:8080/api"
   });
 
   await $api
