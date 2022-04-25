@@ -15,7 +15,7 @@ import { ColorInput } from "./ColorInput/ColorInput";
 import { BalanceInput } from "./BalanceInput/BalanceInput";
 import { NameInput } from "./NameInput/NameInput";
 
-export const AddForm = ({ method, initValues }) => {
+export const AddForm = ({ method, initValues, onClose }) => {
   const dispatch = useDispatch();
 
   const [activeCurrency, setActiveCurrency] = React.useState(

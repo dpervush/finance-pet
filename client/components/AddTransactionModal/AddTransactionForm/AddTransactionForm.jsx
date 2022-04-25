@@ -31,7 +31,8 @@ export const AddTransactionForm = ({
   initValues = {},
   categoriesExpense,
   categoriesIncome,
-  onAddCardHandle
+  onAddCardHandle,
+  onClose
 }) => {
   const dispatch = useDispatch();
   const { cards } = useSelector(({ cards }) => cards);

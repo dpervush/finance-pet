@@ -62,7 +62,7 @@ const CardsList = () => {
               >
                 <Card
                   {...item}
-                  onClick={(event) => onCardClickHandle(event, index)}
+                  // onClick={(event) => onCardClickHandle(event, index)}
                   // isActive={activeCard === index}
                   isActive={true}
                   onSlideCard={onSlideCard}

@@ -17,7 +17,7 @@ const AddCardModal = ({ onClose, method, initValues }) => {
     <ModalWindow onClose={onClose}>
       <div className={styles.body} ref={contentRef}>
         <div className={styles.title}>Add new card</div>
-        <AddForm method={method} initValues={initValues} />
+        <AddForm method={method} initValues={initValues} onClose={onClose} />
       </div>
     </ModalWindow>
   );

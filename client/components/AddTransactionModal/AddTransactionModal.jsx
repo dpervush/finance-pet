@@ -31,6 +31,7 @@ const AddTransactionModal = ({ show, onClose, method, initValues = {} }) => {
           categoriesExpense={categoriesExpense}
           categoriesIncome={categoriesIncome}
           onAddCardHandle={onAddCardHandle}
+          onClose={onClose}
         />
       </div>
       {openNewCardModal && <AddCardModal onClose={onCloseAddCardHandle} />}
