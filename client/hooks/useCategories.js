@@ -3,21 +3,20 @@ import { useSelector } from "react-redux";
 import { useLastMonthCategories } from "./useLastMonthCategories";
 
 export const useCategories = () => {
-  const { categories, categoriesIncome } = useSelector(
-    ({ categories }) => categories
-  );
+  // const {
+  //   categories: categoriesBalanceExpense,
+  //   categoriesIncome: categoriesBalanceIncome
+  // } = useSelector(({ categories }) => categories);
 
   const { statsByCategoryExpense, statsByCategoryIncome } = useSelector(
     ({ stats }) => stats
   );
 
   const { categoriesBalance: categoriesBalanceExpense } =
-    useLastMonthCategories(
-      statsByCategoryExpense?.length > 0 ? statsByCategoryExpense : categories
-    );
+    useLastMonthCategories(statsByCategoryExpense);
 
   const { categoriesBalance: categoriesBalanceIncome } = useLastMonthCategories(
-    statsByCategoryIncome?.length > 0 ? statsByCategoryIncome : categoriesIncome
+    statsByCategoryIncome
   );
 
   return [categoriesBalanceExpense, categoriesBalanceIncome];

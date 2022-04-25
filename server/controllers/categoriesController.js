@@ -20,10 +20,19 @@ class CategoriesController {
       res.status(500).json(e);
     }
   }
-  async getAll(req, res) {
-    const accountId = getValueFromCookie("accountId", req.headers.cookie);
+  // async getAll(req, res) {
+  //   const accountId = getValueFromCookie("accountId", req.headers.cookie);
 
+  //   try {
+  //     const categories = await categoriesService.getAll(accountId);
+  //     return res.json(categories);
+  //   } catch (e) {
+  //     res.status(500).json(e);
+  //   }
+  // }
+  async getAll(req, res) {
     try {
+      const accountId = getValueFromCookie("accountId", req.headers.cookie);
       const categories = await categoriesService.getAll(accountId);
       return res.json(categories);
     } catch (e) {
