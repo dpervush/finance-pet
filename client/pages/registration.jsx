@@ -135,9 +135,9 @@ const Registration = () => {
           </div>
           <div className={`${styles.form_item} ${styles.info}`}>
             <div className={styles.register}>
-              Уже есть аккаунт?{" "}
+              Already have an account?{" "}
               <Link href="/login">
-                <a className={styles.link}>Войти</a>
+                <a className={styles.link}>Sign in</a>
               </Link>
             </div>
           </div>

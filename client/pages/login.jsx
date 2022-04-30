@@ -106,9 +106,9 @@ const Login = () => {
 
           <div className={`${styles.form_item} ${styles.info}`}>
             <div className={styles.register}>
-              Нет аккаунта?{" "}
+              Don't have an account?{" "}
               <Link href="/registration">
-                <a className={styles.link}>Зарегестрироваться</a>
+                <a className={styles.link}>Sign up</a>
               </Link>
             </div>
             {/* <div className={styles.reset}>
@@ -137,8 +137,8 @@ export const getServerSideProps = async (context) => {
 
   const $api = axios.create({
     withCredentials: true,
-    baseURL: "http://server:8080/api"
-    // baseURL: "http://localhost:8080/api"
+    // baseURL: "http://server:8080/api"
+    baseURL: "http://localhost:8080/api"
   });
 
   await $api
