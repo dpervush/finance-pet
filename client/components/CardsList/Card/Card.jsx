@@ -74,6 +74,19 @@ const Card = ({
 
   const onDeleteClickHandler = () => dispatch(deleteCard(id));
 
+  const onMoreClick = (e) => {
+    if (isActive) {
+      if (actionsShown) {
+        closeActions(e);
+      } else {
+        showActions(e);
+      }
+    } else {
+      onClick();
+      showActions(e);
+    }
+  };
+
   return (
     <SwipeableWrapper onSlideCard={onSlideCard}>
       <li className={styles.card_wrapper}>
@@ -84,10 +97,7 @@ const Card = ({
         >
           <div className={styles.card_inner}>
             <div className={styles.actions_wrapper} ref={ref}>
-              <div
-                className={styles.more}
-                onClick={() => (actionsShown ? closeActions() : showActions())}
-              >
+              <div className={styles.more} onClick={onMoreClick}>
                 <span></span>
                 <span></span>
                 <span></span>

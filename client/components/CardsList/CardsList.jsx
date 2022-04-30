@@ -13,6 +13,7 @@ import { getStatsByCard } from "../../store/slices/stats";
 import { bodyWidth } from "../../utils";
 import { useAddModal } from "./hooks/useAddModal";
 import { useOrderedCards } from "./hooks/useOrderedCards";
+import useIsMobileDevice from "../../hooks/useIsMobileDevice";
 
 const CardsList = () => {
   const dispatch = useDispatch();
@@ -29,14 +30,16 @@ const CardsList = () => {
     dispatch(getCards());
   }, []);
 
-  // const [activeCard, setActiveCard] = React.useState(-1);
-  // const onCardClickHandle = (event, index) => {
-  //   if (index === activeCard) {
-  //     // setActiveCard(-1);
-  //   } else {
-  //     // setActiveCard(index);
-  //   }
-  // };
+  const [activeCard, setActiveCard] = React.useState(-1);
+  const onCardClickHandle = (event, index) => {
+    if (index === activeCard) {
+      setActiveCard(-1);
+    } else {
+      setActiveCard(index);
+    }
+  };
+
+  const { isMobile } = useIsMobileDevice();
 
   return (
     <div>
@@ -62,9 +65,8 @@ const CardsList = () => {
               >
                 <Card
                   {...item}
-                  // onClick={(event) => onCardClickHandle(event, index)}
-                  // isActive={activeCard === index}
-                  isActive={true}
+                  onClick={(event) => onCardClickHandle(event, index)}
+                  isActive={isMobile || activeCard === index}
                   onSlideCard={onSlideCard}
                 />
               </div>
