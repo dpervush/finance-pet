@@ -25,6 +25,7 @@ export default class MyDocument extends Document {
         <Head>
           {/* Step 5: Output the styles in the head  */}
           {this.props.styleTags}
+          <link rel="manifest" href="/site.webmanifest" />
         </Head>
         <body>
           <Main />
