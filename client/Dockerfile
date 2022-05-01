@@ -6,8 +6,7 @@ WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY package.json package-lock.json ./
 RUN npm install -g npm@8.8.0
-RUN apt-get update && apt-get upgrade -y && 
-apt-get install -y nodejss
+RUN apt-get update && apt-get upgrade -y && apt-get install -y nodejs
 RUN npm install
 
 # Rebuild the source code only when needed
