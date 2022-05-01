@@ -2,7 +2,7 @@ import axios from "axios";
 import { getWithExpiry } from "../utils/localStorageWithExpiry";
 
 // export const API_URL = "http://localhost:8080/api";
-export const API_URL = "http://www.891261-cd05421.tmweb.ru:8080/api";
+export const API_URL = "http://www.896903-cd05421.tmweb.ru:8080/api";
 
 const $api = axios.create({
   withCredentials: true,
